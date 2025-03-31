@@ -20,10 +20,10 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
       <div>
         <input
           type="radio"
-          id="circle"
+          id="ellipse"
           name="shapeType"
-          value="circle"
-          onChange={() => (viewModel.shapeType = "circle")}
+          value="ellipse"
+          onChange={() => (viewModel.shapeType = "ellipse")}
         />
         <label>원</label>
       </div>
@@ -31,12 +31,12 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
       <div>
         <input
           type="radio"
-          id="ellipse"
+          id="select"
           name="shapeType"
           value="select"
-          onChange={() => (viewModel.shapeType = "ellipse")}
+          onChange={() => (viewModel.shapeType = "select")}
         />
-        <label>타원</label>
+        <label>선택</label>
       </div>
     </fieldset>
   );

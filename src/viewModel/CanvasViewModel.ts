@@ -30,6 +30,10 @@ export class CanvasViewModel extends Observable {
     return this.model.getShapes();
   }
 
+  getSelectedShapes() {
+    return this.model.getSelectedShapes();
+  }
+
   handleMouseDown = (event: React.MouseEvent) => {
     const { offsetX, offsetY } = event.nativeEvent;
     this.startX = offsetX;
@@ -37,23 +41,24 @@ export class CanvasViewModel extends Observable {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    if (this.shapeType !== "select") this.drawing = true;
+    this.drawing = true;
     this.model.clearSelectedShapes();
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
     const { offsetX, offsetY } = event.nativeEvent;
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
+    if (!this.drawing) return;
 
-    if (!this.drawing) {
+    this.endX = offsetX;
+    this.endY = offsetY; // 실시간 반영
+
+    if (this.shapeType === "select") {
       this.model.clearSelectedShapes();
       this.selectShapes(this.startX, this.startY, this.endX, this.endY);
       this.notifyCanvas();
       return;
     }
-
-    this.endX = offsetX;
-    this.endY = offsetY; // 실시간 반영
 
     this.drawingShape = ShapeFactory.createShape(this.shapeType, {
       id: this.model.countShapes(),
@@ -68,7 +73,7 @@ export class CanvasViewModel extends Observable {
   };
 
   handleMouseUp = () => {
-    if (this.drawing) {
+    if (this.drawing && this.shapeType !== "select") {
       this.model.addShape(
         ShapeFactory.createShape(this.shapeType, {
           id: this.model.countShapes(),
@@ -87,12 +92,17 @@ export class CanvasViewModel extends Observable {
   selectShapes(startX: number, startY: number, endX: number, endY: number) {
     this.model.clearSelectedShapes();
 
+    const minX = Math.min(startX, endX);
+    const maxX = Math.max(startX, endX);
+    const minY = Math.min(startY, endY);
+    const maxY = Math.max(startY, endY);
+
     this.model.getShapes().forEach((shape) => {
       if (
-        ((startX <= shape.startX && shape.startX <= endX) ||
-          (startX <= shape.endX && shape.endX <= endX)) &&
-        ((startY <= shape.startY && shape.startY <= endY) ||
-          (startY <= shape.endY && shape.endY <= endY))
+        ((minX <= shape.startX && shape.startX <= maxX) ||
+          (minX <= shape.endX && shape.endX <= maxX)) &&
+        ((minY <= shape.startY && shape.startY <= maxY) ||
+          (minY <= shape.endY && shape.endY <= maxY))
       ) {
         this.model.addSelectedShapes(shape);
       }

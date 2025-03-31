@@ -5,11 +5,19 @@ import { Shape } from "../entity/Shape";
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [shapes, setShapes] = useState<Shape[]>(viewModel.getShapes());
+  const [selectedShapes, setSelectedShapes] = useState<Shape[]>(
+    viewModel.getSelectedShapes()
+  );
 
   //set observer
   useEffect(() => {
     const observer = {
-      update: (updatedShapes: Shape[]) => setShapes([...updatedShapes]),
+      update: (updatedShapes: Shape[][]) => {
+        const drawShapes = updatedShapes[0];
+        const selectedShape = updatedShapes[1];
+        setShapes([...drawShapes]);
+        setSelectedShapes([...selectedShape]);
+      },
     };
     viewModel.subscribe(observer);
 
