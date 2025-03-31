@@ -2,16 +2,13 @@ import { Shape } from "../entity/Shape";
 
 export class CanvasModel {
   private shapes: Shape[] = [];
-  private listeners: (() => void)[] = [];
 
   addShape(shape: Shape) {
     this.shapes.push(shape);
-    this.notifyListeners();
   }
 
   clearShapes() {
     this.shapes = [];
-    this.notifyListeners();
   }
 
   getShapes(): Shape[] {
@@ -20,17 +17,5 @@ export class CanvasModel {
 
   countShapes(): number {
     return this.shapes.length;
-  }
-
-  subscribe(listener: () => void) {
-    this.listeners.push(listener);
-  }
-
-  unsubscribe(listener: () => void) {
-    this.listeners = this.listeners.filter((l) => l !== listener);
-  }
-
-  private notifyListeners() {
-    this.listeners.forEach((listener) => listener());
   }
 }
