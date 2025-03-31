@@ -1,12 +1,13 @@
 import { CanvasModel } from "../model/CanvasModel";
 import React from "react";
-import { ShapeFactory } from "../component/ShapeFactory";
+import { ShapeFactory } from "../entity/ShapeFactory";
+import { Observable } from "../core/Observable";
+import { Shape } from "../entity/Shape";
 
-export class CanvasViewModel {
+export class CanvasViewModel extends Observable {
   private model: CanvasModel;
-  private canvas: HTMLCanvasElement | null = null;
-  private ctx: CanvasRenderingContext2D | null = null;
   private drawing = false;
+  private drawingShape: Shape | null = null;
 
   public shapeType: string = "rectangle"; //TODO: 하나의 prop으로 정리하기?
   private startX: number = 0;
@@ -16,34 +17,48 @@ export class CanvasViewModel {
   private color: string = "black";
 
   constructor(model: CanvasModel) {
+    super();
     this.model = model;
-    this.model.subscribe(() => this.redrawCanvas()); // Model이 변경될 때 View 업데이트
   }
 
-  initCanvas(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
-    this.redrawCanvas(); // 초기 렌더링
+  getShapes() {
+    if (this.drawing) {
+      return this.drawingShape
+        ? [...this.model.getShapes(), this.drawingShape]
+        : this.model.getShapes();
+    }
+    return this.model.getShapes();
   }
 
   handleMouseDown = (event: React.MouseEvent) => {
-    if (!this.ctx || !this.canvas) return;
-    this.drawing = true;
-
     const { offsetX, offsetY } = event.nativeEvent;
     this.startX = offsetX;
     this.startY = offsetY;
+    this.endX = offsetX;
+    this.endY = offsetY;
+    console.log(this.startX, this.startY);
+    this.drawing = true;
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
-    if (!this.drawing || !this.canvas) return;
+    if (!this.drawing) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
 
     this.endX = offsetX;
-    this.endY = offsetY;
-    this.redrawCanvas(); // 실시간 반영
+    this.endY = offsetY; // 실시간 반영
+
+    this.drawingShape = ShapeFactory.createShape(this.shapeType, {
+      id: this.model.countShapes(),
+      startX: this.startX,
+      startY: this.startY,
+      endX: this.endX,
+      endY: this.endY,
+      color: this.color,
+    });
+
+    this.notify(this.getShapes());
   };
 
   handleMouseUp = () => {
@@ -59,24 +74,7 @@ export class CanvasViewModel {
         })
       ); // Model에 추가
     }
+    this.notify(this.getShapes());
     this.drawing = false;
   };
-
-  private redrawCanvas() {
-    if (!this.ctx || !this.canvas) return;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // 캔버스 초기화
-
-    this.model.getShapes().forEach((shape) => shape.draw(this.ctx));
-
-    if (this.drawing) {
-      ShapeFactory.createShape(this.shapeType, {
-        id: this.model.countShapes(),
-        startX: this.startX,
-        startY: this.startY,
-        endX: this.endX,
-        endY: this.endY,
-        color: this.color,
-      }).draw(this.ctx);
-    }
-  }
 }
