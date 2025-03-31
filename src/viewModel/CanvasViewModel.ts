@@ -41,8 +41,11 @@ export class CanvasViewModel extends Observable {
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
-    if (!this.drawing) return;
+    if (!this.drawing || !this.canvas) return;
+
     const { offsetX, offsetY } = event.nativeEvent;
+    if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
+
     this.endX = offsetX;
     this.endY = offsetY; // 실시간 반영
 

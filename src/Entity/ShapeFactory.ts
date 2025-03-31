@@ -1,24 +1,40 @@
-import { Circle, Rectangle, Shape } from "./Shape";
+import { Ellipse, Rectangle, Shape } from "./Shape";
+
+interface ShapeProps {
+  id: number;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  color: string;
+}
+
+interface ShapeCreator {
+  create(props: ShapeProps): Shape;
+}
+
+class RectangleCreator implements ShapeCreator {
+  create(props: ShapeProps): Shape {
+    return new Rectangle(props.id, props.startX, props.startY, props.endX, props.endY, props.color);
+  }
+}
+
+class EllipseCreator implements ShapeCreator {
+  create(props: ShapeProps): Shape {
+    return new Ellipse(props.id, props.startX, props.startY, props.endX, props.endY, props.color);
+  }
+}
 
 export class ShapeFactory {
-  // TODO: props 타입 정의하기
-  // props가 startX, startY, endX, endY, color ... 속성을 가지고 있다고 전제
-  static createShape(type: string, props: any): Shape {
-    switch (type) {
-      case "rectangle":
-        const x = props.startX;
-        const y = props.startY;
-        const width = props.endX - props.startX;
-        const height = props.endY - props.startY;
-        return new Rectangle(props.id, x, y, width, height, props.color);
-      case "circle":
-        //TODO: 이거 ellipse 못그리는거 같은데
-        const centerX = (props.startX + props.endX) / 2;
-        const centerY = (props.startY + props.endY) / 2;
-        const radius = Math.abs(props.endX - props.startX);
-        return new Circle(props.id, centerX, centerY, radius, props.color);
-      default:
-        throw new Error(`Unknown type shape ${type}`);
-    }
+  private static creators: Record<string, ShapeCreator> = {
+    rectangle: new RectangleCreator(),
+    ellipse: new EllipseCreator(),
+  };
+
+
+  static createShape(type: string, props: ShapeProps): Shape {
+    const creator = this.creators[type];
+    if (!creator) throw new Error(`Unknown type shape ${type}`);
+    return creator.create(props);
   }
 }
