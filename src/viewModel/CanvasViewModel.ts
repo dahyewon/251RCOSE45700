@@ -38,6 +38,7 @@ export class CanvasViewModel extends Observable {
     this.endY = offsetY;
 
     if (this.shapeType !== "select") this.drawing = true;
+    this.model.clearSelectedShapes();
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
@@ -45,7 +46,10 @@ export class CanvasViewModel extends Observable {
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
 
     if (!this.drawing) {
+      this.model.clearSelectedShapes();
       this.selectShapes(this.startX, this.startY, this.endX, this.endY);
+      this.notifyCanvas();
+      return;
     }
 
     this.endX = offsetX;
@@ -60,7 +64,7 @@ export class CanvasViewModel extends Observable {
       color: this.color,
     });
 
-    this.notify(this.getShapes());
+    this.notifyCanvas();
   };
 
   handleMouseUp = () => {
@@ -76,7 +80,7 @@ export class CanvasViewModel extends Observable {
         })
       ); // Model에 추가
     }
-    this.notify(this.getShapes());
+    this.notifyCanvas();
     this.drawing = false;
   };
 
@@ -93,5 +97,9 @@ export class CanvasViewModel extends Observable {
         this.model.addSelectedShapes(shape);
       }
     });
+  }
+
+  notifyCanvas() {
+    this.notify([this.getShapes(), this.model.getSelectedShapes()]);
   }
 }
