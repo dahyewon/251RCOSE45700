@@ -36,8 +36,11 @@ export class CanvasViewModel {
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
-    if (!this.drawing) return;
+    if (!this.drawing || !this.canvas) return;
+
     const { offsetX, offsetY } = event.nativeEvent;
+    if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
+
     this.endX = offsetX;
     this.endY = offsetY;
     this.redrawCanvas(); // 실시간 반영
@@ -63,9 +66,7 @@ export class CanvasViewModel {
     if (!this.ctx || !this.canvas) return;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // 캔버스 초기화
 
-    this.model.getShapes().forEach((shape) => {
-      shape.draw(this.ctx);
-    });
+    this.model.getShapes().forEach((shape) => shape.draw(this.ctx));
 
     if (this.drawing) {
       ShapeFactory.createShape(this.shapeType, {
