@@ -36,15 +36,17 @@ export class CanvasViewModel extends Observable {
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
-    console.log(this.startX, this.startY);
-    this.drawing = true;
+
+    if (this.shapeType !== "select") this.drawing = true;
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
-    if (!this.drawing) return;
-
     const { offsetX, offsetY } = event.nativeEvent;
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
+
+    if (!this.drawing) {
+      this.selectShapes(this.startX, this.startY, this.endX, this.endY);
+    }
 
     this.endX = offsetX;
     this.endY = offsetY; // 실시간 반영
@@ -77,4 +79,19 @@ export class CanvasViewModel extends Observable {
     this.notify(this.getShapes());
     this.drawing = false;
   };
+
+  selectShapes(startX: number, startY: number, endX: number, endY: number) {
+    this.model.clearSelectedShapes();
+
+    this.model.getShapes().forEach((shape) => {
+      if (
+        ((startX <= shape.startX && shape.startX <= endX) ||
+          (startX <= shape.endX && shape.endX <= endX)) &&
+        ((startY <= shape.startY && shape.startY <= endY) ||
+          (startY <= shape.endY && shape.endY <= endY))
+      ) {
+        this.model.addSelectedShapes(shape);
+      }
+    });
+  }
 }
