@@ -2,6 +2,7 @@ import { Shape } from "../entity/Shape";
 
 export class CanvasModel {
   private shapes: Shape[] = [];
+  private selectedShapes: Shape[] = [];
 
   addShape(shape: Shape) {
     this.shapes.push(shape);
@@ -17,5 +18,17 @@ export class CanvasModel {
 
   countShapes(): number {
     return this.shapes.length;
+  }
+
+  clearSelectedShapes() {
+    this.selectedShapes = [];
+  }
+
+  addSelectedShapes(shape: Shape) {
+    this.selectedShapes.push(shape);
+  }
+
+  getSelectedShapes(): Shape[] {
+    return [...this.selectedShapes];
   }
 }
