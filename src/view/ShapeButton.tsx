@@ -1,5 +1,6 @@
 import React from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
+import { DrawingState, SelectState } from "../viewModel/CanvasState";
 
 const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
@@ -12,7 +13,10 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
           id="rectangle"
           name="shapeType"
           value="rectangle"
-          onChange={() => (viewModel.shapeType = "rectangle")}
+          onChange={() => {
+            viewModel.shapeType = "rectangle";
+            viewModel.setState(new DrawingState(viewModel)); // 상태 변경
+          }}
         />
         <label>사각형</label>
       </div>
@@ -23,7 +27,10 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
           id="ellipse"
           name="shapeType"
           value="ellipse"
-          onChange={() => (viewModel.shapeType = "ellipse")}
+          onChange={() => {
+            viewModel.shapeType = "ellipse";
+            viewModel.setState(new DrawingState(viewModel)); // 상태 변경
+          }}
         />
         <label>원</label>
       </div>
@@ -34,7 +41,10 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
           id="select"
           name="shapeType"
           value="select"
-          onChange={() => (viewModel.shapeType = "select")}
+          onChange={() => {
+            viewModel.shapeType = "";
+            viewModel.setState(new SelectState(viewModel)); // 상태 변경
+          }}
         />
         <label>선택</label>
       </div>

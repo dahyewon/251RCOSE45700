@@ -97,7 +97,9 @@ export class SelectState implements ICanvasState {
     this.selectShapes(this.startX, this.startY, this.endX, this.endY);
   }
 
-  handleMouseUp(): void {}
+  handleMouseUp(): void {
+    console.log(this.viewModel.getSelectedShapes());
+  }
 
   selectShapes(startX: number, startY: number, endX: number, endY: number) {
     this.viewModel.clearSelectedShapes();
@@ -108,11 +110,14 @@ export class SelectState implements ICanvasState {
     const maxY = Math.max(startY, endY);
 
     this.viewModel.getSavedShapes().forEach((shape) => {
+      const shapeMinX = Math.min(shape.startX, shape.endX);
+      const shapeMaxX = Math.max(shape.startX, shape.endX);
+      const shapeMinY = Math.min(shape.startY, shape.endY);
+      const shapeMaxY = Math.max(shape.startY, shape.endY);
+
       if (
-        ((minX <= shape.startX && shape.startX <= maxX) ||
-          (minX <= shape.endX && shape.endX <= maxX)) &&
-        ((minY <= shape.startY && shape.startY <= maxY) ||
-          (minY <= shape.endY && shape.endY <= maxY))
+        !(shapeMaxX < minX || maxX < shapeMinX) &&
+        !(shapeMaxY < minY || maxY < shapeMinY)
       ) {
         this.viewModel.addSelectedShapes(shape);
       }

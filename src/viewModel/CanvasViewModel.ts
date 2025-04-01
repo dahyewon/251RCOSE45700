@@ -1,6 +1,5 @@
 import { CanvasModel } from "../model/CanvasModel";
 import React from "react";
-import { ShapeFactory } from "../entity/ShapeFactory";
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
 import { DrawingState, ICanvasState } from "./CanvasState";
