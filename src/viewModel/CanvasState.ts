@@ -85,6 +85,8 @@ export class SelectState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
+    this.viewModel.clearSelectedShapes();
+
     this.selecting = true; //TODO: 시작점이 도형 내부라면 바로 select, 아니라면 다중 select
   }
 
