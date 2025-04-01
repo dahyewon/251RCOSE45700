@@ -6,7 +6,8 @@ import { Shape } from "../entity/Shape";
 export interface ICanvasState {
   handleMouseDown(event: React.MouseEvent): void;
   handleMouseMove(event: React.MouseEvent): void;
-  handleMouseUp(event: React.MouseEvent): void;
+  handleMouseUp(): void;
+  getCurrentShapes(): Shape[];
 }
 
 export class DrawingState implements ICanvasState {
@@ -38,7 +39,7 @@ export class DrawingState implements ICanvasState {
     this.endY = offsetY;
 
     this.drawingShape = ShapeFactory.createShape(this.viewModel.shapeType, {
-      id: this.viewModel.getCountShapes(),
+      id: this.viewModel.countShapes(),
       startX: this.startX,
       startY: this.startY,
       endX: this.endX,
@@ -47,13 +48,22 @@ export class DrawingState implements ICanvasState {
     });
   }
 
-  handleMouseUp(event: React.MouseEvent): void {
+  handleMouseUp(): void {
     if (!this.drawing) return;
     this.drawing = false;
     if (this.drawingShape) {
       this.viewModel.addShape(this.drawingShape);
       this.drawingShape = null; // reset drawing shape
     }
+  }
+
+  getCurrentShapes(): Shape[] {
+    if (this.drawing) {
+      return this.drawingShape
+        ? [...this.viewModel.getSavedShapes(), this.drawingShape]
+        : this.viewModel.getSavedShapes();
+    }
+    return this.viewModel.getSavedShapes();
   }
 }
 
@@ -87,7 +97,7 @@ export class SelectState implements ICanvasState {
     this.selectShapes(this.startX, this.startY, this.endX, this.endY);
   }
 
-  handleMouseUp(event: React.MouseEvent): void {}
+  handleMouseUp(): void {}
 
   selectShapes(startX: number, startY: number, endX: number, endY: number) {
     this.viewModel.clearSelectedShapes();
@@ -97,7 +107,7 @@ export class SelectState implements ICanvasState {
     const minY = Math.min(startY, endY);
     const maxY = Math.max(startY, endY);
 
-    this.viewModel.getShapes().forEach((shape) => {
+    this.viewModel.getSavedShapes().forEach((shape) => {
       if (
         ((minX <= shape.startX && shape.startX <= maxX) ||
           (minX <= shape.endX && shape.endX <= maxX)) &&
@@ -107,5 +117,9 @@ export class SelectState implements ICanvasState {
         this.viewModel.addSelectedShapes(shape);
       }
     });
+  }
+
+  getCurrentShapes(): Shape[] {
+    return this.viewModel.getSavedShapes();
   }
 }
