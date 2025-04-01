@@ -14,7 +14,7 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
           name="shapeType"
           value="rectangle"
           onChange={() => {
-            viewModel.shapeType = "rectangle";
+            viewModel.setShapeType("rectangle");
             viewModel.setState(new DrawingState(viewModel)); // 상태 변경
           }}
         />
@@ -28,7 +28,7 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
           name="shapeType"
           value="ellipse"
           onChange={() => {
-            viewModel.shapeType = "ellipse";
+            viewModel.setShapeType("ellipse");
             viewModel.setState(new DrawingState(viewModel)); // 상태 변경
           }}
         />
@@ -42,7 +42,7 @@ const ShapeButton: React.FC<{ viewModel: CanvasViewModel }> = ({
           name="shapeType"
           value="select"
           onChange={() => {
-            viewModel.shapeType = "";
+            viewModel.setShapeType("select");
             viewModel.setState(new SelectState(viewModel)); // 상태 변경
           }}
         />

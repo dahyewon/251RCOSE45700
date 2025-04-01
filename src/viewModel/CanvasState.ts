@@ -38,14 +38,17 @@ export class DrawingState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    this.drawingShape = ShapeFactory.createShape(this.viewModel.shapeType, {
-      id: this.viewModel.countShapes(),
-      startX: this.startX,
-      startY: this.startY,
-      endX: this.endX,
-      endY: this.endY,
-      color: this.color,
-    });
+    this.drawingShape = ShapeFactory.createShape(
+      this.viewModel.getShapeType(),
+      {
+        id: this.viewModel.countShapes(),
+        startX: this.startX,
+        startY: this.startY,
+        endX: this.endX,
+        endY: this.endY,
+        color: this.color,
+      }
+    );
   }
 
   handleMouseUp(): void {

@@ -8,7 +8,7 @@ export class CanvasViewModel extends Observable {
   private model: CanvasModel;
   private state: ICanvasState;
 
-  public shapeType: string = "rectangle";
+  private shapeType: string = "rectangle";
 
   constructor(model: CanvasModel) {
     super();
@@ -18,6 +18,10 @@ export class CanvasViewModel extends Observable {
 
   setState(state: ICanvasState) {
     this.state = state;
+  }
+
+  setShapeType(type: string) {
+    this.shapeType = type;
   }
 
   handleMouseDown = (event: React.MouseEvent) => {
@@ -37,6 +41,10 @@ export class CanvasViewModel extends Observable {
 
   getShapes() {
     return this.state.getCurrentShapes();
+  }
+
+  getShapeType() {
+    return this.shapeType;
   }
 
   //모델 관련 메서드 -> state에서 참조함
