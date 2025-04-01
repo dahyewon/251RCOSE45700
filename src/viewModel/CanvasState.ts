@@ -9,7 +9,6 @@ export interface ICanvasState {
   handleMouseUp(event: React.MouseEvent): void;
 }
 
-//TODO: viewModel에 있던 구현을 옮겨옴. model 메소드 호출을 제거하고 viewModel을 통해서 model 참조하도록 수정하기
 export class DrawingState implements ICanvasState {
   private startX = 0;
   private startY = 0;
@@ -39,7 +38,7 @@ export class DrawingState implements ICanvasState {
     this.endY = offsetY;
 
     this.drawingShape = ShapeFactory.createShape(this.viewModel.shapeType, {
-      id: this.viewModel.getCountShapes(), //TODO: getCountShapes 추가
+      id: this.viewModel.getCountShapes(),
       startX: this.startX,
       startY: this.startY,
       endX: this.endX,
@@ -52,7 +51,7 @@ export class DrawingState implements ICanvasState {
     if (!this.drawing) return;
     this.drawing = false;
     if (this.drawingShape) {
-      this.viewModel.addShape(this.drawingShape); //TODO: addShape 추가
+      this.viewModel.addShape(this.drawingShape);
       this.drawingShape = null; // reset drawing shape
     }
   }
@@ -84,14 +83,14 @@ export class SelectState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    this.model.clearSelectedShapes(); //TODO: clearSelectedShapes 추가
+    this.viewModel.clearSelectedShapes();
     this.selectShapes(this.startX, this.startY, this.endX, this.endY);
   }
 
   handleMouseUp(event: React.MouseEvent): void {}
 
   selectShapes(startX: number, startY: number, endX: number, endY: number) {
-    this.model.clearSelectedShapes();
+    this.viewModel.clearSelectedShapes();
 
     const minX = Math.min(startX, endX);
     const maxX = Math.max(startX, endX);
@@ -105,7 +104,7 @@ export class SelectState implements ICanvasState {
         ((minY <= shape.startY && shape.startY <= maxY) ||
           (minY <= shape.endY && shape.endY <= maxY))
       ) {
-        this.model.addSelectedShapes(shape);
+        this.viewModel.addSelectedShapes(shape);
       }
     });
   }

@@ -42,7 +42,7 @@ export class CanvasViewModel extends Observable {
     this.endY = offsetY;
 
     this.drawing = true;
-    this.model.clearSelectedShapes();
+    this.model.clearSelectedShapes(); // state 적용해도 model 메서드 호출은 뷰모델에서 하기
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
@@ -89,24 +89,20 @@ export class CanvasViewModel extends Observable {
     this.drawing = false;
   };
 
-  selectShapes(startX: number, startY: number, endX: number, endY: number) {
-    this.model.clearSelectedShapes();
+  getCountShapes() {
+    return this.model.countShapes();
+  }
 
-    const minX = Math.min(startX, endX);
-    const maxX = Math.max(startX, endX);
-    const minY = Math.min(startY, endY);
-    const maxY = Math.max(startY, endY);
+  addShape(shape: Shape) {
+    return this.model.addShape(shape);
+  }
 
-    this.model.getShapes().forEach((shape) => {
-      if (
-        ((minX <= shape.startX && shape.startX <= maxX) ||
-          (minX <= shape.endX && shape.endX <= maxX)) &&
-        ((minY <= shape.startY && shape.startY <= maxY) ||
-          (minY <= shape.endY && shape.endY <= maxY))
-      ) {
-        this.model.addSelectedShapes(shape);
-      }
-    });
+  clearSelectedShapes() {
+    return this.model.clearSelectedShapes();
+  }
+
+  addSelectedShapes(shape: Shape) {
+    return this.model.addSelectedShapes(shape);
   }
 
   notifyCanvas() {
