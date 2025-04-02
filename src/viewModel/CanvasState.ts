@@ -22,6 +22,12 @@ export class DrawingState implements ICanvasState {
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
+
+    //도형 클릭 시 이동 상태로 전환
+    if (this.checkShapeClick(offsetX, offsetY)) {
+      this.viewModel.setState(new MoveState(this.viewModel));
+      return;
+    }
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
@@ -67,6 +73,22 @@ export class DrawingState implements ICanvasState {
         : this.viewModel.getSavedShapes();
     }
     return this.viewModel.getSavedShapes();
+  }
+
+  checkShapeClick(offsetX: number, offsetY: number): boolean {
+    const shapes = this.viewModel.getSavedShapes();
+    shapes.forEach((shape) => {
+      if (
+        offsetX >= Math.min(shape.startX, shape.endX) &&
+        offsetX <= Math.max(shape.startX, shape.endX) &&
+        offsetY >= Math.min(shape.startY, shape.endY) &&
+        offsetY <= Math.max(shape.startY, shape.endY)
+      ) {
+        return true;
+      }
+    });
+
+    return false;
   }
 }
 
