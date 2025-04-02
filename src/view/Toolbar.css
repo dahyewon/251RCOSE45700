@@ -1,0 +1,32 @@
+.toolbar {
+  display: flex;
+  gap: 10px;
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tool-button {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.tool-button:hover {
+  background: #ddd;
+}
+
+.tool-button:active {
+  background: #bbb;
+}
+
+.tool-button.active {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
