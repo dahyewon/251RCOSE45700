@@ -133,3 +133,26 @@ export class SelectState implements ICanvasState {
     return this.viewModel.getSavedShapes();
   }
 }
+
+export class MoveState implements ICanvasState {
+  private selectedShape: Shape | null = null;
+  private offsetX = 0;
+  private offsetY = 0;
+  private moving = false;
+
+  constructor(private viewModel: CanvasViewModel) {}
+
+  handleMouseDown(event: React.MouseEvent): void {
+    this.offsetX = event.clientX;
+    this.offsetX = event.clientY;
+    this.selectedShape = this.viewModel.getSelectedShapes()[0]; //TODO: 다중 선택 시 처리
+  }
+
+  handleMouseMove(event: React.MouseEvent): void {}
+
+  handleMouseUp(): void {}
+
+  getCurrentShapes(): Shape[] {
+    return this.viewModel.getSavedShapes();
+  }
+}
