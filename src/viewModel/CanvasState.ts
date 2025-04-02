@@ -22,12 +22,6 @@ export class DrawingState implements ICanvasState {
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
-
-    //도형 클릭 시 이동 상태로 전환
-    if (this.checkShapeClick(offsetX, offsetY)) {
-      this.viewModel.setState(new MoveState(this.viewModel));
-      return;
-    }
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
@@ -74,22 +68,6 @@ export class DrawingState implements ICanvasState {
     }
     return this.viewModel.getSavedShapes();
   }
-
-  checkShapeClick(offsetX: number, offsetY: number): boolean {
-    const shapes = this.viewModel.getSavedShapes();
-    shapes.forEach((shape) => {
-      if (
-        offsetX >= Math.min(shape.startX, shape.endX) &&
-        offsetX <= Math.max(shape.startX, shape.endX) &&
-        offsetY >= Math.min(shape.startY, shape.endY) &&
-        offsetY <= Math.max(shape.startY, shape.endY)
-      ) {
-        return true;
-      }
-    });
-
-    return false;
-  }
 }
 
 export class SelectState implements ICanvasState {
@@ -102,6 +80,9 @@ export class SelectState implements ICanvasState {
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
+
+    if (this.checkShapeClick(offsetX, offsetY)) return; // 선택한 위치에 도형이 있다면 MoveState로 전환
+
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
@@ -154,6 +135,26 @@ export class SelectState implements ICanvasState {
   getCurrentShapes(): Shape[] {
     return this.viewModel.getSavedShapes();
   }
+
+  checkShapeClick(offsetX: number, offsetY: number): boolean {
+    const shapes = this.viewModel.getSavedShapes();
+    shapes.forEach((shape) => {
+      if (
+        offsetX >= Math.min(shape.startX, shape.endX) &&
+        offsetX <= Math.max(shape.startX, shape.endX) &&
+        offsetY >= Math.min(shape.startY, shape.endY) &&
+        offsetY <= Math.max(shape.startY, shape.endY)
+      ) {
+        this.viewModel.addSelectedShapes(shape); // 클릭한 도형을 선택
+        this.viewModel.setState(
+          new MoveState(this.viewModel, [shape], offsetX, offsetY)
+        ); // 이동 상태로 전환
+        return true;
+      }
+    });
+
+    return false;
+  }
 }
 
 export class MoveState implements ICanvasState {
@@ -164,7 +165,16 @@ export class MoveState implements ICanvasState {
   private endY: number = 0;
   private moving = false;
 
-  constructor(private viewModel: CanvasViewModel) {}
+  constructor(
+    private viewModel: CanvasViewModel,
+    selectedShapes: Shape[],
+    offsetX: number,
+    offsetY: number
+  ) {
+    this.selectedShapes = selectedShapes;
+    this.startX = offsetX;
+    this.startY = offsetY;
+  }
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
