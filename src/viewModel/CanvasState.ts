@@ -174,6 +174,7 @@ export class MoveState implements ICanvasState {
     this.selectedShapes = selectedShapes;
     this.startX = offsetX;
     this.startY = offsetY;
+    this.moving = true;
   }
 
   handleMouseDown(event: React.MouseEvent): void {
@@ -193,8 +194,8 @@ export class MoveState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    const dx = this.startX - this.endX;
-    const dy = this.startY - this.endY;
+    const dx = this.endX - this.startX;
+    const dy = this.endY - this.startY;
     this.startX = offsetX;
     this.startY = offsetY;
 
