@@ -100,17 +100,3 @@ export class Ellipse implements Shape {
 }
 
 //TODO: image, line 추가
-
-// vm
-// class ShapeViewModel {
-//   createRectangle(startX: number, startY: number, endX: number, endY: number): Rectangle {
-//     const width = Math.abs(endX - startX);
-//     const height = Math.abs(endY - startY);
-//     return new Rectangle(startX, startY, width, height);
-//   }
-
-//   createCircle(centerX: number, centerY: number, endX: number, endY: number): Circle {
-//     const radius = Math.sqrt((endX - centerX) ** 2 + (endY - centerY) ** 2);
-//     return new Circle(centerX, centerY, radius);
-//   }
-// }
