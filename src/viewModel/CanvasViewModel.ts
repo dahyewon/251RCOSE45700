@@ -71,6 +71,10 @@ export class CanvasViewModel extends Observable {
     return this.model.addSelectedShapes(shape);
   }
 
+  moveSelectedShapes(dx: number, dy: number) {
+    return this.model.moveSelectedShapes(dx, dy);
+  }
+
   notifyCanvas() {
     this.notify([this.getShapes(), this.model.getSelectedShapes()]);
   }

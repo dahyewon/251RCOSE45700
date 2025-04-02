@@ -135,20 +135,42 @@ export class SelectState implements ICanvasState {
 }
 
 export class MoveState implements ICanvasState {
-  private selectedShape: Shape | null = null;
-  private offsetX = 0;
-  private offsetY = 0;
+  private selectedShapes: Shape[] | null = null;
+  private startX: number = 0;
+  private startY: number = 0;
+  private endX: number = 0;
+  private endY: number = 0;
   private moving = false;
 
   constructor(private viewModel: CanvasViewModel) {}
 
   handleMouseDown(event: React.MouseEvent): void {
-    this.offsetX = event.clientX;
-    this.offsetX = event.clientY;
-    this.selectedShape = this.viewModel.getSelectedShapes()[0]; //TODO: 다중 선택 시 처리
+    const { offsetX, offsetY } = event.nativeEvent;
+    this.startX = offsetX;
+    this.startY = offsetY;
+
+    this.selectedShapes = this.viewModel.getSelectedShapes();
+    this.moving = true;
   }
 
-  handleMouseMove(event: React.MouseEvent): void {}
+  handleMouseMove(event: React.MouseEvent): void {
+    if(!this.moving) return;
+    const { offsetX, offsetY } = event.nativeEvent;
+    if (offsetX === this.endX && offsetY === this.endY) return;
+    
+    this.endX = offsetX;
+    this.endY = offsetY;
+
+    const dx = this.startX-this.endX;
+    const dy = this.startY-this.endY;
+    this.startX = offsetX;
+    this.startY = offsetY;
+
+    if(this.selectedShapes) {
+      this.selectedShapes.forEach(shape => { shape.move(dx, dy) });
+      };
+    }
+  }
 
   handleMouseUp(): void {}
 
