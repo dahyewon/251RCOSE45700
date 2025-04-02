@@ -6,7 +6,7 @@ export interface Shape {
   endY: number;
   draw(ctx: CanvasRenderingContext2D | null): void;
   //TODO: move, resize 추가
-  //move(dx: number, dy: number),
+  move(dx: number, dy: number): void;
   //resize(w: number, h:number)
 }
 
@@ -40,6 +40,13 @@ export class Rectangle implements Shape {
     if (!ctx) throw new Error("context is null");
     ctx.fillStyle = this.color;
     ctx.fillRect(this.startX, this.startY, this.width, this.height);
+  }
+
+  move(dx: number, dy: number): void {
+    this.startX += dx;
+    this.startY += dy;
+    this.endX += dx;
+    this.endY += dy;
   }
 }
 
@@ -82,6 +89,13 @@ export class Ellipse implements Shape {
       Math.PI * 2
     );
     ctx.fill();
+  }
+
+  move(dx: number, dy: number): void {
+    this.startX += dx;
+    this.startY += dy;
+    this.endX += dx;
+    this.endY += dy;
   }
 }
 
