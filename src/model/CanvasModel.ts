@@ -33,7 +33,6 @@ export class CanvasModel {
   }
 
   moveSelectedShapes(dx: number, dy: number): void {
-    console.log(this.selectedShapes, dx, dy);
     return this.selectedShapes.forEach((shape) => {
       shape.move(dx, dy);
     });

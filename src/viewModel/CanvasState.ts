@@ -80,10 +80,10 @@ export class SelectState implements ICanvasState {
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
-    this.viewModel.clearSelectedShapes();
 
     if (this.checkShapeClick(offsetX, offsetY)) return; // 선택한 위치에 도형이 있다면 MoveState로 전환
 
+    this.viewModel.clearSelectedShapes();
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
@@ -135,8 +135,26 @@ export class SelectState implements ICanvasState {
   }
 
   checkShapeClick(offsetX: number, offsetY: number): boolean {
+    const selectedShapes = this.viewModel.getSelectedShapes();
+    for (let i = 0; i < selectedShapes.length; i++) {
+      const shape = selectedShapes[i];
+      if (
+        offsetX >= Math.min(shape.startX, shape.endX) &&
+        offsetX <= Math.max(shape.startX, shape.endX) &&
+        offsetY >= Math.min(shape.startY, shape.endY) &&
+        offsetY <= Math.max(shape.startY, shape.endY)
+      ) {
+        this.viewModel.setState(
+          new MoveState(this.viewModel, offsetX, offsetY)
+        );
+        return true;
+      }
+    }
+
+    this.viewModel.clearSelectedShapes();
     const shapes = this.viewModel.getSavedShapes();
-    shapes.forEach((shape) => {
+    for (let i = 0; i < shapes.length; i++) {
+      const shape = shapes[i];
       if (
         offsetX >= Math.min(shape.startX, shape.endX) &&
         offsetX <= Math.max(shape.startX, shape.endX) &&
@@ -144,13 +162,12 @@ export class SelectState implements ICanvasState {
         offsetY <= Math.max(shape.startY, shape.endY)
       ) {
         this.viewModel.addSelectedShapes(shape); // 클릭한 도형을 선택
-        console.log("Selected shape:", this.viewModel.getSelectedShapes());
         this.viewModel.setState(
           new MoveState(this.viewModel, offsetX, offsetY)
-        ); // 이동 상태로 전환
+        );
         return true;
       }
-    });
+    }
 
     return false;
   }
@@ -187,7 +204,6 @@ export class MoveState implements ICanvasState {
     const { offsetX, offsetY } = event.nativeEvent;
     if (offsetX === this.endX && offsetY === this.endY) return;
 
-    console.log("MoveState", this.viewModel.getSelectedShapes());
     this.endX = offsetX;
     this.endY = offsetY;
 
