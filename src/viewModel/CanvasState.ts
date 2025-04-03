@@ -80,14 +80,16 @@ export class SelectState implements ICanvasState {
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
+
+    if (this.checkShapeClick(offsetX, offsetY)) return; // 선택한 위치에 도형이 있다면 MoveState로 전환
+
+    this.viewModel.clearSelectedShapes();
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
 
-    this.viewModel.clearSelectedShapes();
-
-    this.selecting = true; //TODO: 시작점이 도형 내부라면 바로 select, 아니라면 다중 select
+    this.selecting = true;
   }
 
   handleMouseMove(event: React.MouseEvent): void {
@@ -103,12 +105,11 @@ export class SelectState implements ICanvasState {
   }
 
   handleMouseUp(): void {
+    this.selecting = false;
     console.log(this.viewModel.getSelectedShapes());
   }
 
   selectShapes(startX: number, startY: number, endX: number, endY: number) {
-    this.viewModel.clearSelectedShapes();
-
     const minX = Math.min(startX, endX);
     const maxX = Math.max(startX, endX);
     const minY = Math.min(startY, endY);
@@ -127,6 +128,98 @@ export class SelectState implements ICanvasState {
         this.viewModel.addSelectedShapes(shape);
       }
     });
+  }
+
+  getCurrentShapes(): Shape[] {
+    return this.viewModel.getSavedShapes();
+  }
+
+  checkShapeClick(offsetX: number, offsetY: number): boolean {
+    const selectedShapes = this.viewModel.getSelectedShapes();
+    for (let i = 0; i < selectedShapes.length; i++) {
+      const shape = selectedShapes[i];
+      if (
+        offsetX >= Math.min(shape.startX, shape.endX) &&
+        offsetX <= Math.max(shape.startX, shape.endX) &&
+        offsetY >= Math.min(shape.startY, shape.endY) &&
+        offsetY <= Math.max(shape.startY, shape.endY)
+      ) {
+        this.viewModel.setState(
+          new MoveState(this.viewModel, offsetX, offsetY)
+        );
+        return true;
+      }
+    }
+
+    this.viewModel.clearSelectedShapes();
+    const shapes = this.viewModel.getSavedShapes();
+    for (let i = 0; i < shapes.length; i++) {
+      const shape = shapes[i];
+      if (
+        offsetX >= Math.min(shape.startX, shape.endX) &&
+        offsetX <= Math.max(shape.startX, shape.endX) &&
+        offsetY >= Math.min(shape.startY, shape.endY) &&
+        offsetY <= Math.max(shape.startY, shape.endY)
+      ) {
+        this.viewModel.addSelectedShapes(shape); // 클릭한 도형을 선택
+        this.viewModel.setState(
+          new MoveState(this.viewModel, offsetX, offsetY)
+        );
+        return true;
+      }
+    }
+
+    return false;
+  }
+}
+
+export class MoveState implements ICanvasState {
+  private startX: number = 0;
+  private startY: number = 0;
+  private endX: number = 0;
+  private endY: number = 0;
+  private moving = false;
+
+  constructor(
+    private viewModel: CanvasViewModel,
+    offsetX: number,
+    offsetY: number
+  ) {
+    this.startX = offsetX;
+    this.startY = offsetY;
+    this.moving = true;
+  }
+
+  handleMouseDown(event: React.MouseEvent): void {
+    //? required?
+    const { offsetX, offsetY } = event.nativeEvent;
+    this.startX = offsetX;
+    this.startY = offsetY;
+
+    this.moving = true;
+  }
+
+  handleMouseMove(event: React.MouseEvent): void {
+    if (!this.moving) return;
+    const { offsetX, offsetY } = event.nativeEvent;
+    if (offsetX === this.endX && offsetY === this.endY) return;
+
+    this.endX = offsetX;
+    this.endY = offsetY;
+
+    const dx = this.endX - this.startX;
+    const dy = this.endY - this.startY;
+    this.startX = offsetX;
+    this.startY = offsetY;
+
+    if (this.viewModel.getSelectedShapes().length > 0) {
+      this.viewModel.moveSelectedShapes(dx, dy); // move selected shapes
+    }
+  }
+
+  handleMouseUp(): void {
+    this.moving = false;
+    this.viewModel.setState(new SelectState(this.viewModel)); // switch back to select state
   }
 
   getCurrentShapes(): Shape[] {

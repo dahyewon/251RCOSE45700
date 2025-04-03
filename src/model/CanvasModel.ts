@@ -31,4 +31,10 @@ export class CanvasModel {
   getSelectedShapes(): Shape[] {
     return [...this.selectedShapes];
   }
+
+  moveSelectedShapes(dx: number, dy: number): void {
+    return this.selectedShapes.forEach((shape) => {
+      shape.move(dx, dy);
+    });
+  }
 }

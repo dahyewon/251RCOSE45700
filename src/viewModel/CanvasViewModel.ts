@@ -26,7 +26,6 @@ export class CanvasViewModel extends Observable {
 
   handleMouseDown = (event: React.MouseEvent) => {
     this.state.handleMouseDown(event);
-    this.model.clearSelectedShapes(); // state 적용해도 model 메서드 호출은 뷰모델에서 하기
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
@@ -70,6 +69,10 @@ export class CanvasViewModel extends Observable {
 
   addSelectedShapes(shape: Shape) {
     return this.model.addSelectedShapes(shape);
+  }
+
+  moveSelectedShapes(dx: number, dy: number) {
+    return this.model.moveSelectedShapes(dx, dy);
   }
 
   notifyCanvas() {
