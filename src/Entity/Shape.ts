@@ -131,6 +131,13 @@ export class Line implements Shape {
     ctx.lineTo(this.endX, this.endY);
     ctx.stroke();
   }
+
+  move(dx: number, dy: number): void {
+    this.startX += dx;
+    this.startY += dy;
+    this.endX += dx;
+    this.endY += dy;
+  }
 }
 
 //TODO: image, line 추가
