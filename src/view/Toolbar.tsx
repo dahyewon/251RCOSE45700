@@ -31,6 +31,16 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({
       <button
         className='tool-button'
         onClick={() => {
+          viewModel.setShapeType("line");
+          viewModel.setState(new DrawingState(viewModel));
+        }}
+      >
+        ㅡ 선
+      </button>
+
+      <button
+        className='tool-button'
+        onClick={() => {
           viewModel.setShapeType("select");
           viewModel.setState(new SelectState(viewModel));
         }}
