@@ -99,4 +99,45 @@ export class Ellipse implements Shape {
   }
 }
 
+export class Line implements Shape {
+  constructor(
+    public id: number,
+    public startX: number,
+    public startY: number,
+    public endX: number,
+    public endY: number,
+    public color: string,
+    public lineWidth: number = 1
+  ) {}
+
+  get dx(): number {
+    return this.endX - this.startX;
+  }
+
+  get dy(): number {
+    return this.endY - this.startY;
+  }
+
+  get length(): number {
+    return Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+  }
+
+  draw(ctx: CanvasRenderingContext2D): void {
+    if (!ctx) throw new Error("context is null");
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = this.lineWidth;
+    ctx.beginPath();
+    ctx.moveTo(this.startX, this.startY);
+    ctx.lineTo(this.endX, this.endY);
+    ctx.stroke();
+  }
+
+  move(dx: number, dy: number): void {
+    this.startX += dx;
+    this.startY += dy;
+    this.endX += dx;
+    this.endY += dy;
+  }
+}
+
 //TODO: image, line 추가

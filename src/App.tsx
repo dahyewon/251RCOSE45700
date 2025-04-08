@@ -2,7 +2,7 @@ import React from "react";
 import Canvas from "./view/Canvas";
 import { CanvasViewModel } from "./viewModel/CanvasViewModel";
 import { CanvasModel } from "./model/CanvasModel";
-import ShapeButton from "./view/ShapeButton";
+import Toolbar from "./view/Toolbar";
 
 const App: React.FC = () => {
   const model = new CanvasModel();
@@ -12,7 +12,7 @@ const App: React.FC = () => {
     <div>
       {/* <h1></h1> */}
       <Canvas viewModel={viewModel} />
-      <ShapeButton viewModel={viewModel} />
+      <Toolbar viewModel={viewModel} />
     </div>
   );
 };
