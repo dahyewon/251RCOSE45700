@@ -7,6 +7,7 @@ export interface Shape {
   draw(ctx: CanvasRenderingContext2D | null): void;
   //TODO: move, resize 추가
   move(dx: number, dy: number): void;
+  getResizeHandles(): { x: number; y: number; cursor: string }[];
   //resize(w: number, h:number)
 }
 
@@ -47,6 +48,15 @@ export class Rectangle implements Shape {
     this.startY += dy;
     this.endX += dx;
     this.endY += dy;
+  }
+
+  getResizeHandles(): { x: number; y: number; cursor: string }[] {
+    return [
+      { x: this.startX, y: this.startY, cursor: "nwse-resize" }, // top-left
+      { x: this.endX, y: this.startY, cursor: "nesw-resize" }, // top-right
+      { x: this.endX, y: this.endY, cursor: "nwse-resize" }, // bottom-right
+      { x: this.startX, y: this.endY, cursor: "nesw-resize" }, // bottom-left
+    ];
   }
 }
 
@@ -97,6 +107,14 @@ export class Ellipse implements Shape {
     this.endX += dx;
     this.endY += dy;
   }
+  getResizeHandles(): { x: number; y: number; cursor: string }[] {
+    return [
+      { x: this.startX, y: this.startY, cursor: "nwse-resize" }, // top-left
+      { x: this.endX, y: this.startY, cursor: "nesw-resize" }, // top-right
+      { x: this.endX, y: this.endY, cursor: "nwse-resize" }, // bottom-right
+      { x: this.startX, y: this.endY, cursor: "nesw-resize" }, // bottom-left
+    ];
+  }
 }
 
 export class Line implements Shape {
@@ -138,6 +156,15 @@ export class Line implements Shape {
     this.endX += dx;
     this.endY += dy;
   }
+
+  getResizeHandles(): { x: number; y: number; cursor: string }[] {
+    return [
+      { x: this.startX, y: this.startY, cursor: "nwse-resize" }, // top-left
+      { x: this.endX, y: this.startY, cursor: "nesw-resize" }, // top-right
+      { x: this.endX, y: this.endY, cursor: "nwse-resize" }, // bottom-right
+      { x: this.startX, y: this.endY, cursor: "nesw-resize" }, // bottom-left
+    ];
+  }
 }
 
-//TODO: image, line 추가
+//TODO: image 추가
