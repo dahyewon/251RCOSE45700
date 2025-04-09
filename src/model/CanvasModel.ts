@@ -38,7 +38,13 @@ export class CanvasModel {
     });
   }
 
-  getSelectedShapesHandles(): { x: number; y: number; cursor: string }[][] {
+  getSelectedShapesHandles(): { x: number; y: number; pos: string }[][] {
     return this.selectedShapes.map((shape) => shape.getResizeHandles());
+  }
+
+  resizeSelectedShapes(x: number, y: number, pos: string): void {
+    return this.selectedShapes.forEach((shape) => {
+      shape.resize(x, y, pos);
+    });
   }
 }

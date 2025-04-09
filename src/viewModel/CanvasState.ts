@@ -226,3 +226,30 @@ export class MoveState implements ICanvasState {
     return this.viewModel.getSavedShapes();
   }
 }
+
+export class ResizeState implements ICanvasState {
+  private selectedShapes: Shape[] = [];
+  constructor(
+    private viewModel: CanvasViewModel,
+    private pos: string // "top-left", "top-right", "bottom-right", "bottom-left"
+  ) {
+    this.selectedShapes = this.viewModel.getSelectedShapes();
+  }
+
+  handleMouseDown(event: React.MouseEvent) {
+    return;
+  }
+
+  handleMouseMove(event: React.MouseEvent) {
+    const { offsetX, offsetY } = event.nativeEvent;
+    this.viewModel.resizeSelectedShapes(offsetX, offsetY, this.pos); // resize selected shapes
+  }
+
+  handleMouseUp() {
+    this.viewModel.setState(new SelectState(this.viewModel));
+  }
+
+  getCurrentShapes(): Shape[] {
+    return this.viewModel.getSavedShapes();
+  }
+}
