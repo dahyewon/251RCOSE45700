@@ -7,8 +7,8 @@ export interface Shape {
   draw(ctx: CanvasRenderingContext2D | null): void;
   //TODO: move, resize 추가
   move(dx: number, dy: number): void;
-  getResizeHandles(): { x: number; y: number; cursor: string }[];
-  //resize(w: number, h:number)
+  getResizeHandles(): { x: number; y: number; pos: string }[];
+  resize(x: number, y: number, pos: string): void;
 }
 
 export class Rectangle implements Shape {
@@ -50,13 +50,34 @@ export class Rectangle implements Shape {
     this.endY += dy;
   }
 
-  getResizeHandles(): { x: number; y: number; cursor: string }[] {
+  getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
-      { x: this.startX, y: this.startY, cursor: "nwse-resize" }, // top-left
-      { x: this.endX, y: this.startY, cursor: "nesw-resize" }, // top-right
-      { x: this.endX, y: this.endY, cursor: "nwse-resize" }, // bottom-right
-      { x: this.startX, y: this.endY, cursor: "nesw-resize" }, // bottom-left
+      { x: this.startX, y: this.startY, pos: "top-left" }, // top-left
+      { x: this.endX, y: this.startY, pos: "top-right" }, // top-right
+      { x: this.endX, y: this.endY, pos: "bottom-right" }, // bottom-right
+      { x: this.startX, y: this.endY, pos: "bottom-left" }, // bottom-left
     ];
+  }
+
+  resize(x: number, y: number, pos: string): void {
+    switch (pos) {
+      case "top-left":
+        this.startX = x;
+        this.startY = y;
+        break;
+      case "top-right":
+        this.endX = x;
+        this.startY = y;
+        break;
+      case "bottom-right":
+        this.endX = x;
+        this.endY = y;
+        break;
+      case "bottom-left":
+        this.startX = x;
+        this.endY = y;
+        break;
+    }
   }
 }
 
@@ -107,13 +128,34 @@ export class Ellipse implements Shape {
     this.endX += dx;
     this.endY += dy;
   }
-  getResizeHandles(): { x: number; y: number; cursor: string }[] {
+  getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
-      { x: this.startX, y: this.startY, cursor: "nwse-resize" }, // top-left
-      { x: this.endX, y: this.startY, cursor: "nesw-resize" }, // top-right
-      { x: this.endX, y: this.endY, cursor: "nwse-resize" }, // bottom-right
-      { x: this.startX, y: this.endY, cursor: "nesw-resize" }, // bottom-left
+      { x: this.startX, y: this.startY, pos: "top-left" }, // top-left
+      { x: this.endX, y: this.startY, pos: "top-right" }, // top-right
+      { x: this.endX, y: this.endY, pos: "bottom-right" }, // bottom-right
+      { x: this.startX, y: this.endY, pos: "bottom-left" }, // bottom-left
     ];
+  }
+
+  resize(x: number, y: number, pos: string): void {
+    switch (pos) {
+      case "top-left":
+        this.startX = x;
+        this.startY = y;
+        break;
+      case "top-right":
+        this.endX = x;
+        this.startY = y;
+        break;
+      case "bottom-right":
+        this.endX = x;
+        this.endY = y;
+        break;
+      case "bottom-left":
+        this.startX = x;
+        this.endY = y;
+        break;
+    }
   }
 }
 
@@ -157,13 +199,34 @@ export class Line implements Shape {
     this.endY += dy;
   }
 
-  getResizeHandles(): { x: number; y: number; cursor: string }[] {
+  getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
-      { x: this.startX, y: this.startY, cursor: "nwse-resize" }, // top-left
-      { x: this.endX, y: this.startY, cursor: "nesw-resize" }, // top-right
-      { x: this.endX, y: this.endY, cursor: "nwse-resize" }, // bottom-right
-      { x: this.startX, y: this.endY, cursor: "nesw-resize" }, // bottom-left
+      { x: this.startX, y: this.startY, pos: "top-left" }, // top-left
+      { x: this.endX, y: this.startY, pos: "top-right" }, // top-right
+      { x: this.endX, y: this.endY, pos: "bottom-right" }, // bottom-right
+      { x: this.startX, y: this.endY, pos: "bottom-left" }, // bottom-left
     ];
+  }
+
+  resize(x: number, y: number, pos: string): void {
+    switch (pos) {
+      case "top-left":
+        this.startX = x;
+        this.startY = y;
+        break;
+      case "top-right":
+        this.endX = x;
+        this.startY = y;
+        break;
+      case "bottom-right":
+        this.endX = x;
+        this.endY = y;
+        break;
+      case "bottom-left":
+        this.startX = x;
+        this.endY = y;
+        break;
+    }
   }
 }
 
