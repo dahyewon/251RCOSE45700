@@ -37,4 +37,8 @@ export class CanvasModel {
       shape.move(dx, dy);
     });
   }
+
+  getSelectedShapesHandles(): { x: number; y: number; cursor: string }[][] {
+    return this.selectedShapes.map((shape) => shape.getResizeHandles());
+  }
 }
