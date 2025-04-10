@@ -10,6 +10,7 @@ export interface ICanvasState {
   getCurrentShapes(): Shape[];
 }
 
+// 그리기 모드
 export class DrawingState implements ICanvasState {
   private startX = 0;
   private startY = 0;
@@ -70,6 +71,7 @@ export class DrawingState implements ICanvasState {
   }
 }
 
+// 선택 모드
 export class SelectState implements ICanvasState {
   private startX = 0;
   private startY = 0;
@@ -173,6 +175,7 @@ export class SelectState implements ICanvasState {
   }
 }
 
+// 이동 모드
 export class MoveState implements ICanvasState {
   private startX: number = 0;
   private startY: number = 0;
@@ -227,25 +230,33 @@ export class MoveState implements ICanvasState {
   }
 }
 
+// 리사이즈 모드
 export class ResizeState implements ICanvasState {
   private selectedShapes: Shape[] = [];
+  private resizing: boolean = false;
   constructor(
     private viewModel: CanvasViewModel,
     private pos: string // "top-left", "top-right", "bottom-right", "bottom-left"
   ) {
     this.selectedShapes = this.viewModel.getSelectedShapes();
+    this.resizing = true;
+
+    document.addEventListener("mouseup", this.handleMouseUpBound);
+  }
+  private handleMouseUpBound = this.handleMouseUp.bind(this);
+  handleMouseDown(event: React.MouseEvent): void {
+    this.resizing = false;
   }
 
-  handleMouseDown(event: React.MouseEvent) {
-    return;
-  }
-
-  handleMouseMove(event: React.MouseEvent) {
+  handleMouseMove(event: React.MouseEvent): void {
+    if (!this.resizing) return;
     const { offsetX, offsetY } = event.nativeEvent;
     this.viewModel.resizeSelectedShapes(offsetX, offsetY, this.pos); // resize selected shapes
   }
 
-  handleMouseUp() {
+  handleMouseUp(): void {
+    this.resizing = false;
+    document.removeEventListener("mouseup", this.handleMouseUpBound);
     this.viewModel.setState(new SelectState(this.viewModel));
   }
 
