@@ -41,10 +41,9 @@ export class CanvasViewModel extends Observable {
   startResizing(
     handle: { x: number; y: number; pos: string },
     event: React.MouseEvent
-  ) {
+  ): void {
     event.stopPropagation(); // 부모 요소의 이벤트가 발생하지 않도록 함
-    this.setState(new ResizeState(this, handle.pos));
-    this.state.handleMouseDown(event);
+    return this.setState(new ResizeState(this, handle.pos));
   }
 
   getShapes() {

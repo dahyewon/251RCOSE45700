@@ -52,10 +52,10 @@ export class Rectangle implements Shape {
 
   getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
-      { x: this.startX, y: this.startY, pos: "top-left" }, // top-left
-      { x: this.endX, y: this.startY, pos: "top-right" }, // top-right
-      { x: this.endX, y: this.endY, pos: "bottom-right" }, // bottom-right
-      { x: this.startX, y: this.endY, pos: "bottom-left" }, // bottom-left
+      { x: this.startX - 5, y: this.startY - 5, pos: "top-left" }, // top-left
+      { x: this.endX - 5, y: this.startY - 5, pos: "top-right" }, // top-right
+      { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" }, // bottom-right
+      { x: this.startX - 5, y: this.endY - 5, pos: "bottom-left" }, // bottom-left
     ];
   }
 
@@ -130,10 +130,10 @@ export class Ellipse implements Shape {
   }
   getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
-      { x: this.startX, y: this.startY, pos: "top-left" }, // top-left
-      { x: this.endX, y: this.startY, pos: "top-right" }, // top-right
-      { x: this.endX, y: this.endY, pos: "bottom-right" }, // bottom-right
-      { x: this.startX, y: this.endY, pos: "bottom-left" }, // bottom-left
+      { x: this.startX - 5, y: this.startY - 5, pos: "top-left" }, // top-left
+      { x: this.endX - 5, y: this.startY - 5, pos: "top-right" }, // top-right
+      { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" }, // bottom-right
+      { x: this.startX - 5, y: this.endY - 5, pos: "bottom-left" }, // bottom-left
     ];
   }
 
@@ -201,10 +201,10 @@ export class Line implements Shape {
 
   getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
-      { x: this.startX, y: this.startY, pos: "top-left" }, // top-left
-      { x: this.endX, y: this.startY, pos: "top-right" }, // top-right
-      { x: this.endX, y: this.endY, pos: "bottom-right" }, // bottom-right
-      { x: this.startX, y: this.endY, pos: "bottom-left" }, // bottom-left
+      { x: this.startX - 5, y: this.startY - 5, pos: "top-left" }, // top-left
+      { x: this.endX - 5, y: this.startY - 5, pos: "top-right" }, // top-right
+      { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" }, // bottom-right
+      { x: this.startX - 5, y: this.endY - 5, pos: "bottom-left" }, // bottom-left
     ];
   }
 
