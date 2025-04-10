@@ -43,7 +43,18 @@ export class CanvasViewModel extends Observable {
     event: React.MouseEvent
   ): void {
     event.stopPropagation(); // 부모 요소의 이벤트가 발생하지 않도록 함
-    return this.setState(new ResizeState(this, handle.pos));
+    const canvas = (
+      event.currentTarget as HTMLCanvasElement
+    ).getBoundingClientRect();
+    if (!canvas) return;
+    return this.setState(
+      new ResizeState(
+        this,
+        handle.pos,
+        canvas.left - event.nativeEvent.offsetX,
+        canvas.top - event.nativeEvent.offsetY
+      )
+    );
   }
 
   getShapes() {

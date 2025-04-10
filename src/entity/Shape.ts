@@ -8,7 +8,7 @@ export interface Shape {
   //TODO: move, resize 추가
   move(dx: number, dy: number): void;
   getResizeHandles(): { x: number; y: number; pos: string }[];
-  resize(x: number, y: number, pos: string): void;
+  resize(dx: number, dy: number, pos: string): void;
 }
 
 export class Rectangle implements Shape {
@@ -59,23 +59,23 @@ export class Rectangle implements Shape {
     ];
   }
 
-  resize(x: number, y: number, pos: string): void {
+  resize(dx: number, dy: number, pos: string): void {
     switch (pos) {
       case "top-left":
-        this.startX = x;
-        this.startY = y;
+        this.startX += dx;
+        this.startY += dy;
         break;
       case "top-right":
-        this.endX = x;
-        this.startY = y;
+        this.endX += dx;
+        this.startY += dy;
         break;
       case "bottom-right":
-        this.endX = x;
-        this.endY = y;
+        this.endX += dx;
+        this.endY += dy;
         break;
       case "bottom-left":
-        this.startX = x;
-        this.endY = y;
+        this.startX += dx;
+        this.endY += dy;
         break;
     }
   }
@@ -137,23 +137,23 @@ export class Ellipse implements Shape {
     ];
   }
 
-  resize(x: number, y: number, pos: string): void {
+  resize(dx: number, dy: number, pos: string): void {
     switch (pos) {
       case "top-left":
-        this.startX = x;
-        this.startY = y;
+        this.startX += dx;
+        this.startY += dy;
         break;
       case "top-right":
-        this.endX = x;
-        this.startY = y;
+        this.endX += dx;
+        this.startY += dy;
         break;
       case "bottom-right":
-        this.endX = x;
-        this.endY = y;
+        this.endX += dx;
+        this.endY += dy;
         break;
       case "bottom-left":
-        this.startX = x;
-        this.endY = y;
+        this.startX += dx;
+        this.endY += dy;
         break;
     }
   }
@@ -208,23 +208,23 @@ export class Line implements Shape {
     ];
   }
 
-  resize(x: number, y: number, pos: string): void {
+  resize(dx: number, dy: number, pos: string): void {
     switch (pos) {
       case "top-left":
-        this.startX = x;
-        this.startY = y;
+        this.startX += dx;
+        this.startY += dy;
         break;
       case "top-right":
-        this.endX = x;
-        this.startY = y;
+        this.endX += dx;
+        this.startY += dy;
         break;
       case "bottom-right":
-        this.endX = x;
-        this.endY = y;
+        this.endX += dx;
+        this.endY += dy;
         break;
       case "bottom-left":
-        this.startX = x;
-        this.endY = y;
+        this.startX += dx;
+        this.endY += dy;
         break;
     }
   }
