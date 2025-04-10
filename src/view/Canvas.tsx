@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/Shape";
+import ResizeHandle from "./ResizeHandle";
 
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,6 +27,7 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     };
   }, []);
 
+  //캔버스 렌더링
   const redrawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;

@@ -2,7 +2,7 @@ import { CanvasModel } from "../model/CanvasModel";
 import React from "react";
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
-import { DrawingState, ICanvasState } from "./CanvasState";
+import { DrawingState, ICanvasState, ResizeState } from "./CanvasState";
 
 export class CanvasViewModel extends Observable {
   private model: CanvasModel;
@@ -37,6 +37,25 @@ export class CanvasViewModel extends Observable {
     this.state.handleMouseUp();
     this.notifyCanvas();
   };
+
+  startResizing(
+    handle: { x: number; y: number; pos: string },
+    event: React.MouseEvent
+  ): void {
+    event.stopPropagation(); // 부모 요소의 이벤트가 발생하지 않도록 함
+    const canvas = (
+      event.currentTarget as HTMLCanvasElement
+    ).getBoundingClientRect();
+    if (!canvas) return;
+    return this.setState(
+      new ResizeState(
+        this,
+        handle.pos,
+        canvas.left - event.nativeEvent.offsetX,
+        canvas.top - event.nativeEvent.offsetY
+      )
+    );
+  }
 
   getShapes() {
     return this.state.getCurrentShapes();
@@ -73,6 +92,10 @@ export class CanvasViewModel extends Observable {
 
   moveSelectedShapes(dx: number, dy: number) {
     return this.model.moveSelectedShapes(dx, dy);
+  }
+
+  resizeSelectedShapes(x: number, y: number, pos: string) {
+    return this.model.resizeSelectedShapes(x, y, pos);
   }
 
   notifyCanvas() {
