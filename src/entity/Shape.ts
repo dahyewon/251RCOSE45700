@@ -81,7 +81,6 @@ export class Rectangle implements Shape {
   }
 
   isPointInside(x: number, y: number): boolean {
-    console.log("hello?")
     return (
       x >= Math.min(this.startX, this.endX) &&
       x <= Math.max(this.startX, this.endX) &&
