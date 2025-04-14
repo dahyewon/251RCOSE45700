@@ -40,6 +40,14 @@ export class CanvasViewModel extends Observable<any> {
     this.notifyShapesUpdated();
   };
 
+  resetCanvas() {
+    this.clearShapes();
+    this.clearSelectedShapes();
+    this.setShapeType("rectangle"); // default 값으로
+    this.setState(new DrawingState(this));
+    this.notifyShapesUpdated();
+  }
+
   startResizing(
     handle: { x: number; y: number; pos: string },
     event: React.MouseEvent
@@ -82,6 +90,10 @@ export class CanvasViewModel extends Observable<any> {
 
   addShape(shape: Shape) {
     return this.model.addShape(shape);
+  }
+
+  clearShapes() {
+    return this.model.clearShapes();
   }
 
   clearSelectedShapes() {

@@ -67,6 +67,15 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       >
         선택
       </button>
+      
+      <button
+        className={`tool-button`}
+        onClick={() => {
+          viewModel.resetCanvas();
+        }}
+      >
+        리셋
+      </button>
     </div>
   );
 };
