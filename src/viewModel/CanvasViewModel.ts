@@ -19,6 +19,7 @@ export class CanvasViewModel extends Observable<any> {
 
   setState(state: ICanvasState) {
     this.state = state;
+    this.notifyStateChanged();
   }
 
   setShapeType(type: string) {
@@ -111,10 +112,11 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   notifyStateChanged() {
-    const event: CanvasEvent<{ currentState: string }> = {
+    const event: CanvasEvent<{ currentState: string, drawingShape?: string }> = {
       type: "STATE_CHANGED",
       data: {
         currentState: this.state.constructor.name,
+        drawingShape: this.state instanceof DrawingState ? this.shapeType : undefined,
       },
     };
     this.notify(event);
