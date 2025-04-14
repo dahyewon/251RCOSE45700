@@ -3,8 +3,9 @@ import React from "react";
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
 import { DrawingState, ICanvasState, ResizeState } from "./CanvasState";
+import { CanvasEvent } from "./CanvasEvents";
 
-export class CanvasViewModel extends Observable {
+export class CanvasViewModel extends Observable<any> {
   private model: CanvasModel;
   private state: ICanvasState;
 
@@ -30,12 +31,12 @@ export class CanvasViewModel extends Observable {
 
   handleMouseMove = (event: React.MouseEvent) => {
     this.state.handleMouseMove(event);
-    this.notifyCanvas();
+    this.notifyShapesUpdated();
   };
 
   handleMouseUp = () => {
     this.state.handleMouseUp();
-    this.notifyCanvas();
+    this.notifyShapesUpdated();
   };
 
   startResizing(
@@ -98,7 +99,24 @@ export class CanvasViewModel extends Observable {
     return this.model.resizeSelectedShapes(x, y, pos);
   }
 
-  notifyCanvas() {
-    this.notify([this.getShapes(), this.model.getSelectedShapes()]);
+  notifyShapesUpdated() {
+    const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
+      type: "SHAPES_UPDATED",
+      data: {
+        shapes: this.getShapes(),
+        selectedShapes: this.model.getSelectedShapes(),
+      },
+    };
+    this.notify(event);
+  }
+
+  notifyStateChanged() {
+    const event: CanvasEvent<{ currentState: string }> = {
+      type: "STATE_CHANGED",
+      data: {
+        currentState: this.state.constructor.name,
+      },
+    };
+    this.notify(event);
   }
 }

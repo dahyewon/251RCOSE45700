@@ -1,5 +1,5 @@
-interface Observer {
-  update: (data: any) => void;
+interface Observer<T> {
+  update: (data: T) => void;
 }
 
 export { Observer };
