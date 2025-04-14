@@ -24,7 +24,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const isActive = (shapeType: string) =>
     currentState === "DrawingState" && drawingShape === shapeType;
 
-  const isSelectActive = () => currentState === "SelectState";
+  const isSelectActive = () => currentState === "SelectState" || currentState === "MoveState";
 
   return (
     <div className="toolbar">
