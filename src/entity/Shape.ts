@@ -18,7 +18,8 @@ export class Rectangle implements Shape {
     public startY: number,
     public endX: number,
     public endY: number,
-    public color: string
+    public color: string,
+    public zorder: number
   ) {}
 
   get width(): number {
@@ -97,7 +98,8 @@ export class Ellipse implements Shape {
     public startY: number,
     public endX: number,
     public endY: number,
-    public color: string
+    public color: string,
+    public zorder: number
   ) {}
 
   get centerX(): number {
@@ -190,7 +192,8 @@ export class Line implements Shape {
     public endX: number,
     public endY: number,
     public color: string,
-    public lineWidth: number = 1
+    public lineWidth: number = 1,
+    public zorder: number
   ) {}
 
   get dx(): number {
@@ -224,10 +227,8 @@ export class Line implements Shape {
 
   getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
-      { x: this.startX - 5, y: this.startY - 5, pos: "top-left" }, // top-left
-      { x: this.endX - 5, y: this.startY - 5, pos: "top-right" }, // top-right
-      { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" }, // bottom-right
-      { x: this.startX - 5, y: this.endY - 5, pos: "bottom-left" }, // bottom-left
+      { x: this.startX - 5, y: this.startY - 5, pos: "top-left" }, // starting point
+      { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" }, // ending point
     ];
   }
 
