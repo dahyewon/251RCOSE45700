@@ -5,26 +5,28 @@ import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./Toolbar.css";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
-  const initialState = { currentState: "DrawingState", drawingShape: "rectangle" } // 초기 상태 설정
+  const initialState = {
+    currentState: "DrawingState",
+    drawingShape: "rectangle",
+  }; // 초기 상태 설정
 
-  const currentState = useCanvasEvent<{ currentState: string; drawingShape?: string }>(
-    viewModel,
-    "STATE_CHANGED",
-    initialState,
-    "currentState"
-  );
+  const currentState = useCanvasEvent<{
+    currentState: string;
+    drawingShape?: string;
+  }>(viewModel, "STATE_CHANGED", initialState, "currentState");
 
-  const drawingShape = useCanvasEvent<{ currentState: string; drawingShape?: string }>(
-    viewModel,
-    "STATE_CHANGED",
-    initialState,
-    "drawingShape"
-  );
+  const drawingShape = useCanvasEvent<{
+    currentState: string;
+    drawingShape?: string;
+  }>(viewModel, "STATE_CHANGED", initialState, "drawingShape");
 
   const isActive = (shapeType: string) =>
     currentState === "DrawingState" && drawingShape === shapeType;
 
-  const isSelectActive = () => currentState === "SelectState" || currentState === "MoveState";
+  const isSelectActive = () =>
+    currentState === "SelectState" ||
+    currentState === "MoveState" ||
+    currentState === "ResizeState";
 
   return (
     <div className="toolbar">
@@ -67,7 +69,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       >
         선택
       </button>
-      
+
       <button
         className={`tool-button`}
         onClick={() => {
