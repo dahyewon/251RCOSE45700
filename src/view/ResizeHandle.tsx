@@ -1,26 +1,17 @@
 import React, { useEffect } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/Shape";
+import useCanvasEvent from "../hooks/useCanvasEvent";
 
 const ResizeHandle: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
 }) => {
-  const [selectedShapes, setSelectedShapes] = React.useState(
-    viewModel.getSelectedShapes()
+  const selectedShapes = useCanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }>(
+    viewModel,
+    "SHAPES_UPDATED",
+    { shapes: [], selectedShapes: [] },
+    "selectedShapes"
   );
-
-  useEffect(() => {
-    const observer = {
-      update: (updatedShapes: Shape[][]) => {
-        const selectedShape = updatedShapes[1];
-        setSelectedShapes([...selectedShape]);
-      },
-    };
-    viewModel.subscribe(observer);
-    return () => {
-      viewModel.unsubscribe(observer);
-    };
-  }, []);
 
   return selectedShapes.map((shape) => (
     <React.Fragment key={shape.id}>

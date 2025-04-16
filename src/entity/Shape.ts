@@ -5,10 +5,10 @@ export interface Shape {
   endX: number;
   endY: number;
   draw(ctx: CanvasRenderingContext2D | null): void;
-  //TODO: move, resize 추가
   move(dx: number, dy: number): void;
   getResizeHandles(): { x: number; y: number; pos: string }[];
   resize(dx: number, dy: number, pos: string): void;
+  isPointInside(x: number, y: number): boolean;
 }
 
 export class Rectangle implements Shape {
@@ -78,6 +78,15 @@ export class Rectangle implements Shape {
         this.endY += dy;
         break;
     }
+  }
+
+  isPointInside(x: number, y: number): boolean {
+    return (
+      x >= Math.min(this.startX, this.endX) &&
+      x <= Math.max(this.startX, this.endX) &&
+      y >= Math.min(this.startY, this.endY) &&
+      y <= Math.max(this.startY, this.endY)
+    );
   }
 }
 
@@ -157,6 +166,20 @@ export class Ellipse implements Shape {
         break;
     }
   }
+
+  isPointInside(x: number, y: number): boolean {
+    const centerX = this.centerX;
+    const centerY = this.centerY;
+    const radiusX = this.radiusX;
+    const radiusY = this.radiusY;
+
+    // 타원의 방정식
+    return (
+      Math.pow(x - centerX, 2) / Math.pow(radiusX, 2) +
+        Math.pow(y - centerY, 2) / Math.pow(radiusY, 2) <=
+      1
+    );
+  }
 }
 
 export class Line implements Shape {
@@ -227,6 +250,27 @@ export class Line implements Shape {
         this.endY += dy;
         break;
     }
+  }
+
+  isPointInside(x: number, y: number, tolerance: number = 5): boolean {
+    // 직선의 방정식 ax + by + c = 0
+    const a = this.endY - this.startY; // dy
+    const b = this.startX - this.endX; // -dx
+    const c = this.endX * this.startY - this.startX * this.endY; // 상수항
+
+    // 점과 직선 사이의 거리 공식
+    const distance = Math.abs(a * x + b * y + c) / Math.sqrt(a * a + b * b);
+
+    // 점이 선의 범위 있는지 확인
+    const withinBounds =
+      x >= Math.min(this.startX, this.endX) - tolerance &&
+      x <= Math.max(this.startX, this.endX) + tolerance &&
+      y >= Math.min(this.startY, this.endY) - tolerance &&
+      y <= Math.max(this.startY, this.endY) + tolerance;
+
+    // 점이 "직선"과 가까운지
+    // 선 박스 내에 있는지
+    return distance <= tolerance && withinBounds;
   }
 }
 

@@ -1,31 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/Shape";
-import ResizeHandle from "./ResizeHandle";
+import useCanvasEvent from "../hooks/useCanvasEvent";
 
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [shapes, setShapes] = useState<Shape[]>(viewModel.getShapes());
-  const [selectedShapes, setSelectedShapes] = useState<Shape[]>(
-    viewModel.getSelectedShapes()
+  
+  const shapes = useCanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }>(
+    viewModel,
+    "SHAPES_UPDATED",
+    { shapes: [], selectedShapes: [] },
+    "shapes"
   );
-
-  //set observer
-  useEffect(() => {
-    const observer = {
-      update: (updatedShapes: Shape[][]) => {
-        const drawShapes = updatedShapes[0];
-        const selectedShape = updatedShapes[1];
-        setShapes([...drawShapes]);
-        setSelectedShapes([...selectedShape]);
-      },
-    };
-    viewModel.subscribe(observer);
-
-    return () => {
-      viewModel.unsubscribe(observer);
-    };
-  }, []);
 
   //캔버스 렌더링
   const redrawCanvas = useCallback(() => {
@@ -46,7 +32,7 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     if (canvasRef.current) {
       redrawCanvas();
     }
-  }, [canvasRef, redrawCanvas]);
+  }, [shapes, canvasRef, redrawCanvas]);
 
   return (
     <canvas

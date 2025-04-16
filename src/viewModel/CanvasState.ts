@@ -140,12 +140,7 @@ export class SelectState implements ICanvasState {
     const selectedShapes = this.viewModel.getSelectedShapes();
     for (let i = 0; i < selectedShapes.length; i++) {
       const shape = selectedShapes[i];
-      if (
-        offsetX >= Math.min(shape.startX, shape.endX) &&
-        offsetX <= Math.max(shape.startX, shape.endX) &&
-        offsetY >= Math.min(shape.startY, shape.endY) &&
-        offsetY <= Math.max(shape.startY, shape.endY)
-      ) {
+      if (shape.isPointInside(offsetX, offsetY)) {
         this.viewModel.setState(
           new MoveState(this.viewModel, offsetX, offsetY)
         );
@@ -157,12 +152,7 @@ export class SelectState implements ICanvasState {
     const shapes = this.viewModel.getSavedShapes();
     for (let i = 0; i < shapes.length; i++) {
       const shape = shapes[i];
-      if (
-        offsetX >= Math.min(shape.startX, shape.endX) &&
-        offsetX <= Math.max(shape.startX, shape.endX) &&
-        offsetY >= Math.min(shape.startY, shape.endY) &&
-        offsetY <= Math.max(shape.startY, shape.endY)
-      ) {
+      if (shape.isPointInside(offsetX, offsetY)) {
         this.viewModel.addSelectedShapes(shape); // 클릭한 도형을 선택
         this.viewModel.setState(
           new MoveState(this.viewModel, offsetX, offsetY)

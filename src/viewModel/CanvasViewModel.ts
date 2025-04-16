@@ -3,8 +3,9 @@ import React from "react";
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
 import { DrawingState, ICanvasState, ResizeState } from "./CanvasState";
+import { CanvasEvent } from "./CanvasEvents";
 
-export class CanvasViewModel extends Observable {
+export class CanvasViewModel extends Observable<any> {
   private model: CanvasModel;
   private state: ICanvasState;
 
@@ -18,6 +19,7 @@ export class CanvasViewModel extends Observable {
 
   setState(state: ICanvasState) {
     this.state = state;
+    this.notifyStateChanged();
   }
 
   setShapeType(type: string) {
@@ -30,13 +32,21 @@ export class CanvasViewModel extends Observable {
 
   handleMouseMove = (event: React.MouseEvent) => {
     this.state.handleMouseMove(event);
-    this.notifyCanvas();
+    this.notifyShapesUpdated();
   };
 
   handleMouseUp = () => {
     this.state.handleMouseUp();
-    this.notifyCanvas();
+    this.notifyShapesUpdated();
   };
+
+  resetCanvas() {
+    this.clearShapes();
+    this.clearSelectedShapes();
+    this.setShapeType("rectangle"); // default 값으로
+    this.setState(new DrawingState(this));
+    this.notifyShapesUpdated();
+  }
 
   startResizing(
     handle: { x: number; y: number; pos: string },
@@ -82,6 +92,10 @@ export class CanvasViewModel extends Observable {
     return this.model.addShape(shape);
   }
 
+  clearShapes() {
+    return this.model.clearShapes();
+  }
+
   clearSelectedShapes() {
     return this.model.clearSelectedShapes();
   }
@@ -98,7 +112,25 @@ export class CanvasViewModel extends Observable {
     return this.model.resizeSelectedShapes(x, y, pos);
   }
 
-  notifyCanvas() {
-    this.notify([this.getShapes(), this.model.getSelectedShapes()]);
+  notifyShapesUpdated() {
+    const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
+      type: "SHAPES_UPDATED",
+      data: {
+        shapes: this.getShapes(),
+        selectedShapes: this.model.getSelectedShapes(),
+      },
+    };
+    this.notify(event);
+  }
+
+  notifyStateChanged() {
+    const event: CanvasEvent<{ currentState: string, drawingShape?: string }> = {
+      type: "STATE_CHANGED",
+      data: {
+        currentState: this.state.constructor.name,
+        drawingShape: this.state instanceof DrawingState ? this.shapeType : undefined,
+      },
+    };
+    this.notify(event);
   }
 }
