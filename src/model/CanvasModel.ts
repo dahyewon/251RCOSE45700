@@ -3,17 +3,17 @@ import { Shape } from "../entity/Shape";
 export class CanvasModel {
   private shapes: Shape[] = [];
   private selectedShapes: Shape[] = [];
-  private zOrder: Map<number, number> = new Map(); // z-order - shapeId map
+  private zOrder: number[] = []; // z-order - shapeId map
 
   addShape(shape: Shape) {
     this.shapes.push(shape);
-    this.zOrder.set(shape.id, shape.id); // z-order는 도형 추가 시 자동으로 설정
+    this.zOrder.push(shape.id); // z-order는 도형 추가 시 자동으로 설정
   }
 
   clearShapes() {
     this.shapes = [];
     this.selectedShapes = [];
-    this.zOrder.clear();
+    this.zOrder = [];
   }
 
   getShapes(): Shape[] {
@@ -50,5 +50,27 @@ export class CanvasModel {
     return this.selectedShapes.forEach((shape) => {
       shape.resize(x, y, pos);
     });
+  }
+
+  //z-order 관련
+  moveZOrder(shapeId: number, moveBy: number): void {
+    // -1: 뒤로, 1: 앞으로
+    for (let i = 0; i < this.shapes.length; i++) {
+      if (this.zOrder[i] === shapeId) {
+        if (i - moveBy < 0 || i - moveBy >= this.shapes.length) return;
+        this.zOrder[i] = this.zOrder[i - moveBy];
+        this.zOrder[i - moveBy] = shapeId;
+        break;
+      }
+    }
+  }
+
+  getShapesByZOrder(): Shape[] {
+    const sortedShapes = this.zOrder.map((id) => {
+      return this.shapes.find((shape) => shape.id === id);
+    });
+    if (sortedShapes.includes(undefined)) {
+      throw new Error("Shape not found in z-order mapping.");
+    } else return sortedShapes as Shape[];
   }
 }
