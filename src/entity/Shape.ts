@@ -12,7 +12,6 @@ export interface Shape {
 }
 
 export class Rectangle implements Shape {
-  private order: number;
   constructor(
     public id: number,
     public startX: number,
@@ -20,9 +19,7 @@ export class Rectangle implements Shape {
     public endX: number,
     public endY: number,
     public color: string
-  ) {
-    this.order = id;
-  }
+  ) {}
 
   get width(): number {
     return this.endX - this.startX;
@@ -94,7 +91,6 @@ export class Rectangle implements Shape {
 }
 
 export class Ellipse implements Shape {
-  private order: number;
   constructor(
     public id: number,
     public startX: number,
@@ -102,9 +98,7 @@ export class Ellipse implements Shape {
     public endX: number,
     public endY: number,
     public color: string
-  ) {
-    this.order = id;
-  }
+  ) {}
 
   get centerX(): number {
     return (this.endX + this.startX) / 2;
@@ -189,7 +183,6 @@ export class Ellipse implements Shape {
 }
 
 export class Line implements Shape {
-  private order: number;
   constructor(
     public id: number,
     public startX: number,
@@ -198,9 +191,7 @@ export class Line implements Shape {
     public endY: number,
     public color: string,
     public lineWidth: number = 1
-  ) {
-    this.order = id;
-  }
+  ) {}
 
   get dx(): number {
     return this.endX - this.startX;

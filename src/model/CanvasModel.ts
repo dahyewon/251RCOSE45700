@@ -7,7 +7,7 @@ export class CanvasModel {
 
   addShape(shape: Shape) {
     this.shapes.push(shape);
-    this.zOrder.set(this.shapes.length, shape.id); // z-order는 도형 추가 시 자동으로 설정
+    this.zOrder.set(shape.id, shape.id); // z-order는 도형 추가 시 자동으로 설정
   }
 
   clearShapes() {
