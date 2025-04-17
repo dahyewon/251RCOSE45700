@@ -14,7 +14,7 @@ export class CanvasModel {
 
   addShape(shape: Shape) {
     this.shapes.push(shape);
-    this.zOrder.push(shape.id); // z-order는 도형 추가 시 자동으로 설정
+    this.zOrder.unshift(shape.id); // z-order는 도형 추가 시 자동으로 설정
   }
 
   clearShapes() {
@@ -24,7 +24,7 @@ export class CanvasModel {
   }
 
   getShapes(): Shape[] {
-    return [...this.shapes]; // 원본 배열이 수정되지 않도록 복사본 반환
+    return [...this.getShapesByZOrder()]; // 원본 배열이 수정되지 않도록 복사본 반환
   }
 
   countShapes(): number {
@@ -96,7 +96,7 @@ export class CanvasModel {
         throw new Error("Invalid z-order action.");
     }
 
-    this.getShapesByZOrder();
+    console.log(this.getShapesByZOrder());
   }
 
   getShapesByZOrder(): Shape[] {
@@ -104,7 +104,6 @@ export class CanvasModel {
       return this.shapes.find((shape) => shape.id === id);
     });
 
-    console.log(sortedShapes);
     if (sortedShapes.includes(undefined)) {
       throw new Error("Shape not found in z-order mapping.");
     } else return sortedShapes as Shape[];
