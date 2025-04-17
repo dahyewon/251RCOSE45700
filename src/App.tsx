@@ -13,11 +13,12 @@ const App: React.FC = () => {
   return (
     <div>
       {/* <h1></h1> */}
-      <Canvas viewModel={viewModel} />
+      <div style={{ display: "flex", flex: 1 }}>
+        <Canvas viewModel={viewModel} />
+        <PropertyWindow viewModel={viewModel} />
+      </div>
       <Toolbar viewModel={viewModel} />
       <ResizeHandle viewModel={viewModel} />
-      <PropertyWindow viewModel={viewModel} />
-      <div style={{ display: "flex", justifyContent: "space-between" }} />
     </div>
   );
 };
