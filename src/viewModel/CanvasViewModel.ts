@@ -4,6 +4,7 @@ import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
 import { DrawingState, ICanvasState, ResizeState } from "./CanvasState";
 import { CanvasEvent } from "./CanvasEvents";
+import { ZOrderAction } from "../model/CanvasModel";
 
 export class CanvasViewModel extends Observable<any> {
   private model: CanvasModel;
@@ -112,6 +113,22 @@ export class CanvasViewModel extends Observable<any> {
     return this.model.resizeSelectedShapes(x, y, pos);
   }
 
+  moveForward(shapeId: number) {
+    console.log("forward");
+    return this.model.moveZOrder(shapeId, ZOrderAction.forward); // 앞으로 이동
+  }
+
+  moveBackward(shapeId: number) {
+    return this.model.moveZOrder(shapeId, ZOrderAction.backward); // 뒤로 이동
+  }
+
+  moveToFront(shapeId: number) {
+    return this.model.moveZOrder(shapeId, ZOrderAction.toFront); // 맨 앞으로 이동
+  }
+
+  moveToBack(shapeId: number) {
+    return this.model.moveZOrder(shapeId, ZOrderAction.toBack); // 맨 뒤로 이동
+  }
   notifyShapesUpdated() {
     const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
       type: "SHAPES_UPDATED",
@@ -124,13 +141,15 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   notifyStateChanged() {
-    const event: CanvasEvent<{ currentState: string, drawingShape?: string }> = {
-      type: "STATE_CHANGED",
-      data: {
-        currentState: this.state.constructor.name,
-        drawingShape: this.state instanceof DrawingState ? this.shapeType : undefined,
-      },
-    };
+    const event: CanvasEvent<{ currentState: string; drawingShape?: string }> =
+      {
+        type: "STATE_CHANGED",
+        data: {
+          currentState: this.state.constructor.name,
+          drawingShape:
+            this.state instanceof DrawingState ? this.shapeType : undefined,
+        },
+      };
     this.notify(event);
   }
 }

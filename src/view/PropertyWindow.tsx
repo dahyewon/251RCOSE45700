@@ -33,6 +33,34 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
           <span>타입:</span>{" "}
           <strong>{selectedShapes[0].constructor.name}</strong>
         </div>
+        <button
+          onClick={() => {
+            viewModel.moveForward(selectedShapes[0].id);
+          }}
+        >
+          앞으로
+        </button>
+        <button
+          onClick={() => {
+            viewModel.moveBackward(selectedShapes[0].id);
+          }}
+        >
+          뒤로
+        </button>
+        <button
+          onClick={() => {
+            viewModel.moveToFront(selectedShapes[0].id);
+          }}
+        >
+          맨 앞으로
+        </button>
+        <button
+          onClick={() => {
+            viewModel.moveToBack(selectedShapes[0].id);
+          }}
+        >
+          맨 뒤로
+        </button>
         {/* <div className="item">
             <span>색상:</span> <strong>{selectedShapes[0].color}</strong>
           </div>

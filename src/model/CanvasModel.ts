@@ -1,5 +1,12 @@
 import { Shape } from "../entity/Shape";
 
+export enum ZOrderAction {
+  forward = "forward",
+  backward = "backward",
+  toFront = "toFront",
+  toBack = "toBack",
+}
+
 export class CanvasModel {
   private shapes: Shape[] = [];
   private selectedShapes: Shape[] = [];
@@ -53,22 +60,51 @@ export class CanvasModel {
   }
 
   //z-order 관련
-  moveZOrder(shapeId: number, moveBy: number): void {
-    // -1: 뒤로, 1: 앞으로
-    for (let i = 0; i < this.shapes.length; i++) {
-      if (this.zOrder[i] === shapeId) {
-        if (i - moveBy < 0 || i - moveBy >= this.shapes.length) return;
-        this.zOrder[i] = this.zOrder[i - moveBy];
-        this.zOrder[i - moveBy] = shapeId;
-        break;
-      }
+  moveZOrder(shapeId: number, action: ZOrderAction): void {
+    const index = this.zOrder.indexOf(shapeId);
+    if (index === -1) {
+      throw new Error("Shape ID not found in z-order mapping.");
     }
+
+    // z-order 변경 로직
+    switch (action) {
+      case ZOrderAction.forward:
+        if (index > 0) {
+          [this.zOrder[index], this.zOrder[index - 1]] = [
+            this.zOrder[index - 1],
+            this.zOrder[index],
+          ];
+        }
+        break;
+      case ZOrderAction.backward:
+        if (index < this.zOrder.length - 1) {
+          [this.zOrder[index], this.zOrder[index + 1]] = [
+            this.zOrder[index + 1],
+            this.zOrder[index],
+          ];
+        }
+        break;
+      case ZOrderAction.toFront:
+        const shapeIdToFront = this.zOrder.splice(index, 1)[0];
+        this.zOrder.unshift(shapeIdToFront);
+        break;
+      case ZOrderAction.toBack:
+        const shapeIdToBack = this.zOrder.splice(index, 1)[0];
+        this.zOrder.push(shapeIdToBack);
+        break;
+      default:
+        throw new Error("Invalid z-order action.");
+    }
+
+    this.getShapesByZOrder();
   }
 
   getShapesByZOrder(): Shape[] {
     const sortedShapes = this.zOrder.map((id) => {
       return this.shapes.find((shape) => shape.id === id);
     });
+
+    console.log(sortedShapes);
     if (sortedShapes.includes(undefined)) {
       throw new Error("Shape not found in z-order mapping.");
     } else return sortedShapes as Shape[];
