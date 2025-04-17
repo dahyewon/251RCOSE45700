@@ -17,7 +17,7 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
     "selectedShapes"
   );
 
-  if (!selectedShapes) {
+  if (selectedShapes.length === 0) {
     return (
       <div className="container">
         <p className="emptyText">선택된 도형이 없습니다.</p>

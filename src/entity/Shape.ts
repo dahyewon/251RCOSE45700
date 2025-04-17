@@ -9,6 +9,13 @@ export interface Shape {
   getResizeHandles(): { x: number; y: number; pos: string }[];
   resize(dx: number, dy: number, pos: string): void;
   isPointInside(x: number, y: number): boolean;
+  getProperties(): Property[];
+}
+
+export interface Property {
+  name: string;
+  value: string | number;
+  editable: boolean;
 }
 
 export class Rectangle implements Shape {
@@ -87,6 +94,14 @@ export class Rectangle implements Shape {
       y >= Math.min(this.startY, this.endY) &&
       y <= Math.max(this.startY, this.endY)
     );
+  }
+
+  getProperties(): Property[] {
+    return [
+      { name: "Width", value: this.width, editable: true },
+      { name: "Height", value: this.height, editable: true },
+      { name: "Color", value: this.color, editable: true },
+    ];
   }
 }
 
@@ -180,6 +195,14 @@ export class Ellipse implements Shape {
       1
     );
   }
+
+  getProperties(): Property[] {
+    return [
+      { name: "Width", value: this.radiusX * 2, editable: true },
+      { name: "Height", value: this.radiusY * 2, editable: true },
+      { name: "Color", value: this.color, editable: true },
+    ];
+  }
 }
 
 export class Line implements Shape {
@@ -269,6 +292,14 @@ export class Line implements Shape {
     // 점이 "직선"과 가까운지
     // 선 박스 내에 있는지
     return distance <= tolerance && withinBounds;
+  }
+
+  getProperties(): Property[] {
+    return [
+      { name: "Length", value: this.length, editable: true },
+      { name: "Color", value: this.color, editable: true },
+      { name: "Line Width", value: this.lineWidth, editable: true },
+    ];
   }
 }
 

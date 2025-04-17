@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/Shape";
 import useCanvasEvent from "../hooks/useCanvasEvent";
