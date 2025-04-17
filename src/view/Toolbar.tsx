@@ -1,8 +1,9 @@
 import React from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { DrawingState, SelectState } from "../viewModel/CanvasState";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./Toolbar.css";
+import { DrawState } from "../viewModel/canvasState/DrawState";
+import { SelectState } from "../viewModel/canvasState/SelectState";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {
@@ -21,7 +22,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   }>(viewModel, "STATE_CHANGED", initialState, "drawingShape");
 
   const isActive = (shapeType: string) =>
-    currentState === "DrawingState" && drawingShape === shapeType;
+    currentState === "DrawState" && drawingShape === shapeType;
 
   const isSelectActive = () =>
     currentState === "SelectState" ||
@@ -34,7 +35,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("rectangle") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("rectangle");
-          viewModel.setState(new DrawingState(viewModel));
+          viewModel.setState(new DrawState(viewModel));
         }}
       >
         ▭ 사각형
@@ -44,7 +45,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("ellipse") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("ellipse");
-          viewModel.setState(new DrawingState(viewModel));
+          viewModel.setState(new DrawState(viewModel));
         }}
       >
         ◯ 원
@@ -54,7 +55,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("line") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("line");
-          viewModel.setState(new DrawingState(viewModel));
+          viewModel.setState(new DrawState(viewModel));
         }}
       >
         ㅡ 선
