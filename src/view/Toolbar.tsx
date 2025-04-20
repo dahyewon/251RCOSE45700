@@ -4,8 +4,12 @@ import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./Toolbar.css";
 import { DrawState } from "../viewModel/canvasState/DrawState";
 import { SelectState } from "../viewModel/canvasState/SelectState";
+import { CanvasStateCommandFactory } from "../viewModel/canvasState/CanvasStateCommandFactory";
 
-const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
+const Toolbar: React.FC<{
+  viewModel: CanvasViewModel;
+  canvasStateCommandFactory: CanvasStateCommandFactory;
+}> = ({ viewModel, canvasStateCommandFactory }) => {
   const initialState = {
     currentState: "DrawingState",
     drawingShape: "rectangle",
@@ -35,7 +39,9 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("rectangle") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("rectangle");
-          viewModel.setState(new DrawState(viewModel));
+          canvasStateCommandFactory
+            .createDrawStateCommand("rectangle")
+            .execute();
         }}
       >
         ▭ 사각형
@@ -45,7 +51,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("ellipse") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("ellipse");
-          viewModel.setState(new DrawState(viewModel));
+          canvasStateCommandFactory.createDrawStateCommand("ellipse").execute();
         }}
       >
         ◯ 원
@@ -55,7 +61,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("line") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("line");
-          viewModel.setState(new DrawState(viewModel));
+          canvasStateCommandFactory.createDrawStateCommand("line").execute();
         }}
       >
         ㅡ 선
@@ -64,8 +70,8 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isSelectActive() ? "active" : ""}`}
         onClick={() => {
-          viewModel.setShapeType("select");
-          viewModel.setState(new SelectState(viewModel));
+          viewModel.setShapeType("");
+          canvasStateCommandFactory.createSelectStateCommand().execute();
         }}
       >
         선택

@@ -15,7 +15,7 @@ export class SelectedShapeModel {
     return [...this.selectedShapes];
   }
 
-  startSelectShapes(offsetX: number, offsetY: number): void {
+  startSelectShapes(): void {
     this.clearSelectedShapes();
   }
 

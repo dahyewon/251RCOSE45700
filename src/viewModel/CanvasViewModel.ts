@@ -75,6 +75,8 @@ export class CanvasViewModel extends Observable<any> {
     return this.setState(
       new ResizeState(
         this,
+        this.shapeModel,
+        this.selectedShapeModel,
         handle.pos,
         canvas.left - event.nativeEvent.offsetX,
         canvas.top - event.nativeEvent.offsetY
