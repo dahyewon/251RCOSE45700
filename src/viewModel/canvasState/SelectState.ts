@@ -1,4 +1,11 @@
+import { Command } from "../../command/Command";
+import {
+  ContinueSelectShapeCommand,
+  ClearSelectShapeCommand,
+} from "../../command/SelectShapeCommand";
 import { Shape } from "../../entity/Shape";
+import { SelectedShapeModel } from "../../model/SelectedShapeModel";
+import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 import { MoveState } from "./MoveState";
@@ -10,23 +17,27 @@ export class SelectState implements ICanvasState {
   private endX = 0;
   private endY = 0;
   private selecting = false;
-  constructor(private viewModel: CanvasViewModel) {}
+  constructor(
+    private canvasViewModel: CanvasViewModel,
+    private shapeModel: ShapeModel,
+    private selectedShapeModel: SelectedShapeModel
+  ) {}
 
-  handleMouseDown(event: React.MouseEvent): void {
+  handleMouseDown(event: React.MouseEvent): Command | void {
     const { offsetX, offsetY } = event.nativeEvent;
 
     if (this.checkShapeClick(offsetX, offsetY)) return; // 선택한 위치에 도형이 있다면 MoveState로 전환
 
-    this.viewModel.clearSelectedShapes();
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
 
     this.selecting = true;
+    return new ClearSelectShapeCommand(this.selectedShapeModel);
   }
 
-  handleMouseMove(event: React.MouseEvent): void {
+  handleMouseMove(event: React.MouseEvent): Command | void {
     const { offsetX, offsetY } = event.nativeEvent;
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
     if (!this.selecting) return;
@@ -34,60 +45,69 @@ export class SelectState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    this.viewModel.clearSelectedShapes();
-    this.selectShapes(this.startX, this.startY, this.endX, this.endY);
+    const shapes = this.selectShapes(
+      this.startX,
+      this.startY,
+      this.endX,
+      this.endY
+    );
+    return new ContinueSelectShapeCommand(this.selectedShapeModel, shapes);
   }
 
-  handleMouseUp(): void {
+  handleMouseUp(): Command | void {
     this.selecting = false;
-    console.log(this.viewModel.getSelectedShapes());
+    console.log(this.selectedShapeModel.getSelectedShapes());
+    return new ClearSelectShapeCommand(this.selectedShapeModel); // 선택 해제
   }
 
-  selectShapes(startX: number, startY: number, endX: number, endY: number) {
+  selectShapes(
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number
+  ): Shape[] {
     const minX = Math.min(startX, endX);
     const maxX = Math.max(startX, endX);
     const minY = Math.min(startY, endY);
     const maxY = Math.max(startY, endY);
 
-    this.viewModel.getSavedShapes().forEach((shape) => {
+    return this.shapeModel.getShapes().filter((shape) => {
       const shapeMinX = Math.min(shape.startX, shape.endX);
       const shapeMaxX = Math.max(shape.startX, shape.endX);
       const shapeMinY = Math.min(shape.startY, shape.endY);
       const shapeMaxY = Math.max(shape.startY, shape.endY);
 
-      if (
+      return (
         !(shapeMaxX < minX || maxX < shapeMinX) &&
         !(shapeMaxY < minY || maxY < shapeMinY)
-      ) {
-        this.viewModel.addSelectedShapes(shape);
-      }
+      );
     });
   }
 
   getCurrentShapes(): Shape[] {
-    return this.viewModel.getSavedShapes();
+    return this.shapeModel.getShapes();
   }
 
   checkShapeClick(offsetX: number, offsetY: number): boolean {
-    const selectedShapes = this.viewModel.getSelectedShapes();
+    const selectedShapes = this.selectedShapeModel.getSelectedShapes();
     for (let i = 0; i < selectedShapes.length; i++) {
       const shape = selectedShapes[i];
       if (shape.isPointInside(offsetX, offsetY)) {
-        this.viewModel.setState(
-          new MoveState(this.viewModel, offsetX, offsetY)
+        this.canvasViewModel.setState(
+          new MoveState(this.canvasViewModel, offsetX, offsetY)
         );
         return true;
       }
     }
 
-    this.viewModel.clearSelectedShapes();
-    const shapes = this.viewModel.getSavedShapes();
+    this.selectedShapeModel.clearSelectedShapes();
+    const shapes = this.shapeModel.getShapes();
     for (let i = 0; i < shapes.length; i++) {
       const shape = shapes[i];
       if (shape.isPointInside(offsetX, offsetY)) {
-        this.viewModel.addSelectedShapes(shape); // 클릭한 도형을 선택
-        this.viewModel.setState(
-          new MoveState(this.viewModel, offsetX, offsetY)
+        this.selectedShapeModel.addSelectedShapes(shape); // 클릭한 도형을 선택
+        this.canvasViewModel.setState(
+          new MoveState(this.canvasViewModel, offsetX, offsetY)
         );
         return true;
       }

@@ -3,7 +3,7 @@ import {
   ContinueDrawShapeCommand,
   EndDrawShapeCommand,
   StartDrawShapeCommand,
-} from "../../command/ShapeCommand";
+} from "../../command/DrawShapeCommand";
 import { Shape } from "../../entity/Shape";
 import { ShapeModel } from "../../model/ShapeModel";
 import { ICanvasState } from "./CanvasState";

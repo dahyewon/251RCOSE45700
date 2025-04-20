@@ -15,6 +15,15 @@ export class SelectedShapeModel {
     return [...this.selectedShapes];
   }
 
+  startSelectShapes(offsetX: number, offsetY: number): void {
+    this.clearSelectedShapes();
+  }
+
+  continueSelectShapes(shapes: Shape[]): void {
+    this.clearSelectedShapes();
+    this.selectedShapes = shapes;
+  }
+
   moveSelectedShapes(dx: number, dy: number): void {
     return this.selectedShapes.forEach((shape) => {
       shape.move(dx, dy);
