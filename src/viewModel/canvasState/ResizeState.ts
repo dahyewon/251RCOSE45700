@@ -1,4 +1,6 @@
 import { Shape } from "../../entity/Shape";
+import { SelectedShapeModel } from "../../model/SelectedShapeModel";
+import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 import { SelectState } from "./SelectState";
@@ -11,6 +13,8 @@ export class ResizeState implements ICanvasState {
   private startY: number = 0;
   constructor(
     private viewModel: CanvasViewModel,
+    private shapeModel: ShapeModel,
+    private selectedShapeModel: SelectedShapeModel,
     private pos: string, // "top-left", "top-right", "bottom-right", "bottom-left"
     offsetX: number,
     offsetY: number
@@ -44,7 +48,9 @@ export class ResizeState implements ICanvasState {
   handleMouseUp(): void {
     this.resizing = false;
     document.removeEventListener("mouseup", this.handleMouseUpBound);
-    this.viewModel.setState(new SelectState(this.viewModel));
+    this.viewModel.setState(
+      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
+    ); // switch back to select state
   }
 
   getCurrentShapes(): Shape[] {

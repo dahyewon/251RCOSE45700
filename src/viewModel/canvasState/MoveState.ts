@@ -1,4 +1,6 @@
 import { Shape } from "../../entity/Shape";
+import { SelectedShapeModel } from "../../model/SelectedShapeModel";
+import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 import { SelectState } from "./SelectState";
@@ -13,6 +15,8 @@ export class MoveState implements ICanvasState {
 
   constructor(
     private viewModel: CanvasViewModel,
+    private shapeModel: ShapeModel,
+    private selectedShapeModel: SelectedShapeModel,
     offsetX: number,
     offsetY: number
   ) {
@@ -50,7 +54,9 @@ export class MoveState implements ICanvasState {
 
   handleMouseUp(): void {
     this.moving = false;
-    this.viewModel.setState(new SelectState(this.viewModel)); // switch back to select state
+    this.viewModel.setState(
+      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
+    ); // switch back to select state
   }
 
   getCurrentShapes(): Shape[] {

@@ -57,7 +57,6 @@ export class SelectState implements ICanvasState {
   handleMouseUp(): Command | void {
     this.selecting = false;
     console.log(this.selectedShapeModel.getSelectedShapes());
-    return new ClearSelectShapeCommand(this.selectedShapeModel); // 선택 해제
   }
 
   selectShapes(
@@ -94,7 +93,13 @@ export class SelectState implements ICanvasState {
       const shape = selectedShapes[i];
       if (shape.isPointInside(offsetX, offsetY)) {
         this.canvasViewModel.setState(
-          new MoveState(this.canvasViewModel, offsetX, offsetY)
+          new MoveState(
+            this.canvasViewModel,
+            this.shapeModel,
+            this.selectedShapeModel,
+            offsetX,
+            offsetY
+          )
         );
         return true;
       }
@@ -107,7 +112,13 @@ export class SelectState implements ICanvasState {
       if (shape.isPointInside(offsetX, offsetY)) {
         this.selectedShapeModel.addSelectedShapes(shape); // 클릭한 도형을 선택
         this.canvasViewModel.setState(
-          new MoveState(this.canvasViewModel, offsetX, offsetY)
+          new MoveState(
+            this.canvasViewModel,
+            this.shapeModel,
+            this.selectedShapeModel,
+            offsetX,
+            offsetY
+          )
         );
         return true;
       }
