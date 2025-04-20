@@ -1,22 +1,25 @@
-import { CanvasModel } from "../model/CanvasModel";
+import { ShapeModel } from "../model/ShapeModel";
 import React from "react";
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
 import { CanvasEvent } from "./CanvasEvents";
-import { ZOrderAction } from "../model/CanvasModel";
+import { ZOrderAction } from "../model/ShapeModel";
 import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
 import { ResizeState } from "./canvasState/ResizeState";
+import { SelectedShapeModel } from "../model/SelectedShapeModel";
 
 export class CanvasViewModel extends Observable<any> {
-  private model: CanvasModel;
+  private shapeModel: ShapeModel;
+  private selectedShapeModel: SelectedShapeModel;
   private state: ICanvasState;
 
   private shapeType: string = "rectangle";
 
-  constructor(model: CanvasModel) {
+  constructor(shapeModel: ShapeModel, selectedShapeModel: SelectedShapeModel) {
     super();
-    this.model = model;
+    this.shapeModel = shapeModel;
+    this.selectedShapeModel = selectedShapeModel;
     this.state = new DrawState(this); //default: 그리기 모드
   }
 
@@ -80,63 +83,63 @@ export class CanvasViewModel extends Observable<any> {
 
   //모델 관련 메서드 -> state에서 참조함
   getSavedShapes() {
-    return this.model.getShapes();
+    return this.shapeModel.getShapes();
   }
 
   getSelectedShapes() {
-    return this.model.getSelectedShapes();
+    return this.selectedShapeModel.getSelectedShapes();
   }
 
   countShapes() {
-    return this.model.countShapes();
+    return this.shapeModel.countShapes();
   }
 
   addShape(shape: Shape) {
-    return this.model.addShape(shape);
+    return this.shapeModel.addShape(shape);
   }
 
   clearShapes() {
-    return this.model.clearShapes();
+    return this.shapeModel.clearShapes();
   }
 
   clearSelectedShapes() {
-    return this.model.clearSelectedShapes();
+    return this.selectedShapeModel.clearSelectedShapes();
   }
 
   addSelectedShapes(shape: Shape) {
-    return this.model.addSelectedShapes(shape);
+    return this.selectedShapeModel.addSelectedShapes(shape);
   }
 
   moveSelectedShapes(dx: number, dy: number) {
-    return this.model.moveSelectedShapes(dx, dy);
+    return this.selectedShapeModel.moveSelectedShapes(dx, dy);
   }
 
   resizeSelectedShapes(x: number, y: number, pos: string) {
-    return this.model.resizeSelectedShapes(x, y, pos);
+    return this.selectedShapeModel.resizeSelectedShapes(x, y, pos);
   }
 
   moveForward(shapeId: number) {
     console.log("forward");
-    return this.model.moveZOrder(shapeId, ZOrderAction.forward); // 앞으로 이동
+    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.forward); // 앞으로 이동
   }
 
   moveBackward(shapeId: number) {
-    return this.model.moveZOrder(shapeId, ZOrderAction.backward); // 뒤로 이동
+    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.backward); // 뒤로 이동
   }
 
   moveToFront(shapeId: number) {
-    return this.model.moveZOrder(shapeId, ZOrderAction.toFront); // 맨 앞으로 이동
+    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.toFront); // 맨 앞으로 이동
   }
 
   moveToBack(shapeId: number) {
-    return this.model.moveZOrder(shapeId, ZOrderAction.toBack); // 맨 뒤로 이동
+    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.toBack); // 맨 뒤로 이동
   }
   notifyShapesUpdated() {
     const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
       type: "SHAPES_UPDATED",
       data: {
         shapes: this.getShapes(),
-        selectedShapes: this.model.getSelectedShapes(),
+        selectedShapes: this.selectedShapeModel.getSelectedShapes(),
       },
     };
     this.notify(event);
