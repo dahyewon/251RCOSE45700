@@ -20,7 +20,7 @@ export class CanvasViewModel extends Observable<any> {
     super();
     this.shapeModel = shapeModel;
     this.selectedShapeModel = selectedShapeModel;
-    this.state = new DrawState(this); //default: 그리기 모드
+    this.state = new DrawState(this.shapeModel, this.shapeType); //default: 그리기 모드
   }
 
   setState(state: ICanvasState) {
@@ -33,16 +33,25 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   handleMouseDown = (event: React.MouseEvent) => {
-    this.state.handleMouseDown(event);
+    const command = this.state.handleMouseDown(event);
+    if (command) {
+      command.execute(); // 명령 실행
+    }
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
-    this.state.handleMouseMove(event);
+    const command = this.state.handleMouseMove(event);
+    if (command) {
+      command.execute(); // 명령 실행
+    }
     this.notifyShapesUpdated();
   };
 
   handleMouseUp = () => {
-    this.state.handleMouseUp();
+    const command = this.state.handleMouseUp();
+    if (command) {
+      command.execute(); // 명령 실행
+    }
     this.notifyShapesUpdated();
   };
 
@@ -50,7 +59,7 @@ export class CanvasViewModel extends Observable<any> {
     this.clearShapes();
     this.clearSelectedShapes();
     this.setShapeType("rectangle"); // default 값으로
-    this.setState(new DrawState(this));
+    this.setState(new DrawState(this.shapeModel, this.shapeType)); // default: 그리기 모드
     this.notifyShapesUpdated();
   }
 
