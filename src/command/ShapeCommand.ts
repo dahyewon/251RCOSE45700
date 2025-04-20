@@ -1,19 +1,26 @@
 import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
-export class startDrawShapeCommand implements Command {
+export class StartDrawShapeCommand implements Command {
   private shapeModel: ShapeModel;
   private startX: number = 0;
   private startY: number = 0;
+  private shapeType: string = "rectangle"; // default shape type
 
-  constructor(shapeModel: ShapeModel, offsetX: number, offsetY: number) {
+  constructor(
+    shapeModel: ShapeModel,
+    offsetX: number,
+    offsetY: number,
+    shapeType: string
+  ) {
     this.shapeModel = shapeModel;
     this.startX = offsetX;
     this.startY = offsetY;
+    this.shapeType = shapeType;
   }
 
   execute() {
-    this.shapeModel.startDrawShape(this.startX, this.startY);
+    this.shapeModel.startDrawShape(this.shapeType, this.startX, this.startY);
   }
 
   undo() {
@@ -25,29 +32,19 @@ export class startDrawShapeCommand implements Command {
   }
 }
 
-export class continueDrawShapeCommand implements Command {
+export class ContinueDrawShapeCommand implements Command {
   private shapeModel: ShapeModel;
-  private shapeType: string = "rectangle"; // default shape type
   private offsetX: number = 0;
   private offsetY: number = 0;
 
-  constructor(
-    shapeModel: ShapeModel,
-    shapeType: string,
-    offsetX: number,
-    offsetY: number
-  ) {
+  constructor(shapeModel: ShapeModel, offsetX: number, offsetY: number) {
     this.shapeModel = shapeModel;
     this.offsetX = offsetX;
     this.offsetY = offsetY;
   }
 
   execute() {
-    this.shapeModel.continueDrawShape(
-      this.shapeType,
-      this.offsetX,
-      this.offsetY
-    );
+    this.shapeModel.continueDrawShape(this.offsetX, this.offsetY);
   }
 
   undo(): void {
@@ -58,7 +55,7 @@ export class continueDrawShapeCommand implements Command {
   }
 }
 
-export class endDrawShapeCommand implements Command {
+export class EndDrawShapeCommand implements Command {
   private shapeModel: ShapeModel;
 
   constructor(shapeModel: ShapeModel) {

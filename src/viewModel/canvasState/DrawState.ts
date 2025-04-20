@@ -1,6 +1,11 @@
+import { Command } from "../../command/Command";
+import {
+  ContinueDrawShapeCommand,
+  EndDrawShapeCommand,
+  StartDrawShapeCommand,
+} from "../../command/ShapeCommand";
 import { Shape } from "../../entity/Shape";
-import { ShapeFactory } from "../../entity/ShapeFactory";
-import { CanvasViewModel } from "../CanvasViewModel";
+import { ShapeModel } from "../../model/ShapeModel";
 import { ICanvasState } from "./CanvasState";
 
 export class DrawState implements ICanvasState {
@@ -9,21 +14,27 @@ export class DrawState implements ICanvasState {
   private endX = 0;
   private endY = 0;
   private color = "black";
-  private drawingShape: Shape | null = null;
+  private shapeType = "rectangle"; // default shape type
   private drawing = false;
-  constructor(private viewModel: CanvasViewModel) {}
+  constructor(private shapeModel: ShapeModel, shapeType: string) {
+    this.shapeType = shapeType;
+  }
 
-  handleMouseDown(event: React.MouseEvent): void {
+  handleMouseDown(event: React.MouseEvent): Command | void {
     const { offsetX, offsetY } = event.nativeEvent;
-    this.startX = offsetX;
-    this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
 
     this.drawing = true;
+    return new StartDrawShapeCommand(
+      this.shapeModel,
+      offsetX,
+      offsetY,
+      this.shapeType
+    );
   }
 
-  handleMouseMove(event: React.MouseEvent): void {
+  handleMouseMove(event: React.MouseEvent): Command | void {
     const { offsetX, offsetY } = event.nativeEvent;
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
     if (!this.drawing) return;
@@ -31,34 +42,17 @@ export class DrawState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    this.drawingShape = ShapeFactory.createShape(
-      this.viewModel.getShapeType(),
-      {
-        id: this.viewModel.countShapes(),
-        startX: this.startX,
-        startY: this.startY,
-        endX: this.endX,
-        endY: this.endY,
-        color: this.color,
-      }
-    );
+    return new ContinueDrawShapeCommand(this.shapeModel, offsetX, offsetY);
   }
 
-  handleMouseUp(): void {
+  handleMouseUp(): Command | void {
     if (!this.drawing) return;
     this.drawing = false;
-    if (this.drawingShape) {
-      this.viewModel.addShape(this.drawingShape);
-      this.drawingShape = null; // reset drawing shape
-    }
+
+    return new EndDrawShapeCommand(this.shapeModel);
   }
 
   getCurrentShapes(): Shape[] {
-    if (this.drawing) {
-      return this.drawingShape
-        ? [...this.viewModel.getSavedShapes(), this.drawingShape]
-        : this.viewModel.getSavedShapes();
-    }
-    return this.viewModel.getSavedShapes();
+    return this.shapeModel.getShapes();
   }
 }
