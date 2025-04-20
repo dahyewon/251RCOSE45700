@@ -1,4 +1,5 @@
 import { Shape } from "../entity/Shape";
+import { ShapeFactory } from "../entity/ShapeFactory";
 
 export enum ZOrderAction {
   forward = "forward",
@@ -9,8 +10,12 @@ export enum ZOrderAction {
 
 export class ShapeModel {
   private shapes: Shape[] = [];
-  private selectedShapes: Shape[] = [];
   private zOrder: number[] = []; // z-order - shapeId map
+  private startX: number = 0;
+  private startY: number = 0;
+  private endX: number = 0;
+  private endY: number = 0;
+  private drawingShape: Shape | null = null;
 
   addShape(shape: Shape) {
     this.shapes.push(shape);
@@ -19,7 +24,6 @@ export class ShapeModel {
 
   clearShapes() {
     this.shapes = [];
-    this.selectedShapes = [];
     this.zOrder = [];
   }
 
@@ -29,6 +33,36 @@ export class ShapeModel {
 
   countShapes(): number {
     return this.shapes.length;
+  }
+
+  startDrawShape(offsetX: number, offsetY: number): void {
+    this.startX = offsetX;
+    this.startY = offsetY;
+    this.endX = offsetX;
+    this.endY = offsetY;
+  }
+
+  continueDrawShape(shapeType: string, offsetX: number, offsetY: number): void {
+    if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
+
+    this.endX = offsetX;
+    this.endY = offsetY;
+
+    this.drawingShape = ShapeFactory.createShape(shapeType, {
+      id: this.countShapes(),
+      startX: this.startX,
+      startY: this.startY,
+      endX: this.endX,
+      endY: this.endY,
+      color: "black",
+    });
+  }
+
+  endDrawShape(): void {
+    if (this.drawingShape) {
+      this.addShape(this.drawingShape);
+      this.drawingShape = null; // reset drawing shape
+    }
   }
 
   //z-order 관련
