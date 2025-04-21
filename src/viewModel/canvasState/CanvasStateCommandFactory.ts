@@ -1,66 +1,38 @@
-import { SetStateCommand } from "../../command/CanvasStateCommand";
 import { Command } from "../../command/Command";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
-import { DrawState } from "./DrawState";
-import { MoveState } from "./MoveState";
-import { ResizeState } from "./ResizeState";
-import { SelectState } from "./SelectState";
+import {
+  CanvasStateStrategy,
+  DrawStateStrategy,
+  MoveStateStrategy,
+  ResizeStateStrategy,
+  SelectStateStrategy,
+} from "./CanvasStateStrategy";
 
 export class CanvasStateCommandFactory {
+  private strategies: Record<string, CanvasStateStrategy> = {
+    DrawState: new DrawStateStrategy(),
+    SelectState: new SelectStateStrategy(),
+    MoveState: new MoveStateStrategy(),
+    ResizeState: new ResizeStateStrategy(),
+  };
   constructor(
     private canvasViewModel: CanvasViewModel,
     private shapeModel: ShapeModel,
     private selectedShapeModel: SelectedShapeModel
   ) {}
 
-  createDrawStateCommand(shapeType: string): Command {
-    return new SetStateCommand(
+  createCommand(stateType: string, params: any): Command {
+    const strategy = this.strategies[stateType];
+    if (!strategy) {
+      throw new Error(`Unknown state type: ${stateType}`);
+    }
+    return strategy.createCommand(
       this.canvasViewModel,
-      new DrawState(this.shapeModel, shapeType)
-    );
-  }
-
-  createSelectStateCommand(): Command {
-    return new SetStateCommand(
-      this.canvasViewModel,
-      new SelectState(
-        this.canvasViewModel,
-        this.shapeModel,
-        this.selectedShapeModel
-      )
-    );
-  }
-
-  createMoveStateCommand(offsetX: number, offsetY: number): Command {
-    return new SetStateCommand(
-      this.canvasViewModel,
-      new MoveState(
-        this.canvasViewModel,
-        this.shapeModel,
-        this.selectedShapeModel,
-        offsetX,
-        offsetY
-      )
-    );
-  }
-
-  createResizeStateCommand(
-    pos: string,
-    offsetX: number,
-    offsetY: number
-  ): Command {
-    return new SetStateCommand(
-      this.canvasViewModel,
-      new ResizeState(
-        this.canvasViewModel,
-        this.shapeModel,
-        this.selectedShapeModel,
-        pos,
-        offsetX,
-        offsetY
-      )
+      this.shapeModel,
+      this.selectedShapeModel,
+      params
     );
   }
 }

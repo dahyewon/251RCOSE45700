@@ -8,11 +8,13 @@ import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
 import { ResizeState } from "./canvasState/ResizeState";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
+import { CanvasStateCommandFactory } from "./canvasState/CanvasStateCommandFactory";
 
 export class CanvasViewModel extends Observable<any> {
   private shapeModel: ShapeModel;
   private selectedShapeModel: SelectedShapeModel;
   private state: ICanvasState;
+  private canvasStateCommandFactory: CanvasStateCommandFactory;
 
   private shapeType: string = "rectangle";
 
@@ -21,6 +23,11 @@ export class CanvasViewModel extends Observable<any> {
     this.shapeModel = shapeModel;
     this.selectedShapeModel = selectedShapeModel;
     this.state = new DrawState(this.shapeModel, this.shapeType); //default: 그리기 모드
+    this.canvasStateCommandFactory = new CanvasStateCommandFactory(
+      this,
+      this.shapeModel,
+      this.selectedShapeModel
+    );
   }
 
   setState(state: ICanvasState) {
@@ -82,6 +89,14 @@ export class CanvasViewModel extends Observable<any> {
         canvas.top - event.nativeEvent.offsetY
       )
     );
+  }
+
+  requestSetState(stateType: string, params: any) {
+    const command = this.canvasStateCommandFactory.createCommand(
+      stateType,
+      params
+    );
+    command.execute();
   }
 
   getShapes() {

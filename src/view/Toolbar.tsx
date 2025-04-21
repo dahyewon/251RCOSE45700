@@ -6,10 +6,7 @@ import { DrawState } from "../viewModel/canvasState/DrawState";
 import { SelectState } from "../viewModel/canvasState/SelectState";
 import { CanvasStateCommandFactory } from "../viewModel/canvasState/CanvasStateCommandFactory";
 
-const Toolbar: React.FC<{
-  viewModel: CanvasViewModel;
-  canvasStateCommandFactory: CanvasStateCommandFactory;
-}> = ({ viewModel, canvasStateCommandFactory }) => {
+const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {
     currentState: "DrawingState",
     drawingShape: "rectangle",
@@ -39,9 +36,7 @@ const Toolbar: React.FC<{
         className={`tool-button ${isActive("rectangle") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("rectangle");
-          canvasStateCommandFactory
-            .createDrawStateCommand("rectangle")
-            .execute();
+          viewModel.requestSetState("DrawState", { shapeType: "rectangle" });
         }}
       >
         ▭ 사각형
@@ -51,7 +46,7 @@ const Toolbar: React.FC<{
         className={`tool-button ${isActive("ellipse") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("ellipse");
-          canvasStateCommandFactory.createDrawStateCommand("ellipse").execute();
+          viewModel.requestSetState("DrawState", { shapeType: "ellipse" });
         }}
       >
         ◯ 원
@@ -61,7 +56,7 @@ const Toolbar: React.FC<{
         className={`tool-button ${isActive("line") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("line");
-          canvasStateCommandFactory.createDrawStateCommand("line").execute();
+          viewModel.requestSetState("DrawState", { shapeType: "line" });
         }}
       >
         ㅡ 선
@@ -71,7 +66,7 @@ const Toolbar: React.FC<{
         className={`tool-button ${isSelectActive() ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("");
-          canvasStateCommandFactory.createSelectStateCommand().execute();
+          viewModel.requestSetState("SelectState", {});
         }}
       >
         선택
