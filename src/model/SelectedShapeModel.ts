@@ -6,6 +6,7 @@ export class SelectedShapeModel {
   private startY: number = 0;
   private endX: number = 0;
   private endY: number = 0;
+  private pos: string = "none"; // resize handle position
 
   clearSelectedShapes() {
     this.selectedShapes = [];
@@ -46,9 +47,26 @@ export class SelectedShapeModel {
     return this.selectedShapes.map((shape) => shape.getResizeHandles());
   }
 
-  resizeSelectedShapes(x: number, y: number, pos: string): void {
+  startResizeSelectedShapes(
+    offsetX: number,
+    offsetY: number,
+    pos: string
+  ): void {
+    this.startX = offsetX;
+    this.startY = offsetY;
+    this.endX = offsetX;
+    this.endY = offsetY;
+    this.pos = pos; // resize handle position
+  }
+
+  resizeSelectedShapes(offsetX: number, offsetY: number): void {
+    if (offsetX === this.startX && offsetY === this.startY) return; // 변화 없으면 무시
+    const dx = offsetX - this.startX;
+    const dy = offsetY - this.startY;
+    this.startX = offsetX;
+    this.startY = offsetY;
     return this.selectedShapes.forEach((shape) => {
-      shape.resize(x, y, pos);
+      shape.resize(dx, dy, this.pos);
     });
   }
 }

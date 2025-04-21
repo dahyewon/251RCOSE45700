@@ -137,7 +137,7 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   resizeSelectedShapes(x: number, y: number, pos: string) {
-    return this.selectedShapeModel.resizeSelectedShapes(x, y, pos);
+    return this.selectedShapeModel.resizeSelectedShapes(x, y);
   }
 
   moveForward(shapeId: number) {

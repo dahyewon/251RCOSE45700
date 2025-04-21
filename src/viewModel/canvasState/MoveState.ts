@@ -20,8 +20,7 @@ export class MoveState implements ICanvasState {
     offsetX: number,
     offsetY: number
   ) {
-    this.startX = offsetX;
-    this.startY = offsetY;
+    this.selectedShapeModel.startMoveSelectedShapes(offsetX, offsetY);
     this.moving = true;
   }
 
