@@ -1,4 +1,3 @@
-import { Shape } from "../../entity/Shape";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
@@ -40,9 +39,5 @@ export class ResizeState implements ICanvasState {
     this.viewModel.setState(
       new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
     ); // switch back to select state
-  }
-
-  getCurrentShapes(): Shape[] {
-    return this.viewModel.getSavedShapes();
   }
 }

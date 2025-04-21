@@ -78,10 +78,6 @@ export class SelectState implements ICanvasState {
     });
   }
 
-  getCurrentShapes(): Shape[] {
-    return this.shapeModel.getShapes();
-  }
-
   checkShapeClick(offsetX: number, offsetY: number): boolean {
     const selectedShapes = this.selectedShapeModel.getSelectedShapes();
     for (let i = 0; i < selectedShapes.length; i++) {

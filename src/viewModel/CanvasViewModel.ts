@@ -40,31 +40,22 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   handleMouseDown = (event: React.MouseEvent) => {
-    const command = this.state.handleMouseDown(event);
-    if (command) {
-      command.execute(); // 명령 실행
-    }
+    this.state.handleMouseDown(event);
   };
 
   handleMouseMove = (event: React.MouseEvent) => {
-    const command = this.state.handleMouseMove(event);
-    if (command) {
-      command.execute(); // 명령 실행
-    }
+    this.state.handleMouseMove(event);
     this.notifyShapesUpdated();
   };
 
   handleMouseUp = () => {
-    const command = this.state.handleMouseUp();
-    if (command) {
-      command.execute(); // 명령 실행
-    }
+    this.state.handleMouseUp();
     this.notifyShapesUpdated();
   };
 
   resetCanvas() {
-    this.clearShapes();
-    this.clearSelectedShapes();
+    this.shapeModel.clearShapes();
+    this.selectedShapeModel.clearSelectedShapes();
     this.setShapeType("rectangle"); // default 값으로
     this.setState(new DrawState(this.shapeModel, this.shapeType)); // default: 그리기 모드
     this.notifyShapesUpdated();
@@ -79,6 +70,7 @@ export class CanvasViewModel extends Observable<any> {
       event.currentTarget as HTMLCanvasElement
     ).getBoundingClientRect();
     if (!canvas) return;
+
     return this.setState(
       new ResizeState(
         this,
@@ -100,44 +92,11 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   getShapes() {
-    return this.state.getCurrentShapes();
+    return this.shapeModel.getShapes();
   }
 
   getShapeType() {
     return this.shapeType;
-  }
-
-  //모델 관련 메서드 -> state에서 참조함
-  getSavedShapes() {
-    return this.shapeModel.getShapes();
-  }
-
-  getSelectedShapes() {
-    return this.selectedShapeModel.getSelectedShapes();
-  }
-
-  countShapes() {
-    return this.shapeModel.countShapes();
-  }
-
-  addShape(shape: Shape) {
-    return this.shapeModel.addShape(shape);
-  }
-
-  clearShapes() {
-    return this.shapeModel.clearShapes();
-  }
-
-  clearSelectedShapes() {
-    return this.selectedShapeModel.clearSelectedShapes();
-  }
-
-  moveSelectedShapes(dx: number, dy: number) {
-    return this.selectedShapeModel.moveSelectedShapes(dx, dy);
-  }
-
-  resizeSelectedShapes(x: number, y: number, pos: string) {
-    return this.selectedShapeModel.resizeSelectedShapes(x, y);
   }
 
   moveForward(shapeId: number) {
