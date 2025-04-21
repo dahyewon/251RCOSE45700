@@ -1,9 +1,4 @@
 import { Command } from "../../command/Command";
-import {
-  ContinueDrawShapeCommand,
-  EndDrawShapeCommand,
-  StartDrawShapeCommand,
-} from "../../command/DrawShapeCommand";
 import { Shape } from "../../entity/Shape";
 import { ShapeModel } from "../../model/ShapeModel";
 import { ICanvasState } from "./CanvasState";
@@ -20,36 +15,26 @@ export class DrawState implements ICanvasState {
     this.shapeType = shapeType;
   }
 
-  handleMouseDown(event: React.MouseEvent): Command | void {
+  handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
-    this.endX = offsetX;
-    this.endY = offsetY;
+
+    this.shapeModel.startDrawShape(this.shapeType, offsetX, offsetY);
 
     this.drawing = true;
-    return new StartDrawShapeCommand(
-      this.shapeModel,
-      offsetX,
-      offsetY,
-      this.shapeType
-    );
   }
 
-  handleMouseMove(event: React.MouseEvent): Command | void {
+  handleMouseMove(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
-    if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
     if (!this.drawing) return;
 
-    this.endX = offsetX;
-    this.endY = offsetY;
-
-    return new ContinueDrawShapeCommand(this.shapeModel, offsetX, offsetY);
+    this.shapeModel.continueDrawShape(offsetX, offsetY);
   }
 
   handleMouseUp(): Command | void {
     if (!this.drawing) return;
     this.drawing = false;
 
-    return new EndDrawShapeCommand(this.shapeModel);
+    this.shapeModel.endDrawShape();
   }
 
   getCurrentShapes(): Shape[] {

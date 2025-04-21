@@ -132,10 +132,6 @@ export class CanvasViewModel extends Observable<any> {
     return this.selectedShapeModel.clearSelectedShapes();
   }
 
-  addSelectedShapes(shape: Shape) {
-    return this.selectedShapeModel.addSelectedShapes(shape);
-  }
-
   moveSelectedShapes(dx: number, dy: number) {
     return this.selectedShapeModel.moveSelectedShapes(dx, dy);
   }

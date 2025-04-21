@@ -1,8 +1,3 @@
-import { Command } from "../../command/Command";
-import {
-  ContinueSelectShapeCommand,
-  ClearSelectShapeCommand,
-} from "../../command/SelectShapeCommand";
 import { Shape } from "../../entity/Shape";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
@@ -23,7 +18,7 @@ export class SelectState implements ICanvasState {
     private selectedShapeModel: SelectedShapeModel
   ) {}
 
-  handleMouseDown(event: React.MouseEvent): Command | void {
+  handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
 
     if (this.checkShapeClick(offsetX, offsetY)) return; // 선택한 위치에 도형이 있다면 MoveState로 전환
@@ -34,10 +29,10 @@ export class SelectState implements ICanvasState {
     this.endY = offsetY;
 
     this.selecting = true;
-    return new ClearSelectShapeCommand(this.selectedShapeModel);
+    this.selectedShapeModel.clearSelectedShapes();
   }
 
-  handleMouseMove(event: React.MouseEvent): Command | void {
+  handleMouseMove(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
     if (!this.selecting) return;
@@ -51,10 +46,10 @@ export class SelectState implements ICanvasState {
       this.endX,
       this.endY
     );
-    return new ContinueSelectShapeCommand(this.selectedShapeModel, shapes);
+    this.selectedShapeModel.continueSelectShapes(shapes);
   }
 
-  handleMouseUp(): Command | void {
+  handleMouseUp(): void {
     this.selecting = false;
     console.log(this.selectedShapeModel.getSelectedShapes());
   }
@@ -105,12 +100,11 @@ export class SelectState implements ICanvasState {
       }
     }
 
-    this.selectedShapeModel.clearSelectedShapes();
     const shapes = this.shapeModel.getShapes();
     for (let i = 0; i < shapes.length; i++) {
       const shape = shapes[i];
       if (shape.isPointInside(offsetX, offsetY)) {
-        this.selectedShapeModel.addSelectedShapes(shape); // 클릭한 도형을 선택
+        this.selectedShapeModel.continueSelectShapes([shape]); // 클릭한 도형을 선택
         this.canvasViewModel.setState(
           new MoveState(
             this.canvasViewModel,

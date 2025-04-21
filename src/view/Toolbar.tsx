@@ -2,9 +2,6 @@ import React from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./Toolbar.css";
-import { DrawState } from "../viewModel/canvasState/DrawState";
-import { SelectState } from "../viewModel/canvasState/SelectState";
-import { CanvasStateCommandFactory } from "../viewModel/canvasState/CanvasStateCommandFactory";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {

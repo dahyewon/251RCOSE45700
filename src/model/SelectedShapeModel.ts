@@ -7,16 +7,8 @@ export class SelectedShapeModel {
     this.selectedShapes = [];
   }
 
-  addSelectedShapes(shape: Shape) {
-    this.selectedShapes.push(shape);
-  }
-
   getSelectedShapes(): Shape[] {
     return [...this.selectedShapes];
-  }
-
-  startSelectShapes(): void {
-    this.clearSelectedShapes();
   }
 
   continueSelectShapes(shapes: Shape[]): void {
