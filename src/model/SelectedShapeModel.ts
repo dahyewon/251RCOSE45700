@@ -2,6 +2,10 @@ import { Shape } from "../entity/Shape";
 
 export class SelectedShapeModel {
   private selectedShapes: Shape[] = [];
+  private startX: number = 0;
+  private startY: number = 0;
+  private endX: number = 0;
+  private endY: number = 0;
 
   clearSelectedShapes() {
     this.selectedShapes = [];
@@ -16,7 +20,23 @@ export class SelectedShapeModel {
     this.selectedShapes = shapes;
   }
 
-  moveSelectedShapes(dx: number, dy: number): void {
+  startMoveSelectedShapes(offsetX: number, offsetY: number): void {
+    this.startX = offsetX;
+    this.startY = offsetY;
+    this.endX = offsetX;
+    this.endY = offsetY;
+  }
+  moveSelectedShapes(offsetX: number, offsetY: number): void {
+    if (offsetX === this.endX && offsetY === this.endY) return;
+
+    this.endX = offsetX;
+    this.endY = offsetY;
+
+    const dx = this.endX - this.startX;
+    const dy = this.endY - this.startY;
+    this.startX = offsetX;
+    this.startY = offsetY;
+
     return this.selectedShapes.forEach((shape) => {
       shape.move(dx, dy);
     });

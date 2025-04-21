@@ -37,19 +37,9 @@ export class MoveState implements ICanvasState {
   handleMouseMove(event: React.MouseEvent): void {
     if (!this.moving) return;
     const { offsetX, offsetY } = event.nativeEvent;
-    if (offsetX === this.endX && offsetY === this.endY) return;
 
-    this.endX = offsetX;
-    this.endY = offsetY;
-
-    const dx = this.endX - this.startX;
-    const dy = this.endY - this.startY;
-    this.startX = offsetX;
-    this.startY = offsetY;
-
-    if (this.viewModel.getSelectedShapes().length > 0) {
-      this.viewModel.moveSelectedShapes(dx, dy); // move selected shapes
-    }
+    if (this.selectedShapeModel.getSelectedShapes().length === 0) return;
+    this.selectedShapeModel.moveSelectedShapes(offsetX, offsetY);
   }
 
   handleMouseUp(): void {
