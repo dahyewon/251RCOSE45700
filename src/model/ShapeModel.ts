@@ -68,7 +68,7 @@ export class ShapeModel {
   }
 
   //z-order 관련
-  moveZOrder(shapeId: number, action: ZOrderAction): void {
+  moveZOrder(shapeId: number, action: string): void {
     const index = this.zOrder.indexOf(shapeId);
     if (index === -1) {
       throw new Error("Shape ID not found in z-order mapping.");
@@ -76,7 +76,7 @@ export class ShapeModel {
 
     // z-order 변경 로직
     switch (action) {
-      case ZOrderAction.forward:
+      case "forward":
         if (index > 0) {
           [this.zOrder[index], this.zOrder[index - 1]] = [
             this.zOrder[index - 1],
@@ -84,7 +84,7 @@ export class ShapeModel {
           ];
         }
         break;
-      case ZOrderAction.backward:
+      case "backward":
         if (index < this.zOrder.length - 1) {
           [this.zOrder[index], this.zOrder[index + 1]] = [
             this.zOrder[index + 1],
@@ -92,11 +92,11 @@ export class ShapeModel {
           ];
         }
         break;
-      case ZOrderAction.toFront:
+      case "toFront":
         const shapeIdToFront = this.zOrder.splice(index, 1)[0];
         this.zOrder.unshift(shapeIdToFront);
         break;
-      case ZOrderAction.toBack:
+      case "toBack":
         const shapeIdToBack = this.zOrder.splice(index, 1)[0];
         this.zOrder.push(shapeIdToBack);
         break;

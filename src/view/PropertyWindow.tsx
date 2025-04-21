@@ -35,28 +35,28 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
         </div>
         <button
           onClick={() => {
-            viewModel.moveForward(selectedShapes[0].id);
+            viewModel.requestZOrderMove("forward", selectedShapes[0].id);
           }}
         >
           앞으로
         </button>
         <button
           onClick={() => {
-            viewModel.moveBackward(selectedShapes[0].id);
+            viewModel.requestZOrderMove("backward", selectedShapes[0].id);
           }}
         >
           뒤로
         </button>
         <button
           onClick={() => {
-            viewModel.moveToFront(selectedShapes[0].id);
+            viewModel.requestZOrderMove("toFront", selectedShapes[0].id);
           }}
         >
           맨 앞으로
         </button>
         <button
           onClick={() => {
-            viewModel.moveToBack(selectedShapes[0].id);
+            viewModel.requestZOrderMove("toBack", selectedShapes[0].id);
           }}
         >
           맨 뒤로

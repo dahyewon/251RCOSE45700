@@ -10,6 +10,7 @@ import { ResizeState } from "./canvasState/ResizeState";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { CanvasStateCommandFactory } from "./canvasState/CanvasStateCommandFactory";
 import { CanvasResetCommand } from "../command/CanvasResetCommand";
+import { ZOrderMoveCommand } from "../command/ZOrderMoveCommand";
 
 export class CanvasViewModel extends Observable<any> {
   private shapeModel: ShapeModel;
@@ -100,6 +101,11 @@ export class CanvasViewModel extends Observable<any> {
 
   getShapeType() {
     return this.shapeType;
+  }
+
+  requestZOrderMove(action: string, shapeId: number) {
+    const command = new ZOrderMoveCommand(this.shapeModel, action, shapeId);
+    command.execute();
   }
 
   moveForward(shapeId: number) {
