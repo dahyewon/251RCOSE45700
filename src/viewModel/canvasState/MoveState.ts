@@ -6,10 +6,6 @@ import { SelectState } from "./SelectState";
 
 // 이동 모드
 export class MoveState implements ICanvasState {
-  private startX: number = 0;
-  private startY: number = 0;
-  private endX: number = 0;
-  private endY: number = 0;
   private moving = false;
 
   constructor(
@@ -25,9 +21,6 @@ export class MoveState implements ICanvasState {
 
   handleMouseDown(event: React.MouseEvent): void {
     //? required?
-    const { offsetX, offsetY } = event.nativeEvent;
-    this.startX = offsetX;
-    this.startY = offsetY;
 
     this.moving = true;
   }

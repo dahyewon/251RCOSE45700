@@ -9,6 +9,7 @@ import { DrawState } from "./canvasState/DrawState";
 import { ResizeState } from "./canvasState/ResizeState";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { CanvasStateCommandFactory } from "./canvasState/CanvasStateCommandFactory";
+import { CanvasResetCommand } from "../command/CanvasResetCommand";
 
 export class CanvasViewModel extends Observable<any> {
   private shapeModel: ShapeModel;
@@ -53,11 +54,13 @@ export class CanvasViewModel extends Observable<any> {
     this.notifyShapesUpdated();
   };
 
-  resetCanvas() {
-    this.shapeModel.clearShapes();
-    this.selectedShapeModel.clearSelectedShapes();
-    this.setShapeType("rectangle"); // default 값으로
-    this.setState(new DrawState(this.shapeModel, this.shapeType)); // default: 그리기 모드
+  requestResetCanvas() {
+    const command = new CanvasResetCommand(
+      this,
+      this.shapeModel,
+      this.selectedShapeModel
+    );
+    command.execute();
     this.notifyShapesUpdated();
   }
 
