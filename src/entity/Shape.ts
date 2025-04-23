@@ -139,6 +139,9 @@ export class Rectangle implements Shape {
         this.startX = centerX - Number(value) / 2;
         this.endX = centerX + Number(value) / 2;
         break;
+      case "색":
+        this.color = value.toString();
+        break;
       default:
         throw new Error("Invalid property name");
     }
@@ -277,6 +280,9 @@ export class Ellipse implements Shape {
         const centerX = this.centerX;
         this.startX = centerX - Number(value) / 2;
         this.endX = centerX + Number(value) / 2;
+        break;
+      case "색":
+        this.color = value.toString();
         break;
       default:
         throw new Error("Invalid property name");
@@ -425,6 +431,9 @@ export class Line implements Shape {
         break;
       case "선 굵기":
         this.lineWidth = Number(value);
+        break;
+      case "색":
+        this.color = value.toString();
         break;
       default:
         throw new Error("Invalid property name");

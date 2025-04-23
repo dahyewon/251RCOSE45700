@@ -35,6 +35,26 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
         </div>
         <div className="property">
           {selectedShapes[0].getProperties().map((property) => {
+            if (property.name === "색") {
+              return (
+                <div key={property.name} className="propertyItem">
+                  <span>{property.name}:</span>{" "}
+                  <input
+                    type="color"
+                    value={property.value}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      viewModel.requestSetProperty(
+                        selectedShapes[0].id,
+                        property.name,
+                        newValue
+                      );
+                    }}
+                  />
+                  <br />
+                </div>
+              );
+            }
             if (property.editable) {
               return (
                 <div key={property.name} className="propertyItem">
