@@ -10,6 +10,7 @@ export interface Shape {
   resize(dx: number, dy: number, pos: string): void;
   isPointInside(x: number, y: number): boolean;
   getProperties(): Property[];
+  setProperties(name: string, value: number): void;
 }
 
 export interface Property {
@@ -98,6 +99,16 @@ export class Rectangle implements Shape {
 
   getProperties(): Property[] {
     return [
+      {
+        name: "가로 위치",
+        value: (this.startX + this.endX) / 2,
+        editable: true,
+      },
+      {
+        name: "세로 위치",
+        value: (this.startY + this.endY) / 2,
+        editable: true,
+      },
       { name: "높이", value: this.height, editable: true },
       { name: "너비", value: this.width, editable: true },
       { name: "색", value: this.color, editable: true },
@@ -107,10 +118,10 @@ export class Rectangle implements Shape {
   setProperties(name: string, value: number): void {
     switch (name) {
       case "높이":
-        this.endX = this.startX + value;
+        this.endY = this.startY + Number(value);
         break;
       case "너비":
-        this.endY = this.startY + value;
+        this.endX = this.startX + Number(value);
         break;
       default:
         throw new Error("Invalid property name");
@@ -211,10 +222,33 @@ export class Ellipse implements Shape {
 
   getProperties(): Property[] {
     return [
-      { name: "Width", value: this.radiusX * 2, editable: true },
-      { name: "Height", value: this.radiusY * 2, editable: true },
-      { name: "Color", value: this.color, editable: true },
+      {
+        name: "가로 위치",
+        value: (this.startX + this.endX) / 2,
+        editable: true,
+      },
+      {
+        name: "세로 위치",
+        value: (this.startY + this.endY) / 2,
+        editable: true,
+      },
+      { name: "높이", value: this.radiusY * 2, editable: true },
+      { name: "너비", value: this.radiusX * 2, editable: true },
+      { name: "색", value: this.color, editable: true },
     ];
+  }
+
+  setProperties(name: string, value: number): void {
+    switch (name) {
+      case "높이":
+        this.endY = this.startY + value;
+        break;
+      case "너비":
+        this.endX = this.startX + value;
+        break;
+      default:
+        throw new Error("Invalid property name");
+    }
   }
 }
 
@@ -309,10 +343,35 @@ export class Line implements Shape {
 
   getProperties(): Property[] {
     return [
-      { name: "Length", value: this.length, editable: true },
-      { name: "Color", value: this.color, editable: true },
-      { name: "Line Width", value: this.lineWidth, editable: true },
+      {
+        name: "가로 위치",
+        value: (this.startX + this.endX) / 2,
+        editable: true,
+      },
+      {
+        name: "세로 위치",
+        value: (this.startY + this.endY) / 2,
+        editable: true,
+      },
+      { name: "길이", value: this.length, editable: true },
+      { name: "선 굵기", value: this.lineWidth, editable: true },
+      { name: "색", value: this.color, editable: true },
     ];
+  }
+
+  setProperties(name: string, value: number): void {
+    switch (name) {
+      case "길이":
+        const angle = Math.atan2(this.dy, this.dx);
+        this.endX = this.startX + value * Math.cos(angle);
+        this.endY = this.startY + value * Math.sin(angle);
+        break;
+      case "선 굵기":
+        this.lineWidth = value;
+        break;
+      default:
+        throw new Error("Invalid property name");
+    }
   }
 }
 

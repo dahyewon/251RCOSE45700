@@ -11,6 +11,7 @@ import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { CanvasStateCommandFactory } from "./canvasState/CanvasStateCommandFactory";
 import { CanvasResetCommand } from "../command/CanvasResetCommand";
 import { ZOrderMoveCommand } from "../command/ZOrderMoveCommand";
+import { SetPropertyCommand } from "../command/SetPropertyCommand";
 
 export class CanvasViewModel extends Observable<any> {
   private shapeModel: ShapeModel;
@@ -108,6 +109,16 @@ export class CanvasViewModel extends Observable<any> {
     command.execute();
   }
 
+  requestSetProperty(shapeId: number, propertyName: string, value: any) {
+    const command = new SetPropertyCommand(
+      this.shapeModel,
+      shapeId,
+      propertyName,
+      value
+    );
+    command.execute();
+    this.notifyShapesUpdated();
+  }
   moveForward(shapeId: number) {
     console.log("forward");
     return this.shapeModel.moveZOrder(shapeId, ZOrderAction.forward); // 앞으로 이동

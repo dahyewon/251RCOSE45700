@@ -7,8 +7,6 @@ import "./PropertyWindow.css";
 const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
 }) => {
-  const [properties, setProperties] = useState<Property[]>([]);
-
   const selectedShapes = useCanvasEvent<{
     shapes: Shape[];
     selectedShapes: Shape[];
@@ -18,23 +16,6 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
     { shapes: [], selectedShapes: [] },
     "selectedShapes"
   );
-
-  useEffect(() => {
-    const allProperties = selectedShapes
-      .map((shape) => shape.getProperties())
-      .flat();
-    const repeatedProperties: Property[] = [];
-    const nonrepeatedProperties: Property[] = [];
-    allProperties.forEach((property) => {
-      if (repeatedProperties.includes(property)) {
-        repeatedProperties.push(property);
-      } else {
-        nonrepeatedProperties.push(property);
-      }
-    });
-
-    setProperties(nonrepeatedProperties);
-  }, [selectedShapes]);
 
   if (selectedShapes.length === 0) {
     return (
@@ -53,12 +34,36 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
           <strong>{selectedShapes[0].constructor.name}</strong>
         </div>
         <div className="property">
-          {selectedShapes[0].getProperties().map((property) => (
-            <div key={property.name} className="propertyItem">
-              <span>{property.name}:</span> <strong>{property.value}</strong>
-              <br />
-            </div>
-          ))}
+          {selectedShapes[0].getProperties().map((property) => {
+            if (property.editable) {
+              return (
+                <div key={property.name} className="propertyItem">
+                  <span>{property.name}:</span>{" "}
+                  <input
+                    type="number"
+                    value={property.value}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      viewModel.requestSetProperty(
+                        selectedShapes[0].id,
+                        property.name,
+                        newValue
+                      );
+                    }}
+                  />
+                  <br />
+                </div>
+              );
+            } else {
+              return (
+                <div key={property.name} className="propertyItem">
+                  <span>{property.name}:</span>{" "}
+                  <strong>{property.value}</strong>
+                  <br />
+                </div>
+              );
+            }
+          })}
         </div>
         <button
           onClick={() => {
@@ -88,21 +93,6 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
         >
           맨 뒤로
         </button>
-        {/* <div className="item">
-            <span>색상:</span> <strong>{selectedShapes[0].color}</strong>
-          </div>
-          <div className="item">
-            <span>위치:</span>{" "}
-            <strong>
-              ({selectedShape.x}, {selectedShape.y})
-            </strong>
-          </div>
-          <div className="item">
-            <span>크기:</span>{" "}
-            <strong>
-              {selectedShape.width} × {selectedShape.height}
-            </strong>
-          </div> */}
       </div>
     );
   }
