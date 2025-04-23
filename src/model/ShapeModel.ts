@@ -75,7 +75,9 @@ export class ShapeModel {
     }
 
     // z-order 변경 로직
-    switch (action) {
+    switch (
+      action //TODO: moveZOrder를 strategy로 분리하고, ZOrderCommand에서 매핑? 아니면 shapeModel에서 strategy 매핑을 들고있기?
+    ) {
       case "forward":
         if (index > 0) {
           [this.zOrder[index], this.zOrder[index - 1]] = [

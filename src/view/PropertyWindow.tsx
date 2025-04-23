@@ -1,5 +1,5 @@
-import React from "react";
-import { Shape } from "../entity/Shape"; // Shape 인터페이스 또는 클래스 import 경로 맞춰줘
+import React, { useEffect, useState } from "react";
+import { Property, Shape } from "../entity/Shape"; // Shape 인터페이스 또는 클래스 import 경로 맞춰줘
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./PropertyWindow.css";
@@ -7,6 +7,8 @@ import "./PropertyWindow.css";
 const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
 }) => {
+  const [properties, setProperties] = useState<Property[]>([]);
+
   const selectedShapes = useCanvasEvent<{
     shapes: Shape[];
     selectedShapes: Shape[];
@@ -16,6 +18,23 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
     { shapes: [], selectedShapes: [] },
     "selectedShapes"
   );
+
+  useEffect(() => {
+    const allProperties = selectedShapes
+      .map((shape) => shape.getProperties())
+      .flat();
+    const repeatedProperties: Property[] = [];
+    const nonrepeatedProperties: Property[] = [];
+    allProperties.forEach((property) => {
+      if (repeatedProperties.includes(property)) {
+        repeatedProperties.push(property);
+      } else {
+        nonrepeatedProperties.push(property);
+      }
+    });
+
+    setProperties(nonrepeatedProperties);
+  }, [selectedShapes]);
 
   if (selectedShapes.length === 0) {
     return (
@@ -29,9 +48,17 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
     return (
       <div className="container">
         <h3 className="title">도형 속성</h3>
-        <div className="item">
+        <div className="type">
           <span>타입:</span>{" "}
           <strong>{selectedShapes[0].constructor.name}</strong>
+        </div>
+        <div className="property">
+          {selectedShapes[0].getProperties().map((property) => (
+            <div key={property.name} className="propertyItem">
+              <span>{property.name}:</span> <strong>{property.value}</strong>
+              <br />
+            </div>
+          ))}
         </div>
         <button
           onClick={() => {

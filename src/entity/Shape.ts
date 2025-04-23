@@ -98,10 +98,23 @@ export class Rectangle implements Shape {
 
   getProperties(): Property[] {
     return [
-      { name: "Width", value: this.width, editable: true },
-      { name: "Height", value: this.height, editable: true },
-      { name: "Color", value: this.color, editable: true },
+      { name: "높이", value: this.height, editable: true },
+      { name: "너비", value: this.width, editable: true },
+      { name: "색", value: this.color, editable: true },
     ];
+  }
+
+  setProperties(name: string, value: number): void {
+    switch (name) {
+      case "높이":
+        this.endX = this.startX + value;
+        break;
+      case "너비":
+        this.endY = this.startY + value;
+        break;
+      default:
+        throw new Error("Invalid property name");
+    }
   }
 }
 
