@@ -2,8 +2,6 @@ import React from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./Toolbar.css";
-import { DrawState } from "../viewModel/canvasState/DrawState";
-import { SelectState } from "../viewModel/canvasState/SelectState";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {
@@ -35,7 +33,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("rectangle") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("rectangle");
-          viewModel.setState(new DrawState(viewModel));
+          viewModel.requestSetState("DrawState", { shapeType: "rectangle" });
         }}
       >
         ▭ 사각형
@@ -45,7 +43,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("ellipse") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("ellipse");
-          viewModel.setState(new DrawState(viewModel));
+          viewModel.requestSetState("DrawState", { shapeType: "ellipse" });
         }}
       >
         ◯ 원
@@ -55,7 +53,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         className={`tool-button ${isActive("line") ? "active" : ""}`}
         onClick={() => {
           viewModel.setShapeType("line");
-          viewModel.setState(new DrawState(viewModel));
+          viewModel.requestSetState("DrawState", { shapeType: "line" });
         }}
       >
         ㅡ 선
@@ -64,8 +62,8 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isSelectActive() ? "active" : ""}`}
         onClick={() => {
-          viewModel.setShapeType("select");
-          viewModel.setState(new SelectState(viewModel));
+          viewModel.setShapeType("");
+          viewModel.requestSetState("SelectState", {});
         }}
       >
         선택
@@ -74,7 +72,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button`}
         onClick={() => {
-          viewModel.resetCanvas();
+          viewModel.requestResetCanvas();
         }}
       >
         리셋

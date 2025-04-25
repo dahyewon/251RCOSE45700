@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/Shape";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   const shapes = useCanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }>(
     viewModel,
     "SHAPES_UPDATED",

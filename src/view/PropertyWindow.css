@@ -1,6 +1,8 @@
 .container {
   width: 240px;
   padding: 16px;
+  position: absolute;
+  right: 0;
   border-left: 1px solid #ccc;
   background: #f8f8f8;
   font-family: sans-serif;
@@ -10,8 +12,20 @@
   font-size: 18px;
   margin-bottom: 12px;
 }
-.item {
+.type {
   margin-bottom: 8px;
+}
+.property {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+.propertyItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 4px;
 }
 .emptyText {
   color: #999;
