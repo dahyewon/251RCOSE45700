@@ -5,7 +5,7 @@ import "./Toolbar.css";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {
-    currentState: "DrawingState",
+    currentState: "DrawState",
     drawingShape: "rectangle",
   }; // 초기 상태 설정
 
