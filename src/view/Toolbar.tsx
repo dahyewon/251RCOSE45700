@@ -57,7 +57,49 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       >
         ㅡ 선
       </button>
+      <button className={`tool-button`}>
+        <label htmlFor="image-upload" style={{ cursor: "pointer" }}>
+          📷 사진 업로드
+        </label>
+        <input
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = () => {
+                const imageUrl = reader.result as string;
 
+                // 이미지 비율에 따라 크기 조정
+                const img = new Image();
+                img.src = imageUrl;
+                img.onload = () => {
+                  const aspectRatio = img.width / img.height;
+                  const baseWidth = 150; // 기본 너비
+                  const baseHeight = baseWidth / aspectRatio; // 비율에 따른 높이 계산
+
+                  viewModel.clearSelectedShapes();
+                  const shape = viewModel.addImageShape(imageUrl, baseWidth, baseHeight);
+                  viewModel.addSelectedShapes(shape);
+                  viewModel.setShapeType("select");
+                  viewModel.setState(new SelectState(viewModel));
+                };
+                img.onerror = () => {
+                  console.error("이미지 로드 실패:", file.name);
+                };
+              };
+              reader.readAsDataURL(file);
+            } else {
+              console.error("파일이 선택되지 않았습니다.");
+            }
+
+            event.target.value = "";
+          }}
+        />
+      </button>
       <button
         className={`tool-button ${isSelectActive() ? "active" : ""}`}
         onClick={() => {

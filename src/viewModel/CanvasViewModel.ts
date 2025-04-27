@@ -2,8 +2,9 @@ import { CanvasModel } from "../model/CanvasModel";
 import React from "react";
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
-import { DrawingState, ICanvasState, ResizeState } from "./CanvasState";
+import { DrawingState, ICanvasState, ResizeState, SelectState } from "./CanvasState";
 import { CanvasEvent } from "./CanvasEvents";
+import { ShapeFactory } from "../entity/ShapeFactory";
 
 export class CanvasViewModel extends Observable<any> {
   private model: CanvasModel;
@@ -98,6 +99,21 @@ export class CanvasViewModel extends Observable<any> {
 
   clearSelectedShapes() {
     return this.model.clearSelectedShapes();
+  }
+
+  addImageShape(imageUrl: string, width: number, height: number) {
+    const shape = ShapeFactory.createShape("image", {
+      id: Date.now(),
+      startX: 0,
+      startY: 0,
+      endX: width,
+      endY: height,
+      color: "",
+      imageUrl: imageUrl,
+    });
+    this.addShape(shape);
+    this.notifyShapesUpdated();
+    return shape;
   }
 
   addSelectedShapes(shape: Shape) {
