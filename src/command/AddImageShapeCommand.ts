@@ -16,7 +16,6 @@ export class AddImageShapeCommand implements Command {
   execute() {
     const shape = this.shapeModel.addImageShape(this.imageUrl, this.width, this.height);
     this.selectedShapeModel.continueSelectShapes([shape]);
-    this.canvasViewModel.notifyShapesUpdated();
   }
 
   redo(): void {

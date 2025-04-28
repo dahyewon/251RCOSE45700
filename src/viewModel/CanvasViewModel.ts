@@ -131,6 +131,7 @@ export class CanvasViewModel extends Observable<any> {
       height
     );
     command.execute();
+    this.notifyShapesUpdated();
   }
 
 
