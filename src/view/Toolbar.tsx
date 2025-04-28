@@ -5,7 +5,7 @@ import "./Toolbar.css";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {
-    currentState: "DrawingState",
+    currentState: "DrawState",
     drawingShape: "rectangle",
   }; // 초기 상태 설정
 
@@ -57,6 +57,47 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         }}
       >
         ㅡ 선
+      </button>
+      <button className="tool-button">
+        <label htmlFor="image-upload" style={{ cursor: "pointer" }}>
+          사진 업로드
+        </label>
+        <input
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = () => {
+                const imageUrl = reader.result as string;
+
+                const img = new Image();
+                img.src = imageUrl;
+                img.onload = () => {
+                  const aspectRatio = img.width / img.height;
+                  const baseWidth = 150; // 기본 너비
+                  const baseHeight = Math.round(baseWidth / aspectRatio); // 비율에 따른 높이 계산
+
+                  viewModel.requestAddImageShape(imageUrl, baseWidth, baseHeight);
+
+                  viewModel.setShapeType("");
+                  viewModel.requestSetState("SelectState", {});
+                };
+                img.onerror = () => {
+                  console.error("이미지 로드 실패:", file.name);
+                };
+              };
+              reader.readAsDataURL(file);
+            } else {
+              console.error("파일이 선택되지 않았습니다.");
+            }
+
+            event.target.value = "";
+          }}
+        />
       </button>
 
       <button

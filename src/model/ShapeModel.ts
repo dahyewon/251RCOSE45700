@@ -122,4 +122,18 @@ export class ShapeModel {
       throw new Error("Shape not found.");
     }
   }
+
+  addImageShape(imageUrl: string, width: number, height: number) {
+    const shape = ShapeFactory.createShape("image", {
+      id: Date.now(),
+      startX: 0,
+      startY: 0,
+      endX: width,
+      endY: height,
+      color: "",
+      imageUrl: imageUrl,
+    });
+    this.addShape(shape);
+    return shape;
+  }
 }

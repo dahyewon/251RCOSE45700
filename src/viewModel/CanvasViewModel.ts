@@ -11,6 +11,7 @@ import { CanvasStateCommandFactory } from "./canvasState/CanvasStateCommandFacto
 import { CanvasResetCommand } from "../command/CanvasResetCommand";
 import { ZOrderMoveCommand } from "../command/ZOrderMoveCommand";
 import { SetPropertyCommand } from "../command/SetPropertyCommand";
+import { AddImageShapeCommand } from "../command/AddImageShapeCommand";
 
 export class CanvasViewModel extends Observable<any> {
   private shapeModel: ShapeModel;
@@ -115,6 +116,19 @@ export class CanvasViewModel extends Observable<any> {
       shapeId,
       propertyName,
       value
+    );
+    command.execute();
+    this.notifyShapesUpdated();
+  }
+  
+  requestAddImageShape(imageUrl: string, width: number, height: number) {
+    const command = new AddImageShapeCommand(
+      this,
+      this.shapeModel,
+      this.selectedShapeModel,
+      imageUrl,
+      width,
+      height
     );
     command.execute();
     this.notifyShapesUpdated();

@@ -6,6 +6,7 @@
   border-left: 1px solid #ccc;
   background: #f8f8f8;
   font-family: sans-serif;
+  user-select: none;
 }
 
 .title {
