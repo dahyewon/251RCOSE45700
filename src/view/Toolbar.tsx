@@ -79,7 +79,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
                 img.onload = () => {
                   const aspectRatio = img.width / img.height;
                   const baseWidth = 150; // 기본 너비
-                  const baseHeight = baseWidth / aspectRatio; // 비율에 따른 높이 계산
+                  const baseHeight = Math.round(baseWidth / aspectRatio); // 비율에 따른 높이 계산
 
                   viewModel.requestAddImageShape(imageUrl, baseWidth, baseHeight);
 
