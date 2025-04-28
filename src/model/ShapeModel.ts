@@ -1,13 +1,6 @@
 import { Shape } from "../entity/Shape";
 import { ShapeFactory } from "../entity/ShapeFactory";
 
-export enum ZOrderAction {
-  forward = "forward",
-  backward = "backward",
-  toFront = "toFront",
-  toBack = "toBack",
-}
-
 export class ShapeModel {
   private shapes: Shape[] = [];
   private zOrder: number[] = []; // z-order - shapeId map
@@ -20,7 +13,7 @@ export class ShapeModel {
 
   addShape(shape: Shape) {
     this.shapes.push(shape);
-    this.zOrder.unshift(shape.id); // z-order는 도형 추가 시 자동으로 설정
+    this.zOrder.push(shape.id); // z-order는 도형 추가 시 자동으로 설정
   }
 
   clearShapes() {
@@ -79,14 +72,6 @@ export class ShapeModel {
       action //TODO: moveZOrder를 strategy로 분리하기?
     ) {
       case "forward":
-        if (index > 0) {
-          [this.zOrder[index], this.zOrder[index - 1]] = [
-            this.zOrder[index - 1],
-            this.zOrder[index],
-          ];
-        }
-        break;
-      case "backward":
         if (index < this.zOrder.length - 1) {
           [this.zOrder[index], this.zOrder[index + 1]] = [
             this.zOrder[index + 1],
@@ -94,13 +79,21 @@ export class ShapeModel {
           ];
         }
         break;
-      case "toFront":
-        const shapeIdToFront = this.zOrder.splice(index, 1)[0];
-        this.zOrder.unshift(shapeIdToFront);
+      case "backward":
+        if (index > 0) {
+          [this.zOrder[index], this.zOrder[index - 1]] = [
+            this.zOrder[index - 1],
+            this.zOrder[index],
+          ];
+        }
         break;
-      case "toBack":
+      case "toFront":
         const shapeIdToBack = this.zOrder.splice(index, 1)[0];
         this.zOrder.push(shapeIdToBack);
+        break;
+      case "toBack":
+        const shapeIdToFront = this.zOrder.splice(index, 1)[0];
+        this.zOrder.unshift(shapeIdToFront);
         break;
       default:
         throw new Error("Invalid z-order action.");
@@ -117,7 +110,7 @@ export class ShapeModel {
     if (sortedShapes.includes(undefined)) {
       throw new Error("Shape not found in z-order mapping.");
     } else if (this.drawingShape != null) {
-      return [this.drawingShape, ...sortedShapes] as Shape[];
+      return [...sortedShapes, this.drawingShape] as Shape[];
     } else return sortedShapes as Shape[];
   }
 

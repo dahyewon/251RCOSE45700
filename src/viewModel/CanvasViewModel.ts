@@ -3,7 +3,6 @@ import React from "react";
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/Shape";
 import { CanvasEvent } from "./CanvasEvents";
-import { ZOrderAction } from "../model/ShapeModel";
 import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
 import { ResizeState } from "./canvasState/ResizeState";
@@ -108,6 +107,7 @@ export class CanvasViewModel extends Observable<any> {
   requestZOrderMove(action: string, shapeId: number) {
     const command = new ZOrderMoveCommand(this.shapeModel, action, shapeId);
     command.execute();
+    this.notifyShapesUpdated();
   }
 
   requestSetProperty(shapeId: number, propertyName: string, value: any) {
@@ -120,7 +120,7 @@ export class CanvasViewModel extends Observable<any> {
     command.execute();
     this.notifyShapesUpdated();
   }
-
+  
   requestAddImageShape(imageUrl: string, width: number, height: number) {
     const command = new AddImageShapeCommand(
       this,
@@ -134,23 +134,6 @@ export class CanvasViewModel extends Observable<any> {
     this.notifyShapesUpdated();
   }
 
-
-  moveForward(shapeId: number) {
-    console.log("forward");
-    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.forward); // 앞으로 이동
-  }
-
-  moveBackward(shapeId: number) {
-    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.backward); // 뒤로 이동
-  }
-
-  moveToFront(shapeId: number) {
-    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.toFront); // 맨 앞으로 이동
-  }
-
-  moveToBack(shapeId: number) {
-    return this.shapeModel.moveZOrder(shapeId, ZOrderAction.toBack); // 맨 뒤로 이동
-  }
   notifyShapesUpdated() {
     const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
       type: "SHAPES_UPDATED",
