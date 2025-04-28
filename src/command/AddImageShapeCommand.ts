@@ -1,8 +1,9 @@
 import { ShapeModel } from "../model/ShapeModel";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
+import { Command } from "./Command";
 
-export class AddImageShapeCommand {
+export class AddImageShapeCommand implements Command {
   constructor(
     private canvasViewModel: CanvasViewModel,
     private shapeModel: ShapeModel,
@@ -16,5 +17,12 @@ export class AddImageShapeCommand {
     const shape = this.shapeModel.addImageShape(this.imageUrl, this.width, this.height);
     this.selectedShapeModel.continueSelectShapes([shape]);
     this.canvasViewModel.notifyShapesUpdated();
+  }
+
+  redo(): void {
+    this.execute();
+  }
+  undo(): void {
+    // Undo logic if needed
   }
 }
