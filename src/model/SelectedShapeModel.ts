@@ -1,4 +1,4 @@
-import { Shape } from "../entity/Shape";
+import { Shape } from "../entity/shape/Shape";
 
 export class SelectedShapeModel {
   private selectedShapes: Shape[] = [];

@@ -1,5 +1,5 @@
-import { Shape } from "../entity/Shape";
-import { ShapeFactory } from "../entity/ShapeFactory";
+import { Shape } from "../entity/shape/Shape";
+import { ShapeFactory } from "../entity/shape/ShapeFactory";
 
 export class ShapeModel {
   private shapes: Shape[] = [];

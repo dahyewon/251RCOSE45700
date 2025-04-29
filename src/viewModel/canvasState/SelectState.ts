@@ -1,4 +1,4 @@
-import { Shape } from "../../entity/Shape";
+import { Shape } from "../../entity/shape/Shape";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";

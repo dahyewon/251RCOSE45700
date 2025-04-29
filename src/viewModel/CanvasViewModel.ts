@@ -1,7 +1,7 @@
 import { ShapeModel } from "../model/ShapeModel";
 import React from "react";
 import { Observable } from "../core/Observable";
-import { Shape } from "../entity/Shape";
+import { Shape } from "../entity/shape/Shape";
 import { CanvasEvent } from "./CanvasEvents";
 import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
@@ -120,7 +120,7 @@ export class CanvasViewModel extends Observable<any> {
     command.execute();
     this.notifyShapesUpdated();
   }
-  
+
   requestAddImageShape(imageUrl: string, width: number, height: number) {
     const command = new AddImageShapeCommand(
       this,

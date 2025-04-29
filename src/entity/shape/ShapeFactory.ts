@@ -1,4 +1,4 @@
-import { ImageShape, Ellipse, Line, Rectangle, Shape } from "./Shape";
+import { ImageShape, Ellipse, Line, Rectangle, Shape } from "./";
 
 interface ShapeProps {
   id: number;
@@ -62,10 +62,9 @@ class ImageCreator implements ShapeCreator {
       props.endX,
       props.endY,
       props.imageUrl
-    )
+    );
   }
 }
-
 
 export class ShapeFactory {
   private static creators: Record<string, ShapeCreator> = {
