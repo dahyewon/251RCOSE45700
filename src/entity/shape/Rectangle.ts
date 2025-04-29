@@ -9,6 +9,7 @@ export class Rectangle implements Shape {
   private shadowOffsetX: number = 0;
   private shadowOffsetY: number = 0;
   private shadowBlur: number = 0;
+
   constructor(
     public id: number,
     public startX: number,

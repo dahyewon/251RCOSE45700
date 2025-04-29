@@ -3,16 +3,19 @@ import { Shape, Property } from "./Shape";
 export class Line implements Shape {
   private color = "#000000";
   private lineWidth: number = 1;
+
+  private shadowColor: string = "#000000";
+  private shadowOffsetX: number = 0;
+  private shadowOffsetY: number = 0;
+  private shadowBlur: number = 0;
+
   constructor(
     public id: number,
     public startX: number,
     public startY: number,
     public endX: number,
     public endY: number
-  ) {
-    this.color = "#000000";
-    this.lineWidth = 1;
-  }
+  ) {}
 
   get dx(): number {
     return this.endX - this.startX;
@@ -33,14 +36,35 @@ export class Line implements Shape {
     return (this.startY + this.endY) / 2;
   }
 
+  get shadowAngle(): number {
+    return Math.atan2(this.shadowOffsetY, this.shadowOffsetX);
+  }
+
+  get shadowRadius(): number {
+    return Math.round(
+      Math.sqrt(
+        this.shadowOffsetX * this.shadowOffsetX +
+          this.shadowOffsetY * this.shadowOffsetY
+      )
+    );
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
     if (!ctx) throw new Error("context is null");
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.lineWidth;
+    this.setShadow(ctx);
     ctx.beginPath();
     ctx.moveTo(this.startX, this.startY);
     ctx.lineTo(this.endX, this.endY);
     ctx.stroke();
+  }
+
+  setShadow(ctx: CanvasRenderingContext2D): void {
+    ctx.shadowColor = this.shadowColor;
+    ctx.shadowOffsetX = this.shadowOffsetX;
+    ctx.shadowOffsetY = this.shadowOffsetY;
+    ctx.shadowBlur = this.shadowBlur;
   }
 
   move(dx: number, dy: number): void {
@@ -114,6 +138,14 @@ export class Line implements Shape {
       { name: "길이", value: Math.round(this.length), editable: true },
       { name: "선 굵기", value: this.lineWidth, editable: true },
       { name: "색", value: this.color, editable: true },
+      {
+        name: "그림자 각도",
+        value: Math.round(this.shadowAngle * (180 / Math.PI)),
+        editable: true,
+      },
+      { name: "그림자 간격", value: this.shadowRadius, editable: true },
+      { name: "그림자 흐리게", value: this.shadowBlur, editable: true },
+      { name: "그림자 색", value: this.shadowColor, editable: true },
     ];
   }
 
@@ -147,6 +179,24 @@ export class Line implements Shape {
         break;
       case "색":
         this.color = value.toString();
+        break;
+      case "그림자 색":
+        this.shadowColor = value.toString();
+        break;
+      case "그림자 각도":
+        const newAngle = Number(value) * (Math.PI / 180);
+        const radius = this.shadowRadius;
+        this.shadowOffsetX = radius * Math.cos(newAngle);
+        this.shadowOffsetY = radius * Math.sin(newAngle);
+        break;
+      case "그림자 간격":
+        const newRadius = Number(value);
+        const shadowAngle = this.shadowAngle;
+        this.shadowOffsetX = newRadius * Math.cos(shadowAngle);
+        this.shadowOffsetY = newRadius * Math.sin(shadowAngle);
+        break;
+      case "그림자 흐리게":
+        this.shadowBlur = Number(value);
         break;
       default:
         throw new Error("Invalid property name");

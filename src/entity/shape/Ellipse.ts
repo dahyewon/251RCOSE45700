@@ -4,17 +4,19 @@ export class Ellipse implements Shape {
   private borderWidth: number = 0;
   private borderColor: string = "#000000";
   private color: string = "#000000";
+
+  private shadowColor: string = "#000000";
+  private shadowOffsetX: number = 0;
+  private shadowOffsetY: number = 0;
+  private shadowBlur: number = 0;
+
   constructor(
     public id: number,
     public startX: number,
     public startY: number,
     public endX: number,
     public endY: number
-  ) {
-    this.borderWidth = 0;
-    this.borderColor = "#000000";
-    this.color = "#000000";
-  }
+  ) {}
 
   get centerX(): number {
     return (this.endX + this.startX) / 2;
@@ -32,10 +34,24 @@ export class Ellipse implements Shape {
     return Math.abs(this.endY - this.startY) / 2;
   }
 
+  get shadowAngle(): number {
+    return Math.atan2(this.shadowOffsetY, this.shadowOffsetX);
+  }
+
+  get shadowRadius(): number {
+    return Math.round(
+      Math.sqrt(
+        this.shadowOffsetX * this.shadowOffsetX +
+          this.shadowOffsetY * this.shadowOffsetY
+      )
+    );
+  }
+
   draw(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = this.borderColor;
     ctx.lineWidth = this.borderWidth;
 
+    this.setShadow(ctx);
     ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.ellipse(
@@ -64,6 +80,13 @@ export class Ellipse implements Shape {
       ctx.stroke();
       ctx.closePath();
     }
+  }
+
+  setShadow(ctx: CanvasRenderingContext2D): void {
+    ctx.shadowColor = this.shadowColor;
+    ctx.shadowOffsetX = this.shadowOffsetX;
+    ctx.shadowOffsetY = this.shadowOffsetY;
+    ctx.shadowBlur = this.shadowBlur;
   }
 
   move(dx: number, dy: number): void {
@@ -133,6 +156,14 @@ export class Ellipse implements Shape {
       { name: "색", value: this.color, editable: true },
       { name: "테두리 굵기", value: this.borderWidth, editable: true },
       { name: "테두리 색", value: this.borderColor, editable: true },
+      {
+        name: "그림자 각도",
+        value: Math.round(this.shadowAngle * (180 / Math.PI)),
+        editable: true,
+      },
+      { name: "그림자 간격", value: this.shadowRadius, editable: true },
+      { name: "그림자 흐리게", value: this.shadowBlur, editable: true },
+      { name: "그림자 색", value: this.shadowColor, editable: true },
     ];
   }
 
@@ -168,6 +199,24 @@ export class Ellipse implements Shape {
         break;
       case "테두리 색":
         this.borderColor = value.toString();
+        break;
+      case "그림자 색":
+        this.shadowColor = value.toString();
+        break;
+      case "그림자 각도":
+        const newAngle = Number(value) * (Math.PI / 180);
+        const radius = this.shadowRadius;
+        this.shadowOffsetX = radius * Math.cos(newAngle);
+        this.shadowOffsetY = radius * Math.sin(newAngle);
+        break;
+      case "그림자 간격":
+        const newRadius = Number(value);
+        const angle = this.shadowAngle;
+        this.shadowOffsetX = newRadius * Math.cos(angle);
+        this.shadowOffsetY = newRadius * Math.sin(angle);
+        break;
+      case "그림자 흐리게":
+        this.shadowBlur = Number(value);
         break;
       default:
         throw new Error("Invalid property name");
