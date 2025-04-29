@@ -25,7 +25,12 @@ export class CanvasViewModel extends Observable<any> {
     super();
     this.shapeModel = shapeModel;
     this.selectedShapeModel = selectedShapeModel;
-    this.state = new DrawState(this.shapeModel, this.shapeType); //default: 그리기 모드
+    this.state = new DrawState(
+      this,
+      this.shapeModel,
+      this.selectedShapeModel,
+      this.shapeType
+    ); //default: 그리기 모드
     this.canvasStateCommandFactory = new CanvasStateCommandFactory(
       this,
       this.shapeModel,

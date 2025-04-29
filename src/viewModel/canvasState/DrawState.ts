@@ -1,11 +1,19 @@
 import { Command } from "../../command/Command";
+import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
+import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
+import { SelectState } from "./SelectState";
 
 export class DrawState implements ICanvasState {
   private shapeType = "rectangle"; // default shape type
   private drawing = false;
-  constructor(private shapeModel: ShapeModel, shapeType: string) {
+  constructor(
+    private viewModel: CanvasViewModel,
+    private shapeModel: ShapeModel,
+    private selectedShapeModel: SelectedShapeModel,
+    shapeType: string
+  ) {
     this.shapeType = shapeType;
   }
 
@@ -29,5 +37,11 @@ export class DrawState implements ICanvasState {
     this.drawing = false;
 
     this.shapeModel.endDrawShape();
+    this.selectedShapeModel.continueSelectShapes(
+      this.shapeModel.getShapes().slice(-1)
+    );
+    this.viewModel.setState(
+      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
+    ); // switch back to select state
   }
 }

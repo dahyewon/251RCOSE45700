@@ -24,7 +24,12 @@ export class CanvasResetCommand implements Command {
     this.selectedShapeModel.clearSelectedShapes();
     this.canvasViewModel.setShapeType("rectangle"); // default 값으로
     this.canvasViewModel.setState(
-      new DrawState(this.shapeModel, this.canvasViewModel.getShapeType())
+      new DrawState(
+        this.canvasViewModel,
+        this.shapeModel,
+        this.selectedShapeModel,
+        this.canvasViewModel.getShapeType()
+      )
     ); // default: 그리기 모드
   }
 

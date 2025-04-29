@@ -26,7 +26,12 @@ export class DrawStateStrategy implements CanvasStateStrategy {
   ): Command {
     return new SetStateCommand(
       canvasViewModel,
-      new DrawState(shapeModel, params.shapeType)
+      new DrawState(
+        canvasViewModel,
+        shapeModel,
+        selectedShapeModel,
+        params.shapeType
+      )
     );
   }
 }
