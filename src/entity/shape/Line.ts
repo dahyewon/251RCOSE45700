@@ -135,7 +135,11 @@ export class Line implements Shape {
         value: this.centerY,
         editable: true,
       },
-      { name: "길이", value: Math.round(this.length), editable: true },
+      {
+        name: "길이",
+        value: Math.abs(Math.round(this.length)),
+        editable: true,
+      },
       { name: "선 굵기", value: this.lineWidth, editable: true },
       { name: "색", value: this.color, editable: true },
       {

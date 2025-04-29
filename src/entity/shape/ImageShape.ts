@@ -148,8 +148,8 @@ export class ImageShape implements Shape {
         value: this.centerY,
         editable: true,
       },
-      { name: "높이", value: this.height, editable: true },
-      { name: "너비", value: this.width, editable: true },
+      { name: "높이", value: Math.abs(this.height), editable: true },
+      { name: "너비", value: Math.abs(this.width), editable: true },
       { name: "테두리 굵기", value: this.borderWidth, editable: true },
       { name: "테두리 색", value: this.borderColor, editable: true },
       {
