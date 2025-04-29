@@ -35,7 +35,7 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
         </div>
         <div className="property">
           {selectedShapes[0].getProperties().map((property) => {
-            if (property.name === "색") {
+            if (property.name === "색" || property.name === "테두리 색") {
               return (
                 <div key={property.name} className="propertyItem">
                   <span>{property.name}:</span>{" "}

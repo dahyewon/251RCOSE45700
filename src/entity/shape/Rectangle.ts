@@ -1,6 +1,8 @@
 import { Shape, Property } from "./Shape";
 
 export class Rectangle implements Shape {
+  private borderWidth: number = 0;
+  private borderColor: string = "#000000";
   constructor(
     public id: number,
     public startX: number,
@@ -8,7 +10,10 @@ export class Rectangle implements Shape {
     public endX: number,
     public endY: number,
     public color: string
-  ) {}
+  ) {
+    this.borderWidth = 0;
+    this.borderColor = "#000000";
+  }
 
   get width(): number {
     return this.endX - this.startX;
@@ -30,6 +35,13 @@ export class Rectangle implements Shape {
     if (!ctx) throw new Error("context is null");
     ctx.fillStyle = this.color;
     ctx.fillRect(this.startX, this.startY, this.width, this.height);
+
+    // 프레임
+    if (this.borderWidth > 0) {
+      ctx.strokeStyle = this.borderColor;
+      ctx.lineWidth = this.borderWidth;
+      ctx.strokeRect(this.startX, this.startY, this.width, this.height);
+    }
   }
 
   move(dx: number, dy: number): void {
@@ -93,6 +105,8 @@ export class Rectangle implements Shape {
       { name: "높이", value: this.height, editable: true },
       { name: "너비", value: this.width, editable: true },
       { name: "색", value: this.color, editable: true },
+      { name: "테두리 굵기", value: this.borderWidth, editable: true },
+      { name: "테두리 색", value: this.borderColor, editable: true },
     ];
   }
 
@@ -123,6 +137,13 @@ export class Rectangle implements Shape {
       case "색":
         this.color = value.toString();
         break;
+      case "테두리 굵기":
+        this.borderWidth = Number(value);
+        break;
+      case "테두리 색":
+        this.borderColor = value.toString();
+        break;
+
       default:
         throw new Error("Invalid property name");
     }

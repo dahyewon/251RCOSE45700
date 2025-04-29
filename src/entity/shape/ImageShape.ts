@@ -1,6 +1,8 @@
 import { Shape, Property } from "./Shape";
 
 export class ImageShape implements Shape {
+  private borderWidth: number = 0;
+  private borderColor: string = "#000000";
   constructor(
     public id: number,
     public startX: number,
@@ -50,6 +52,12 @@ export class ImageShape implements Shape {
         this.width,
         this.height
       );
+    }
+
+    if (this.borderWidth > 0) {
+      ctx.strokeStyle = this.borderColor;
+      ctx.lineWidth = this.borderWidth;
+      ctx.strokeRect(this.startX, this.startY, this.width, this.height);
     }
   }
 
@@ -113,6 +121,8 @@ export class ImageShape implements Shape {
       },
       { name: "높이", value: this.height, editable: true },
       { name: "너비", value: this.width, editable: true },
+      { name: "테두리 굵기", value: this.borderWidth, editable: true },
+      { name: "테두리 색", value: this.borderColor, editable: true },
     ];
   }
 
@@ -139,6 +149,12 @@ export class ImageShape implements Shape {
         const centerX = this.centerX;
         this.startX = centerX - Number(value) / 2;
         this.endX = centerX + Number(value) / 2;
+        break;
+      case "테두리 굵기":
+        this.borderWidth = Number(value);
+        break;
+      case "테두리 색":
+        this.borderColor = value.toString();
         break;
       default:
         throw new Error("Invalid property name");

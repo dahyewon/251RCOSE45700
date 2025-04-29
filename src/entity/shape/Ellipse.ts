@@ -1,6 +1,8 @@
 import { Shape, Property } from "./Shape";
 
 export class Ellipse implements Shape {
+  private borderWidth: number = 0;
+  private borderColor: string = "#000000";
   constructor(
     public id: number,
     public startX: number,
@@ -8,7 +10,10 @@ export class Ellipse implements Shape {
     public endX: number,
     public endY: number,
     public color: string
-  ) {}
+  ) {
+    this.borderWidth = 0;
+    this.borderColor = "#000000";
+  }
 
   get centerX(): number {
     return (this.endX + this.startX) / 2;
@@ -27,6 +32,9 @@ export class Ellipse implements Shape {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    ctx.strokeStyle = this.borderColor;
+    ctx.lineWidth = this.borderWidth;
+
     ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.ellipse(
@@ -39,6 +47,22 @@ export class Ellipse implements Shape {
       Math.PI * 2
     );
     ctx.fill();
+    ctx.closePath();
+
+    if (this.borderWidth > 0) {
+      ctx.beginPath();
+      ctx.ellipse(
+        this.centerX,
+        this.centerY,
+        this.radiusX,
+        this.radiusY,
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.stroke();
+      ctx.closePath();
+    }
   }
 
   move(dx: number, dy: number): void {
@@ -106,6 +130,8 @@ export class Ellipse implements Shape {
       { name: "높이", value: this.radiusY * 2, editable: true },
       { name: "너비", value: this.radiusX * 2, editable: true },
       { name: "색", value: this.color, editable: true },
+      { name: "테두리 굵기", value: this.borderWidth, editable: true },
+      { name: "테두리 색", value: this.borderColor, editable: true },
     ];
   }
 
@@ -135,6 +161,12 @@ export class Ellipse implements Shape {
         break;
       case "색":
         this.color = value.toString();
+        break;
+      case "테두리 굵기":
+        this.borderWidth = Number(value);
+        break;
+      case "테두리 색":
+        this.borderColor = value.toString();
         break;
       default:
         throw new Error("Invalid property name");
