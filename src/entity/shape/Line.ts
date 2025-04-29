@@ -1,15 +1,18 @@
 import { Shape, Property } from "./Shape";
 
 export class Line implements Shape {
+  private color = "#000000";
+  private lineWidth: number = 1;
   constructor(
     public id: number,
     public startX: number,
     public startY: number,
     public endX: number,
-    public endY: number,
-    public color: string,
-    public lineWidth: number = 1
-  ) {}
+    public endY: number
+  ) {
+    this.color = "#000000";
+    this.lineWidth = 1;
+  }
 
   get dx(): number {
     return this.endX - this.startX;

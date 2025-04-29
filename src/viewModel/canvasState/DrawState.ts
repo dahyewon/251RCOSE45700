@@ -3,7 +3,6 @@ import { ShapeModel } from "../../model/ShapeModel";
 import { ICanvasState } from "./CanvasState";
 
 export class DrawState implements ICanvasState {
-  private color = "#000000"; // default color: black
   private shapeType = "rectangle"; // default shape type
   private drawing = false;
   constructor(private shapeModel: ShapeModel, shapeType: string) {

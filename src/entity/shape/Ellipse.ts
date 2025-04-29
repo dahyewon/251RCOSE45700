@@ -3,16 +3,17 @@ import { Shape, Property } from "./Shape";
 export class Ellipse implements Shape {
   private borderWidth: number = 0;
   private borderColor: string = "#000000";
+  private color: string = "#000000";
   constructor(
     public id: number,
     public startX: number,
     public startY: number,
     public endX: number,
-    public endY: number,
-    public color: string
+    public endY: number
   ) {
     this.borderWidth = 0;
     this.borderColor = "#000000";
+    this.color = "#000000";
   }
 
   get centerX(): number {

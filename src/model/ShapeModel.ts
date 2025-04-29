@@ -49,7 +49,6 @@ export class ShapeModel {
       startY: this.startY,
       endX: this.endX,
       endY: this.endY,
-      color: "black",
     });
   }
 
@@ -130,7 +129,6 @@ export class ShapeModel {
       startY: 0,
       endX: width,
       endY: height,
-      color: "",
       imageUrl: imageUrl,
     });
     this.addShape(shape);

@@ -7,7 +7,6 @@ interface ShapeProps {
   startY: number;
   endX: number;
   endY: number;
-  color: string;
   imageUrl?: string;
 }
 
@@ -22,8 +21,7 @@ class RectangleCreator implements ShapeCreator {
       props.startX,
       props.startY,
       props.endX,
-      props.endY,
-      props.color
+      props.endY
     );
   }
 }
@@ -35,8 +33,7 @@ class EllipseCreator implements ShapeCreator {
       props.startX,
       props.startY,
       props.endX,
-      props.endY,
-      props.color
+      props.endY
     );
   }
 }
@@ -48,8 +45,7 @@ class LineCreator implements ShapeCreator {
       props.startX,
       props.startY,
       props.endX,
-      props.endY,
-      props.color
+      props.endY
     );
   }
 }
