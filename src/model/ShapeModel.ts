@@ -1,3 +1,4 @@
+import { CANVAS } from "../constants";
 import { Shape } from "../entity/Shape";
 import { ShapeFactory } from "../entity/ShapeFactory";
 
@@ -123,17 +124,24 @@ export class ShapeModel {
     }
   }
 
-  addImageShape(imageUrl: string, width: number, height: number) {
-    const shape = ShapeFactory.createShape("image", {
-      id: Date.now(),
-      startX: 0,
-      startY: 0,
-      endX: width,
-      endY: height,
-      color: "",
-      imageUrl: imageUrl,
+  addTemplateShape(type: string, properties: any): Shape {
+    
+    const defaultWidth = properties.width || 200;
+    const defaultHeight = properties.height || 50;
+
+    const startX = properties.startX ?? (CANVAS.WIDTH - defaultWidth) / 2;
+    const startY = properties.startY ?? (CANVAS.HEIGHT - defaultHeight) / 2;
+
+    const shape = ShapeFactory.createShape(type, {
+      id: this.countShapes(),
+      startX,
+      startY,
+      endX: startX + defaultWidth,
+      endY: startY + defaultHeight,
+      color: properties.color || "#000000",
+      ...properties,
     });
     this.addShape(shape);
     return shape;
-  }
+}
 }

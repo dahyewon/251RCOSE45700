@@ -1,4 +1,4 @@
-import { ImageShape, Ellipse, Line, Rectangle, Shape } from "./Shape";
+import { ImageShape, Ellipse, Line, Rectangle, Shape, TextShape } from "./Shape";
 
 interface ShapeProps {
   id: number;
@@ -8,6 +8,9 @@ interface ShapeProps {
   endY: number;
   color: string;
   imageUrl?: string;
+  text?: string;
+  fontSize?: number;
+  fontFamily?: string;
 }
 
 interface ShapeCreator {
@@ -66,6 +69,22 @@ class ImageCreator implements ShapeCreator {
   }
 }
 
+class TextCreator implements ShapeCreator {
+  create(props: ShapeProps & { text: string; fontSize: number; fontFamily: string }): Shape {
+    return new TextShape(
+      props.id,
+      props.startX,
+      props.startY,
+      props.endX,
+      props.endY,
+      props.text,
+      props.fontSize,
+      props.fontFamily,
+      props.color
+    )
+  }
+}
+
 
 export class ShapeFactory {
   private static creators: Record<string, ShapeCreator> = {
@@ -73,6 +92,7 @@ export class ShapeFactory {
     ellipse: new EllipseCreator(),
     line: new LineCreator(),
     image: new ImageCreator(),
+    text: new TextCreator(),
   };
 
   static createShape(type: string, props: ShapeProps): Shape {
