@@ -1,5 +1,5 @@
-import { Shape } from "../entity/Shape";
-import { ShapeFactory } from "../entity/ShapeFactory";
+import { Shape } from "../entity/shape/Shape";
+import { ShapeFactory } from "../entity/shape/ShapeFactory";
 
 export class ShapeModel {
   private shapes: Shape[] = [];
@@ -49,7 +49,6 @@ export class ShapeModel {
       startY: this.startY,
       endX: this.endX,
       endY: this.endY,
-      color: "black",
     });
   }
 
@@ -130,7 +129,6 @@ export class ShapeModel {
       startY: 0,
       endX: width,
       endY: height,
-      color: "",
       imageUrl: imageUrl,
     });
     this.addShape(shape);

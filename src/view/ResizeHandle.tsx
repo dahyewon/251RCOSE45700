@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { Shape } from "../entity/Shape";
+import { Shape } from "../entity/shape/Shape";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 
 const ResizeHandle: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
 }) => {
-  const selectedShapes = useCanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }>(
+  const selectedShapes = useCanvasEvent<{
+    shapes: Shape[];
+    selectedShapes: Shape[];
+  }>(
     viewModel,
     "SHAPES_UPDATED",
     { shapes: [], selectedShapes: [] },

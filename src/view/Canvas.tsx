@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { Shape } from "../entity/Shape";
+import { Shape } from "../entity/shape/Shape";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {

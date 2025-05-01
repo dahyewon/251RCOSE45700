@@ -1,4 +1,5 @@
-import { ImageShape, Ellipse, Line, Rectangle, Shape } from "./Shape";
+import { ImageShape, Ellipse, Line, Rectangle } from "./";
+import { Shape } from "./Shape";
 
 interface ShapeProps {
   id: number;
@@ -6,7 +7,6 @@ interface ShapeProps {
   startY: number;
   endX: number;
   endY: number;
-  color: string;
   imageUrl?: string;
 }
 
@@ -21,8 +21,7 @@ class RectangleCreator implements ShapeCreator {
       props.startX,
       props.startY,
       props.endX,
-      props.endY,
-      props.color
+      props.endY
     );
   }
 }
@@ -34,8 +33,7 @@ class EllipseCreator implements ShapeCreator {
       props.startX,
       props.startY,
       props.endX,
-      props.endY,
-      props.color
+      props.endY
     );
   }
 }
@@ -47,8 +45,7 @@ class LineCreator implements ShapeCreator {
       props.startX,
       props.startY,
       props.endX,
-      props.endY,
-      props.color
+      props.endY
     );
   }
 }
@@ -62,10 +59,9 @@ class ImageCreator implements ShapeCreator {
       props.endX,
       props.endY,
       props.imageUrl
-    )
+    );
   }
 }
-
 
 export class ShapeFactory {
   private static creators: Record<string, ShapeCreator> = {

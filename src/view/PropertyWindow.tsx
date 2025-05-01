@@ -1,5 +1,5 @@
 import React from "react";
-import { Shape } from "../entity/Shape"; // Shape 인터페이스 또는 클래스 import 경로 맞춰줘
+import { Shape } from "../entity/shape/Shape"; // Shape 인터페이스 또는 클래스 import 경로 맞춰줘
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./PropertyWindow.css";
@@ -35,7 +35,11 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
         </div>
         <div className="property">
           {selectedShapes[0].getProperties().map((property) => {
-            if (property.name === "색") {
+            if (
+              property.name === "색" ||
+              property.name === "테두리 색" ||
+              property.name === "그림자 색"
+            ) {
               return (
                 <div key={property.name} className="propertyItem">
                   <span>{property.name}:</span>{" "}

@@ -1,7 +1,7 @@
 import { ShapeModel } from "../model/ShapeModel";
 import React from "react";
 import { Observable } from "../core/Observable";
-import { Shape } from "../entity/Shape";
+import { Shape } from "../entity/shape/Shape";
 import { CanvasEvent } from "./CanvasEvents";
 import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
@@ -25,7 +25,12 @@ export class CanvasViewModel extends Observable<any> {
     super();
     this.shapeModel = shapeModel;
     this.selectedShapeModel = selectedShapeModel;
-    this.state = new DrawState(this.shapeModel, this.shapeType); //default: 그리기 모드
+    this.state = new DrawState(
+      this,
+      this.shapeModel,
+      this.selectedShapeModel,
+      this.shapeType
+    ); //default: 그리기 모드
     this.canvasStateCommandFactory = new CanvasStateCommandFactory(
       this,
       this.shapeModel,
@@ -120,7 +125,7 @@ export class CanvasViewModel extends Observable<any> {
     command.execute();
     this.notifyShapesUpdated();
   }
-  
+
   requestAddImageShape(imageUrl: string, width: number, height: number) {
     const command = new AddImageShapeCommand(
       this,
