@@ -100,6 +100,7 @@ export class Ellipse extends AbstractShape {
           CommonPropertyHandlers.VerticalPos(),
           Ellipse.WidthHandler(),
           Ellipse.HeightHandler(),
+          CommonPropertyHandlers.Color(),
           CommonPropertyHandlers.ShadowAngle(),
           CommonPropertyHandlers.ShadowRadius(),
           CommonPropertyHandlers.ShadowBlur(),
