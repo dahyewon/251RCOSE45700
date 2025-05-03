@@ -37,9 +37,5 @@ export const PROPERTY_TYPES = {
 };
 
 export const DROPDOWN_OPTIONS: { [key: string]: string[] } = {
-  FONT: ["Arial", "Sans Serif"],
-};
-
-export const NAME_TO_OPTION_KEY: { [key: string]: string } = {
-  "폰트": "FONT",
+  [PROPERTY_NAMES.FONT]: ["Arial", "Sans Serif"],
 };
