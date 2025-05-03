@@ -3,6 +3,7 @@ import { Shape } from "../entity/shape/Shape"; // Shape 인터페이스 또는 �
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./PropertyWindow.css";
+import { PropertyRendererFactory } from "../components/propertyRenderFactory";
 
 const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
@@ -35,58 +36,18 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
         </div>
         <div className="property">
           {selectedShapes[0].getProperties().map((property) => {
-            if (
-              property.name === "색" ||
-              property.name === "테두리 색" ||
-              property.name === "그림자 색"
-            ) {
-              return (
-                <div key={property.name} className="propertyItem">
-                  <span>{property.name}:</span>{" "}
-                  <input
-                    type="color"
-                    value={property.value}
-                    onChange={(e) => {
-                      const newValue = e.target.value;
-                      viewModel.requestSetProperty(
-                        selectedShapes[0].id,
-                        property.name,
-                        newValue
-                      );
-                    }}
-                  />
-                  <br />
-                </div>
-              );
-            }
-            if (property.editable) {
-              return (
-                <div key={property.name} className="propertyItem">
-                  <span>{property.name}:</span>{" "}
-                  <input
-                    type="number"
-                    value={property.value}
-                    onChange={(e) => {
-                      const newValue = e.target.value;
-                      viewModel.requestSetProperty(
-                        selectedShapes[0].id,
-                        property.name,
-                        newValue
-                      );
-                    }}
-                  />
-                  <br />
-                </div>
-              );
-            } else {
-              return (
-                <div key={property.name} className="propertyItem">
-                  <span>{property.name}:</span>{" "}
-                  <strong>{property.value}</strong>
-                  <br />
-                </div>
-              );
-            }
+            return PropertyRendererFactory.createRenderer(
+              property.type,
+              property.name,
+              property.value,
+              (newValue) => {
+                viewModel.requestSetProperty(
+                  selectedShapes[0].id,
+                  property.name,
+                  newValue
+                );
+              }
+            );
           })}
         </div>
         <button
