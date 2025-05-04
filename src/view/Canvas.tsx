@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/shape/Shape";
 import useCanvasEvent from "../hooks/useCanvasEvent";
+import { CANVAS } from "../constants";
 
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -37,8 +38,8 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   return (
     <canvas
       ref={canvasRef}
-      width={800}
-      height={600}
+      width={CANVAS.WIDTH}
+      height={CANVAS.HEIGHT}
       onMouseDown={viewModel.handleMouseDown}
       onMouseMove={viewModel.handleMouseMove}
       onMouseUp={viewModel.handleMouseUp}

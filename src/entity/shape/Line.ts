@@ -1,52 +1,28 @@
-import { Shape, Property } from "./Shape";
+import { PROPERTY_NAMES, PROPERTY_TYPES } from "../../constants";
+import { CommonPropertyHandlers, PropertyHandler } from "../property/PropertyHandlers";
+import { AbstractShape } from "./Shape";
 
-export class Line implements Shape {
-  private color = "#000000";
-  private lineWidth: number = 1;
-
-  private shadowColor: string = "#000000";
-  private shadowOffsetX: number = 0;
-  private shadowOffsetY: number = 0;
-  private shadowBlur: number = 0;
-
+export class Line extends AbstractShape {
   constructor(
-    public id: number,
-    public startX: number,
-    public startY: number,
-    public endX: number,
-    public endY: number
-  ) {}
+    id: number,
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    color?: string,
+    public lineWidth: number = 1 // Line 고유 속성
+  ) {
+    super(id, startX, startY, endX, endY, color);
+  }
 
   get dx(): number {
     return this.endX - this.startX;
   }
-
   get dy(): number {
-    return this.endY - this.startY;
+      return this.endY - this.startY;
   }
-
   get length(): number {
-    return Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-  }
-
-  get centerX(): number {
-    return (this.startX + this.endX) / 2;
-  }
-  get centerY(): number {
-    return (this.startY + this.endY) / 2;
-  }
-
-  get shadowAngle(): number {
-    return Math.atan2(this.shadowOffsetY, this.shadowOffsetX);
-  }
-
-  get shadowRadius(): number {
-    return Math.round(
-      Math.sqrt(
-        this.shadowOffsetX * this.shadowOffsetX +
-          this.shadowOffsetY * this.shadowOffsetY
-      )
-    );
+      return Math.sqrt(this.dx * this.dx + this.dy * this.dy);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -60,28 +36,14 @@ export class Line implements Shape {
     ctx.stroke();
   }
 
-  setShadow(ctx: CanvasRenderingContext2D): void {
-    ctx.shadowColor = this.shadowColor;
-    ctx.shadowOffsetX = this.shadowOffsetX;
-    ctx.shadowOffsetY = this.shadowOffsetY;
-    ctx.shadowBlur = this.shadowBlur;
-  }
-
-  move(dx: number, dy: number): void {
-    this.startX += dx;
-    this.startY += dy;
-    this.endX += dx;
-    this.endY += dy;
-  }
-
-  getResizeHandles(): { x: number; y: number; pos: string }[] {
+  override getResizeHandles(): { x: number; y: number; pos: string }[] {
     return [
       { x: this.startX - 5, y: this.startY - 5, pos: "top-left" }, // starting point
       { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" }, // ending point
     ];
   }
 
-  resize(dx: number, dy: number, pos: string): void {
+  override resize(dx: number, dy: number, pos: string): void {
     switch (pos) {
       case "top-left":
         this.startX += dx;
@@ -123,87 +85,44 @@ export class Line implements Shape {
     return distance <= tolerance && withinBounds;
   }
 
-  getProperties(): Property[] {
+  // 공통에 없는 Handler 만들어줌. 내부 설정값이라 private static
+  // 길이
+  private static LengthHandler = (): PropertyHandler<Line> => ({
+    type: PROPERTY_TYPES.NUMBER,
+    name: PROPERTY_NAMES.LENGTH,
+    getValue: (shape) => Math.round(shape.length),
+    setValue: (shape, value) => {
+      const centerX = shape.centerX;
+      const centerY = shape.centerY;
+      const newLength = Number(value);
+      const angle = Math.atan2(shape.dy, shape.dx);
+      shape.startX = centerX - (newLength / 2) * Math.cos(angle);
+      shape.startY = centerY - (newLength / 2) * Math.sin(angle);
+      shape.endX = centerX + (newLength / 2) * Math.cos(angle);
+      shape.endY = centerY + (newLength / 2) * Math.sin(angle);
+    },
+  });
+  // 선 굵기
+  private static LineWidthHandler = (): PropertyHandler<Line> => ({
+    type: PROPERTY_TYPES.NUMBER,
+    name: PROPERTY_NAMES.LINEWIDTH,
+    getValue: (shape) => shape.lineWidth,
+    setValue: (shape, value) => {
+        shape.lineWidth = Number(value);
+    },
+  });
+
+  protected getPropertyHandlers(): PropertyHandler<this>[] {
     return [
-      {
-        name: "가로 위치",
-        value: this.centerX,
-        editable: true,
-      },
-      {
-        name: "세로 위치",
-        value: this.centerY,
-        editable: true,
-      },
-      {
-        name: "길이",
-        value: Math.abs(Math.round(this.length)),
-        editable: true,
-      },
-      { name: "선 굵기", value: this.lineWidth, editable: true },
-      { name: "색", value: this.color, editable: true },
-      {
-        name: "그림자 각도",
-        value: Math.round(this.shadowAngle * (180 / Math.PI)),
-        editable: true,
-      },
-      { name: "그림자 간격", value: this.shadowRadius, editable: true },
-      { name: "그림자 흐리게", value: this.shadowBlur, editable: true },
-      { name: "그림자 색", value: this.shadowColor, editable: true },
+        CommonPropertyHandlers.HorizontalPos(),
+        CommonPropertyHandlers.VerticalPos(),
+        Line.LengthHandler(),
+        Line.LineWidthHandler(),
+        CommonPropertyHandlers.Color(),
+        CommonPropertyHandlers.ShadowAngle(),
+        CommonPropertyHandlers.ShadowRadius(),
+        CommonPropertyHandlers.ShadowBlur(),
+        CommonPropertyHandlers.ShadowColor(),
     ];
-  }
-
-  setProperties(name: string, value: number): void {
-    switch (name) {
-      case "가로 위치":
-        const width = this.dx;
-        const newX = Number(value);
-        this.startX = newX - width / 2;
-        this.endX = newX + width / 2;
-        break;
-      case "세로 위치":
-        const height = this.dy;
-        const newY = Number(value);
-        this.startY = newY - height / 2;
-        this.endY = newY + height / 2;
-        break;
-      case "길이":
-        const centerX = this.centerX;
-        const centerY = this.centerY;
-        const newLength = Number(value);
-        const angle = Math.atan2(this.dy, this.dx);
-        this.startX = centerX - (newLength / 2) * Math.cos(angle);
-        this.startY = centerY - (newLength / 2) * Math.sin(angle);
-        this.endX = centerX + (newLength / 2) * Math.cos(angle);
-        this.endY = centerY + (newLength / 2) * Math.sin(angle);
-
-        break;
-      case "선 굵기":
-        this.lineWidth = Number(value);
-        break;
-      case "색":
-        this.color = value.toString();
-        break;
-      case "그림자 색":
-        this.shadowColor = value.toString();
-        break;
-      case "그림자 각도":
-        const newAngle = Number(value) * (Math.PI / 180);
-        const radius = this.shadowRadius;
-        this.shadowOffsetX = radius * Math.cos(newAngle);
-        this.shadowOffsetY = radius * Math.sin(newAngle);
-        break;
-      case "그림자 간격":
-        const newRadius = Number(value);
-        const shadowAngle = this.shadowAngle;
-        this.shadowOffsetX = newRadius * Math.cos(shadowAngle);
-        this.shadowOffsetY = newRadius * Math.sin(shadowAngle);
-        break;
-      case "그림자 흐리게":
-        this.shadowBlur = Number(value);
-        break;
-      default:
-        throw new Error("Invalid property name");
-    }
   }
 }
