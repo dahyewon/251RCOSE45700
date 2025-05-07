@@ -57,12 +57,15 @@ export class SelectState implements ICanvasState {
 
   handleDoubleClick(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
-    const shape = this.selectedShapeModel.getSelectedShapes()[0]; // 이거 맞나?
-  
-    if (shape.isPointInside(offsetX, offsetY)) {
-      this.canvasViewModel.setState(
-        new EditTextState(this.canvasViewModel, this.shapeModel, this.selectedShapeModel)
-      );
+    const shapes = this.selectedShapeModel.getSelectedShapes();
+    if (shapes.length === 0) return;
+    for (let shape of shapes) {
+      if (shape.isPointInside(offsetX, offsetY)) {
+        this.selectedShapeModel.continueSelectShapes([shape]);
+        this.canvasViewModel.setState(
+          new EditTextState(this.canvasViewModel, this.shapeModel, this.selectedShapeModel)
+        );
+      }
     }
   }
   

@@ -116,10 +116,11 @@ export class ShapeModel {
     } else return sortedShapes as Shape[];
   }
 
-  setProperty(shapeId: number, propertyName: string, value: any): void {
+  setProperty(shapeId: number, propertyName: string, value: any): Shape {
     const shape = this.shapes.find((shape) => shape.id === shapeId);
     if (shape) {
       shape.setProperties(propertyName, value);
+      return shape;
     } else {
       throw new Error("Shape not found.");
     }
