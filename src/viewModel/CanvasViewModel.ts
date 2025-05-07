@@ -58,6 +58,11 @@ export class CanvasViewModel extends Observable<any> {
     this.notifyShapesUpdated();
   };
 
+  handleDoubleClick = (event: React.MouseEvent) => {
+    this.state.handleDoubleClick(event);
+    this.notifyShapesUpdated(); 
+  }
+
   requestResetCanvas() {
     const command = new CanvasResetCommand(
       this,

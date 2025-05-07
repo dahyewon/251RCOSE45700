@@ -3,6 +3,7 @@ import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
+import { EditTextState } from "./EditTextState";
 import { MoveState } from "./MoveState";
 
 // 선택 모드
@@ -53,6 +54,18 @@ export class SelectState implements ICanvasState {
     this.selecting = false;
     console.log(this.selectedShapeModel.getSelectedShapes());
   }
+
+  handleDoubleClick(event: React.MouseEvent): void {
+    const { offsetX, offsetY } = event.nativeEvent;
+    const shape = this.selectedShapeModel.getSelectedShapes()[0]; // 이거 맞나?
+  
+    if (shape.isPointInside(offsetX, offsetY)) {
+      this.canvasViewModel.setState(
+        new EditTextState(this.canvasViewModel, this.shapeModel, this.selectedShapeModel)
+      );
+    }
+  }
+  
 
   selectShapes(
     startX: number,
