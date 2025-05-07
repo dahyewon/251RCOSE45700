@@ -3,6 +3,7 @@ import { CommonPropertyHandlers, PropertyHandler } from "../property/PropertyHan
 import { AbstractShape } from "./Shape";
 
 export class TextShape extends AbstractShape {
+    public isEditing: boolean = false;
     constructor(
         id: number,
         startX: number,
@@ -12,13 +13,13 @@ export class TextShape extends AbstractShape {
         public textContent: string = DEFAULT_SHAPE.TEXT_CONTENT,
         public fontSize: number = DEFAULT_SHAPE.FONT_SIZE,
         public fontFamily: string = DEFAULT_SHAPE.FONT_FAMILY,
-        color?: string,
     ) {
-        super(id, startX, startY, endX, endY, color);
+        super(id, startX, startY, endX, endY);
     }
 
     draw(ctx: CanvasRenderingContext2D | null): void {
         if (!ctx) throw new Error("context is null");
+        if (this.isEditing) return;
         this.setShadow(ctx);
 
         ctx.font = `${this.fontSize}px ${this.fontFamily}`;
@@ -38,13 +39,6 @@ export class TextShape extends AbstractShape {
         );
     }
 
-    private static textContentHandler = (): PropertyHandler<TextShape> => ({
-        type: PROPERTY_TYPES.TEXT,
-        name: PROPERTY_NAMES.TEXT_CONTENT,
-        getValue: (shape) => shape.textContent,
-        setValue: (shape, value) => { shape.textContent = value.toString(); },
-    });
-
     private static fontSizeHandler = (): PropertyHandler<TextShape> => ({
         type: PROPERTY_TYPES.NUMBER,
         name: PROPERTY_NAMES.FONT_SIZE,
@@ -63,7 +57,7 @@ export class TextShape extends AbstractShape {
         return [
             CommonPropertyHandlers.HorizontalPos(),
             CommonPropertyHandlers.VerticalPos(),
-            TextShape.textContentHandler(),
+            CommonPropertyHandlers.textContentHandler(),
             TextShape.fontSizeHandler(),
             TextShape.fontFamilyHandler(),
             CommonPropertyHandlers.Width(),
@@ -75,4 +69,16 @@ export class TextShape extends AbstractShape {
             CommonPropertyHandlers.ShadowColor(),    
         ];
     }
+}
+
+export interface TextShapeProps {
+    id: number;
+    textContent: string;
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+    fontSize: number;
+    fontFamily: string;
+    color: string;
 }
