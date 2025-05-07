@@ -66,10 +66,9 @@ export class EditTextState implements ICanvasState {
     private commitText() {
         if (this.textarea && this.editingShapeId !== null) {
             const newText = this.textarea.value;
-            this.shapeModel.setProperty(this.editingShapeId, PROPERTY_NAMES.TEXT_CONTENT, newText);
-            const shape = this.shapeModel.getShapes().find((s) => s.id === this.editingShapeId);
-            if (shape instanceof TextShape) {
-                shape.isEditing = false;
+            const changedShape = this.shapeModel.setProperty(this.editingShapeId, PROPERTY_NAMES.TEXT_CONTENT, newText);
+            if (changedShape instanceof TextShape) {
+                changedShape.isEditing = false;
             }
             document.body.removeChild(this.textarea);
             this.textarea = null;
@@ -79,6 +78,7 @@ export class EditTextState implements ICanvasState {
         this.viewModel.setState(
             new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
         );
+        this.viewModel.notifyShapesUpdated();
     }
 
     handleMouseDown(event: React.MouseEvent): void {
