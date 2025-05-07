@@ -1,6 +1,5 @@
-import { ImageShape, Ellipse, Line, Rectangle } from "./";
+import { ImageShape, Ellipse, Line, Rectangle, TextShape } from "./";
 import { Shape } from "./Shape";
-import { TextShape } from "./TextShape";
 
 interface ShapeProps {
   id: number;
