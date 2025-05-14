@@ -7,15 +7,9 @@ export interface Shape {
   readonly startY: number;
   readonly endX: number;
   readonly endY: number;
-  readonly color: string;
-  readonly width: number;
-  readonly height: number;
-  readonly centerX: number;
-  readonly centerY: number;
 
   draw(ctx: CanvasRenderingContext2D | null): void;
   move(dx: number, dy: number): void;
-  setShadow(ctx: CanvasRenderingContext2D): void;
   getResizeHandles(): { x: number; y: number; pos: string }[];
   resize(dx: number, dy: number, pos: string): void;
   isPointInside(x: number, y: number): boolean;
