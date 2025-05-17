@@ -9,7 +9,7 @@ import { ResizeState } from "./canvasState/ResizeState";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { CanvasStateCommandFactory } from "./canvasState/CanvasStateCommandFactory";
 import { CanvasResetCommand } from "../command/CanvasResetCommand";
-import { ZOrderMoveCommand } from "../command/ZOrderMoveCommand";
+import { ZOrderMoveCommandFactory } from "../command/ZOrderMoveCommand";
 import { SetPropertyCommand } from "../command/SetPropertyCommand";
 import { AddImageShapeCommand } from "../command/AddImageShapeCommand";
 
@@ -18,6 +18,7 @@ export class CanvasViewModel extends Observable<any> {
   private selectedShapeModel: SelectedShapeModel;
   private state: ICanvasState;
   private canvasStateCommandFactory: CanvasStateCommandFactory;
+  private zOrderMoveCommandFactory: ZOrderMoveCommandFactory;
 
   private shapeType: string = "rectangle";
 
@@ -36,6 +37,7 @@ export class CanvasViewModel extends Observable<any> {
       this.shapeModel,
       this.selectedShapeModel
     );
+    this.zOrderMoveCommandFactory = new ZOrderMoveCommandFactory(this.shapeModel);
   }
 
   setState(state: ICanvasState) {
@@ -110,7 +112,7 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   requestZOrderMove(action: string, shapeId: number) {
-    const command = new ZOrderMoveCommand(this.shapeModel, action, shapeId);
+    const command = this.zOrderMoveCommandFactory.createCommand(action, shapeId);
     command.execute();
     this.notifyShapesUpdated();
   }
