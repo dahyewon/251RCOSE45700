@@ -16,9 +16,18 @@ export class SelectedShapeModel {
     return [...this.selectedShapes];
   }
 
-  continueSelectShapes(shapes: Shape[]): void {
+  updateSelectedShapes(shapes: Shape[]): void {
     this.clearSelectedShapes();
     this.selectedShapes = shapes;
+  }
+
+  clickSelectedShape(offsetX: number, offsetY: number): Shape | null {
+    for (let shape of this.selectedShapes) {
+      if (shape.isPointInside(offsetX, offsetY)) {
+        return shape;
+      }
+    }
+    return null;
   }
 
   startMoveSelectedShapes(offsetX: number, offsetY: number): void {
@@ -68,5 +77,17 @@ export class SelectedShapeModel {
     return this.selectedShapes.forEach((shape) => {
       shape.resize(dx, dy, this.pos);
     });
+  }
+
+  insertShapeText(offsetX: number, offsetY: number): Shape | null {
+    if (this.selectedShapes.length === 0) return null;
+
+    for (let shape of this.selectedShapes) {
+      if (shape.isPointInside(offsetX, offsetY)) {
+        return shape;
+      }
+    }
+
+    return null;
   }
 }

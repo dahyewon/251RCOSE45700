@@ -47,7 +47,7 @@ export class ShapeModel {
     this.endY = offsetY;
 
     this.drawingShape = ShapeFactory.createShape(this.shapeType, {
-      id: this.countShapes(),
+      id: this.shapes.length,
       startX: this.startX,
       startY: this.startY,
       endX: this.endX,
@@ -76,6 +76,39 @@ export class ShapeModel {
     } else if (this.drawingShape != null) {
       return [...sortedShapes, this.drawingShape] as Shape[];
     } else return sortedShapes as Shape[];
+  }
+
+  selectShapes(
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number
+  ): Shape[] {
+    const minX = Math.min(startX, endX);
+    const maxX = Math.max(startX, endX);
+    const minY = Math.min(startY, endY);
+    const maxY = Math.max(startY, endY);
+
+    return this.shapes.filter((shape) => {
+      const shapeMinX = Math.min(shape.startX, shape.endX);
+      const shapeMaxX = Math.max(shape.startX, shape.endX);
+      const shapeMinY = Math.min(shape.startY, shape.endY);
+      const shapeMaxY = Math.max(shape.startY, shape.endY);
+
+      return (
+        !(shapeMaxX < minX || maxX < shapeMinX) &&
+        !(shapeMaxY < minY || maxY < shapeMinY)
+      );
+    });
+  }
+
+  clickShape(offsetX: number, offsetY: number): Shape | null {
+    for (let shape of this.shapes) {
+      if (shape.isPointInside(offsetX, offsetY)) {
+        return shape;
+      }
+    }
+    return null;
   }
 
   setProperty(shapeId: number, propertyName: string, value: any): Shape {
@@ -111,9 +144,9 @@ export class ShapeModel {
   getTextShapeProperties(shapeId: number): TextShapeProps {
     const shape = this.shapes.find((s) => s.id === shapeId);
     // 일단은 TextShape에 대한 기능부터 구현하자 싶어서 if문 만들었습니다! 추후 제거 예정
-    if (!(shape instanceof TextShape)) throw new Error("Requested shape is not a TextShape.");
-    
-  
+    if (!(shape instanceof TextShape))
+      throw new Error("Requested shape is not a TextShape.");
+
     return {
       id: shape.id,
       textContent: shape.textContent,

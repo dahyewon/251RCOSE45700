@@ -1,4 +1,3 @@
-import { Shape } from "../../entity/shape/Shape";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
@@ -41,95 +40,69 @@ export class SelectState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    const shapes = this.selectShapes(
+    const shapes = this.shapeModel.selectShapes(
       this.startX,
       this.startY,
       this.endX,
       this.endY
     );
-    this.selectedShapeModel.continueSelectShapes(shapes);
+    this.selectedShapeModel.updateSelectedShapes(shapes);
   }
 
   handleMouseUp(): void {
     this.selecting = false;
-    console.log(this.selectedShapeModel.getSelectedShapes());
   }
 
   handleDoubleClick(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
-    const shapes = this.selectedShapeModel.getSelectedShapes();
-    if (shapes.length === 0) return;
-    for (let shape of shapes) {
-      if (shape.isPointInside(offsetX, offsetY)) {
-        this.selectedShapeModel.continueSelectShapes([shape]);
-        this.canvasViewModel.setState(
-          new EditTextState(this.canvasViewModel, this.shapeModel, this.selectedShapeModel)
-        );
-      }
-    }
-  }
-  
-
-  selectShapes(
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number
-  ): Shape[] {
-    const minX = Math.min(startX, endX);
-    const maxX = Math.max(startX, endX);
-    const minY = Math.min(startY, endY);
-    const maxY = Math.max(startY, endY);
-
-    return this.shapeModel.getShapes().filter((shape) => {
-      const shapeMinX = Math.min(shape.startX, shape.endX);
-      const shapeMaxX = Math.max(shape.startX, shape.endX);
-      const shapeMinY = Math.min(shape.startY, shape.endY);
-      const shapeMaxY = Math.max(shape.startY, shape.endY);
-
-      return (
-        !(shapeMaxX < minX || maxX < shapeMinX) &&
-        !(shapeMaxY < minY || maxY < shapeMinY)
+    const clickedShape = this.selectedShapeModel.insertShapeText(
+      offsetX,
+      offsetY
+    );
+    if (clickedShape) {
+      this.selectedShapeModel.updateSelectedShapes([clickedShape]);
+      this.canvasViewModel.setState(
+        new EditTextState(
+          this.canvasViewModel,
+          this.shapeModel,
+          this.selectedShapeModel
+        )
       );
-    });
+    }
   }
 
   checkShapeClick(offsetX: number, offsetY: number): boolean {
-    const selectedShapes = this.selectedShapeModel.getSelectedShapes();
-    for (let i = 0; i < selectedShapes.length; i++) {
-      const shape = selectedShapes[i];
-      if (shape.isPointInside(offsetX, offsetY)) {
-        this.canvasViewModel.setState(
-          new MoveState(
-            this.canvasViewModel,
-            this.shapeModel,
-            this.selectedShapeModel,
-            offsetX,
-            offsetY
-          )
-        );
-        return true;
-      }
+    const clickedSelectedShape = this.selectedShapeModel.clickSelectedShape(
+      offsetX,
+      offsetY
+    );
+    if (clickedSelectedShape) {
+      this.canvasViewModel.setState(
+        new MoveState(
+          this.canvasViewModel,
+          this.shapeModel,
+          this.selectedShapeModel,
+          offsetX,
+          offsetY
+        )
+      );
+      return true;
     }
 
-    const shapes = this.shapeModel.getShapes();
-    for (let i = 0; i < shapes.length; i++) {
-      const shape = shapes[i];
-      if (shape.isPointInside(offsetX, offsetY)) {
-        this.selectedShapeModel.continueSelectShapes([shape]); // 클릭한 도형을 선택
-        this.canvasViewModel.setState(
-          new MoveState(
-            this.canvasViewModel,
-            this.shapeModel,
-            this.selectedShapeModel,
-            offsetX,
-            offsetY
-          )
-        );
-        return true;
-      }
+    const clickedShape = this.shapeModel.clickShape(offsetX, offsetY);
+    if (clickedShape) {
+      this.selectedShapeModel.updateSelectedShapes([clickedShape]); // 클릭한 도형을 선택
+      this.canvasViewModel.setState(
+        new MoveState(
+          this.canvasViewModel,
+          this.shapeModel,
+          this.selectedShapeModel,
+          offsetX,
+          offsetY
+        )
+      );
+      return true;
     }
-
     return false;
   }
 }
