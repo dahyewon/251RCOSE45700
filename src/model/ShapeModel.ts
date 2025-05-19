@@ -115,6 +115,9 @@ export class ShapeModel {
     const shape = this.shapes.find((shape) => shape.id === shapeId);
     if (shape) {
       shape.setProperties(propertyName, value);
+      if (shape instanceof TextShape) {
+        shape.isEditing = false;
+      }
       return shape;
     } else {
       throw new Error("Shape not found.");
@@ -139,24 +142,5 @@ export class ShapeModel {
     });
     this.addShape(shape);
     return shape;
-  }
-
-  getTextShapeProperties(shapeId: number): TextShapeProps {
-    const shape = this.shapes.find((s) => s.id === shapeId);
-    // 일단은 TextShape에 대한 기능부터 구현하자 싶어서 if문 만들었습니다! 추후 제거 예정
-    if (!(shape instanceof TextShape))
-      throw new Error("Requested shape is not a TextShape.");
-
-    return {
-      id: shape.id,
-      textContent: shape.textContent,
-      startX: shape.startX,
-      startY: shape.startY,
-      endX: shape.endX,
-      endY: shape.endY,
-      fontSize: shape.fontSize,
-      fontFamily: shape.fontFamily,
-      color: shape.color,
-    };
   }
 }
