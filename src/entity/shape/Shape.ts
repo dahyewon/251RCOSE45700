@@ -3,10 +3,10 @@ import { Property, PropertyHandler } from "../property/PropertyHandlers";
 
 export interface Shape {
   readonly id: number;
-  readonly startX: number;
-  readonly startY: number;
-  readonly endX: number;
-  readonly endY: number;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
 
   draw(ctx: CanvasRenderingContext2D | null): void;
   move(dx: number, dy: number): void;
@@ -15,6 +15,7 @@ export interface Shape {
   isPointInside(x: number, y: number): boolean;
   getProperties(): Property[];
   setProperties(name: string, value: any): void;
+  normalizeCoords(): void;
 }
 
 export abstract class AbstractShape implements Shape {
@@ -141,5 +142,17 @@ export abstract class AbstractShape implements Shape {
     const centerY = this.centerY;
     this.startY = centerY - newHeight / 2;
     this.endY = centerY + newHeight / 2;
+  }
+
+  normalizeCoords(): void {
+    const minX = Math.min(this.startX, this.endX);
+    const maxX = Math.max(this.startX, this.endX);
+    const minY = Math.min(this.startY, this.endY);
+    const maxY = Math.max(this.startY, this.endY);
+
+    this.startX = minX;
+    this.endX = maxX;
+    this.startY = minY;
+    this.endY = maxY;
   }
 }

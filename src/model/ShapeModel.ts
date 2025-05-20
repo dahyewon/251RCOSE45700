@@ -57,6 +57,7 @@ export class ShapeModel {
 
   endDrawShape(): void {
     if (this.drawingShape) {
+      this.drawingShape.normalizeCoords();
       this.addShape(this.drawingShape);
       this.drawingShape = null; // reset drawing shape
     }

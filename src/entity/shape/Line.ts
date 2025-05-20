@@ -3,7 +3,7 @@ import {
   CommonPropertyHandlers,
   PropertyHandler,
 } from "../property/PropertyHandlers";
-import { AbstractShape } from "./Shape";
+import { AbstractShape, Shape } from "./Shape";
 
 export class Line extends AbstractShape {
   lineWidth: number = 1;
@@ -61,6 +61,8 @@ export class Line extends AbstractShape {
         break;
     }
   }
+
+  override normalizeCoords(): void {}
 
   isPointInside(x: number, y: number, tolerance: number = 5): boolean {
     // 직선의 방정식 ax + by + c = 0
