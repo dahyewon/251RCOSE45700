@@ -4,6 +4,7 @@ import { Shape } from "../entity/shape/Shape";
 import useCanvasEvent from "../hooks/useCanvasEvent";
 import { CANVAS } from "../constants";
 import "./Canvas.css";
+import useCanvasCommand from "../hooks/useCanvasCommand";
 
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -14,6 +15,13 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     { shapes: [], selectedShapes: [] },
     "shapes"
   );
+
+  useCanvasCommand(viewModel, "RESET_INPUT_FIELDS", () => {
+    const textareas = document.querySelectorAll("textarea");
+    textareas.forEach((textarea) => {
+        textarea.remove();
+    });
+  });
 
   //캔버스 렌더링
   const redrawCanvas = useCallback(() => {

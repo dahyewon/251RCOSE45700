@@ -32,11 +32,8 @@ export class CanvasResetCommand implements Command {
       )
     ); // default: 그리기 모드
 
-    // 만약 입력창이 남아있다면 삭제 << 위치 여기가 아닐 것 같은데 급한대로 추가해놨었어요
-    const textareas = document.querySelectorAll("textarea");
-    textareas.forEach((textarea) => {
-        textarea.remove();
-    });
+    // 만약 입력창이 남아있다면 삭제
+    this.canvasViewModel.notifyResetInput();
   }
 
   redo(): void {

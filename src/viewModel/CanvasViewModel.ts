@@ -175,4 +175,12 @@ export class CanvasViewModel extends Observable<any> {
       };
     this.notify(event);
   }
+
+  notifyResetInput() {
+    const event: CanvasEvent<{}> = {
+      type: "RESET_INPUT_FIELDS",
+      data: {},
+    };
+    this.notify(event);
+  }
 }
