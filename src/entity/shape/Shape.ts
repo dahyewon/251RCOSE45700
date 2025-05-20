@@ -1,4 +1,4 @@
-import { DEFAULT_SHAPE } from "../../constants";
+import { DEFAULT_SHAPE, ResizeHandlePosition } from "../../constants";
 import { Property, PropertyHandler } from "../property/PropertyHandlers";
 
 export interface Shape {
@@ -10,7 +10,7 @@ export interface Shape {
 
   draw(ctx: CanvasRenderingContext2D | null): void;
   move(dx: number, dy: number): void;
-  getResizeHandles(): { x: number; y: number; pos: string }[];
+  getResizeHandles(): { x: number; y: number; pos: ResizeHandlePosition }[];
   resize(dx: number, dy: number, pos: string): void;
   isPointInside(x: number, y: number): boolean;
   getProperties(): Property[];
@@ -74,34 +74,35 @@ export abstract class AbstractShape implements Shape {
 
   // 4개 꼭지점 기준
   // Line은 override 필요
-  getResizeHandles(): { x: number; y: number; pos: string }[] {
+  getResizeHandles(): { x: number; y: number; pos: ResizeHandlePosition }[] {
     return [
-      { x: this.startX - 5, y: this.startY - 5, pos: "top-left" },
-      { x: this.endX - 5, y: this.startY - 5, pos: "top-right" },
-      { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" },
-      { x: this.startX - 5, y: this.endY - 5, pos: "bottom-left" },
-    ];
+    { x: this.startX - 5, y: this.startY - 5, pos: ResizeHandlePosition.TopLeft },
+    { x: this.endX - 5, y: this.startY - 5, pos: ResizeHandlePosition.TopRight },
+    { x: this.endX - 5, y: this.endY - 5, pos: ResizeHandlePosition.BottomRight },
+    { x: this.startX - 5, y: this.endY - 5, pos: ResizeHandlePosition.BottomLeft },
+  ];
   }
-  // Line은 override 필요
-  resize(dx: number, dy: number, pos: string): void {
-    switch (pos) {
-      case "top-left":
+
+  resize(dx: number, dy: number, pos: ResizeHandlePosition): void {
+    const actions: Record<ResizeHandlePosition, () => void> = {
+      [ResizeHandlePosition.TopLeft]: () => {
         this.startX += dx;
         this.startY += dy;
-        break;
-      case "top-right":
+      },
+      [ResizeHandlePosition.TopRight]: () => {
         this.endX += dx;
         this.startY += dy;
-        break;
-      case "bottom-right":
+      },
+      [ResizeHandlePosition.BottomRight]: () => {
         this.endX += dx;
         this.endY += dy;
-        break;
-      case "bottom-left":
+      },
+      [ResizeHandlePosition.BottomLeft]: () => {
         this.startX += dx;
         this.endY += dy;
-        break;
-    }
+      },
+    };
+    actions[pos]?.();
   }
 
   abstract draw(ctx: CanvasRenderingContext2D): void;
