@@ -8,7 +8,7 @@ import { MoveState } from "./MoveState";
 import { ResizeState } from "./ResizeState";
 import { SelectState } from "./SelectState";
 
-export interface CanvasStateStrategy {
+export interface CanvasStateCreator {
   createCommand(
     canvasViewModel: CanvasViewModel,
     shapeModel: ShapeModel,
@@ -17,7 +17,7 @@ export interface CanvasStateStrategy {
   ): Command;
 }
 
-export class DrawStateStrategy implements CanvasStateStrategy {
+export class DrawStateCreator implements CanvasStateCreator {
   createCommand(
     canvasViewModel: CanvasViewModel,
     shapeModel: ShapeModel,
@@ -36,7 +36,7 @@ export class DrawStateStrategy implements CanvasStateStrategy {
   }
 }
 
-export class SelectStateStrategy implements CanvasStateStrategy {
+export class SelectStateCreator implements CanvasStateCreator {
   createCommand(
     canvasViewModel: CanvasViewModel,
     shapeModel: ShapeModel,
@@ -50,7 +50,7 @@ export class SelectStateStrategy implements CanvasStateStrategy {
   }
 }
 
-export class MoveStateStrategy implements CanvasStateStrategy {
+export class MoveStateCreator implements CanvasStateCreator {
   createCommand(
     canvasViewModel: CanvasViewModel,
     shapeModel: ShapeModel,
@@ -70,7 +70,7 @@ export class MoveStateStrategy implements CanvasStateStrategy {
   }
 }
 
-export class ResizeStateStrategy implements CanvasStateStrategy {
+export class ResizeStateCreator implements CanvasStateCreator {
   createCommand(
     canvasViewModel: CanvasViewModel,
     shapeModel: ShapeModel,

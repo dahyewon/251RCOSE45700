@@ -3,19 +3,19 @@ import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import {
-  CanvasStateStrategy,
-  DrawStateStrategy,
-  MoveStateStrategy,
-  ResizeStateStrategy,
-  SelectStateStrategy,
-} from "./CanvasStateStrategy";
+  CanvasStateCreator,
+  DrawStateCreator,
+  MoveStateCreator,
+  ResizeStateCreator,
+  SelectStateCreator,
+} from "./CanvasStateCreator";
 
 export class CanvasStateCommandFactory {
-  private strategies: Record<string, CanvasStateStrategy> = {
-    DrawState: new DrawStateStrategy(),
-    SelectState: new SelectStateStrategy(),
-    MoveState: new MoveStateStrategy(),
-    ResizeState: new ResizeStateStrategy(),
+  private creators: Record<string, CanvasStateCreator> = {
+    DrawState: new DrawStateCreator(),
+    SelectState: new SelectStateCreator(),
+    MoveState: new MoveStateCreator(),
+    ResizeState: new ResizeStateCreator(),
   };
   constructor(
     private canvasViewModel: CanvasViewModel,
@@ -24,11 +24,11 @@ export class CanvasStateCommandFactory {
   ) {}
 
   createCommand(stateType: string, params: any): Command {
-    const strategy = this.strategies[stateType];
-    if (!strategy) {
+    const creator = this.creators[stateType];
+    if (!creator) {
       throw new Error(`Unknown state type: ${stateType}`);
     }
-    return strategy.createCommand(
+    return creator.createCommand(
       this.canvasViewModel,
       this.shapeModel,
       this.selectedShapeModel,
