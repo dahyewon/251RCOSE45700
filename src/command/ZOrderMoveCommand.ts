@@ -2,7 +2,6 @@ import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
 export class ZOrderMoveCommand implements Command {
-  private factory = new ZOrderMoveActionFactory();
   private action: ZOrderAction;
 
   constructor(
@@ -10,7 +9,8 @@ export class ZOrderMoveCommand implements Command {
     actionType: string,
     private shapeId: number,
   ) {
-    this.action = this.factory.getAction(actionType);
+    const actionRegistry = ZOrderMoveActionRegistry.getInstance();
+    this.action = actionRegistry.getAction(actionType);
   }
 
   execute(): void {
@@ -64,13 +64,23 @@ class MoveToBackAction implements ZOrderAction {
   }
 }
 
-class ZOrderMoveActionFactory {
+class ZOrderMoveActionRegistry {
+  private static instance: ZOrderMoveActionRegistry;
   private actions: Record<string, ZOrderAction> = {
     forward: new MoveForwardAction(),
     backward: new MoveBackwardAction(),
     toFront: new MoveToFrontAction(),
     toBack: new MoveToBackAction(),
   };
+
+  private constructor() {}
+
+  public static getInstance(): ZOrderMoveActionRegistry {
+    if (!this.instance) {
+      this.instance = new ZOrderMoveActionRegistry();
+    }
+    return this.instance;
+  }
 
   getAction(action: string): ZOrderAction {
     return this.actions[action];
