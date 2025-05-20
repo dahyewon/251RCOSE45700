@@ -1,22 +1,21 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/shape/Shape";
-import useCanvasEvent from "../hooks/useCanvasEvent";
 import { CANVAS } from "../constants";
 import "./Canvas.css";
-import useCanvasCommand from "../hooks/useCanvasCommand";
+import { useCanvasActionListener, useCanvasStateListener } from "../hooks";
 
 const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const shapes = useCanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }>(
+  const shapes = useCanvasStateListener<{ shapes: Shape[]; selectedShapes: Shape[] }>(
     viewModel,
     "SHAPES_UPDATED",
     { shapes: [], selectedShapes: [] },
     "shapes"
   );
 
-  useCanvasCommand(viewModel, "RESET_INPUT_FIELDS", () => {
+  useCanvasActionListener(viewModel, "RESET_INPUT_FIELDS", () => {
     const textareas = document.querySelectorAll("textarea");
     textareas.forEach((textarea) => {
         textarea.remove();

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-function useCanvasCommand<T>(
+export function useCanvasActionListener<T>(
   viewModel: CanvasViewModel,
   eventType: string,
   handler: (data: T) => void
@@ -22,5 +22,3 @@ function useCanvasCommand<T>(
     };
   }, [viewModel, eventType, handler]);
 }
-
-export default useCanvasCommand;

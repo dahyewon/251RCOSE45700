@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-function useCanvasEvent<T>(
+export function useCanvasStateListener<T>(
   viewModel: CanvasViewModel,
   eventType: string,
   initialState: T,
@@ -27,5 +27,3 @@ function useCanvasEvent<T>(
 
   return state;
 }
-
-export default useCanvasEvent;
