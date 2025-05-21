@@ -2,7 +2,7 @@ import React from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import "./Toolbar.css";
 import { DEFAULT_SHAPE } from "../constants";
-import { useCanvasStateListener } from "../hooks";
+import { useCanvasStateListener, useCursorByTool } from "../hooks";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {
@@ -28,6 +28,8 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     currentState === "MoveState" ||
     currentState === "ResizeState";
 
+  useCursorByTool(currentState);
+  
   return (
     <div className="toolbar">
       <button
