@@ -20,7 +20,7 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
 
   if (selectedShapes.length === 0) {
     return (
-      <div className="container">
+      <div className="property-window-container">
         <p className="emptyText">선택된 도형이 없습니다.</p>
       </div>
     );
@@ -28,7 +28,7 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
 
   if (selectedShapes.length === 1) {
     return (
-      <div className="container">
+      <div className="property-window-container">
         <h3 className="title">도형 속성</h3>
         <div className="type">
           <span>타입:</span>{" "}
@@ -50,34 +50,40 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
             );
           })}
         </div>
-        <button
-          onClick={() => {
-            viewModel.requestZOrderMove("forward", selectedShapes[0].id);
-          }}
-        >
-          앞으로
-        </button>
-        <button
-          onClick={() => {
-            viewModel.requestZOrderMove("backward", selectedShapes[0].id);
-          }}
-        >
-          뒤로
-        </button>
-        <button
-          onClick={() => {
-            viewModel.requestZOrderMove("toFront", selectedShapes[0].id);
-          }}
-        >
-          맨 앞으로
-        </button>
-        <button
-          onClick={() => {
-            viewModel.requestZOrderMove("toBack", selectedShapes[0].id);
-          }}
-        >
-          맨 뒤로
-        </button>
+        <div className="zorder-controls">
+          <button
+            className="zorder-btn"
+            onClick={() => {
+              viewModel.requestZOrderMove("forward", selectedShapes[0].id);
+            }}
+          >
+            앞으로
+          </button>
+          <button
+            className="zorder-btn"
+            onClick={() => {
+              viewModel.requestZOrderMove("backward", selectedShapes[0].id);
+            }}
+          >
+            뒤로
+          </button>
+          <button
+            className="zorder-btn"
+            onClick={() => {
+              viewModel.requestZOrderMove("toFront", selectedShapes[0].id);
+            }}
+          >
+            맨 앞으로
+          </button>
+          <button
+            className="zorder-btn"
+            onClick={() => {
+              viewModel.requestZOrderMove("toBack", selectedShapes[0].id);
+            }}
+          >
+            맨 뒤로
+          </button>
+        </div>
       </div>
     );
   }
