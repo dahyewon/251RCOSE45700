@@ -41,8 +41,6 @@ export class Line extends AbstractShape {
     ];
   }
 
-  override normalizeCoords(): void {}
-
   isPointInside(x: number, y: number, tolerance: number = 5): boolean {
     // 직선의 방정식 ax + by + c = 0
     const a = this.endY - this.startY; // dy
