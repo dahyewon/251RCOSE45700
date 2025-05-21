@@ -37,7 +37,7 @@ export class DrawState implements ICanvasState {
     this.drawing = false;
 
     this.shapeModel.endDrawShape();
-    this.selectedShapeModel.continueSelectShapes(
+    this.selectedShapeModel.updateSelectedShapes(
       this.shapeModel.getShapes().slice(-1)
     );
     this.viewModel.setState(
