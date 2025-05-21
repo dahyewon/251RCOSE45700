@@ -1,8 +1,8 @@
 import React from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./Toolbar.css";
 import { DEFAULT_SHAPE } from "../constants";
+import { useCanvasStateListener, useCursorByTool } from "../hooks";
 
 const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const initialState = {
@@ -10,12 +10,12 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     drawingShape: "rectangle",
   }; // 초기 상태 설정
 
-  const currentState = useCanvasEvent<{
+  const currentState = useCanvasStateListener<{
     currentState: string;
     drawingShape?: string;
   }>(viewModel, "STATE_CHANGED", initialState, "currentState");
 
-  const drawingShape = useCanvasEvent<{
+  const drawingShape = useCanvasStateListener<{
     currentState: string;
     drawingShape?: string;
   }>(viewModel, "STATE_CHANGED", initialState, "drawingShape");
@@ -28,6 +28,8 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     currentState === "MoveState" ||
     currentState === "ResizeState";
 
+  useCursorByTool(currentState);
+  
   return (
     <div className="toolbar">
       <button

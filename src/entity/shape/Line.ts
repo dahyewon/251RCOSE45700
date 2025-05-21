@@ -1,4 +1,4 @@
-import { PROPERTY_NAMES, PROPERTY_TYPES } from "../../constants";
+import { PROPERTY_NAMES, PROPERTY_TYPES, ResizeHandlePosition } from "../../constants";
 import {
   CommonPropertyHandlers,
   PropertyHandler,
@@ -34,32 +34,11 @@ export class Line extends AbstractShape {
     ctx.restore();
   }
 
-  override getResizeHandles(): { x: number; y: number; pos: string }[] {
+  override getResizeHandles(): { x: number; y: number; pos: ResizeHandlePosition }[] {
     return [
-      { x: this.startX - 5, y: this.startY - 5, pos: "top-left" }, // starting point
-      { x: this.endX - 5, y: this.endY - 5, pos: "bottom-right" }, // ending point
+      { x: this.startX - 5, y: this.startY - 5, pos: ResizeHandlePosition.TopLeft }, // starting point
+      { x: this.endX - 5, y: this.endY - 5, pos: ResizeHandlePosition.BottomRight }, // ending point
     ];
-  }
-
-  override resize(dx: number, dy: number, pos: string): void {
-    switch (pos) {
-      case "top-left":
-        this.startX += dx;
-        this.startY += dy;
-        break;
-      case "top-right":
-        this.endX += dx;
-        this.startY += dy;
-        break;
-      case "bottom-right":
-        this.endX += dx;
-        this.endY += dy;
-        break;
-      case "bottom-left":
-        this.startX += dx;
-        this.endY += dy;
-        break;
-    }
   }
 
   isPointInside(x: number, y: number, tolerance: number = 5): boolean {

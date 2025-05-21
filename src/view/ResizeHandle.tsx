@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import { Shape } from "../entity/shape/Shape";
-import useCanvasEvent from "../hooks/useCanvasEvent";
+import { useCanvasStateListener } from "../hooks";
 
 const ResizeHandle: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
 }) => {
-  const selectedShapes = useCanvasEvent<{
+  const selectedShapes = useCanvasStateListener<{
     shapes: Shape[];
     selectedShapes: Shape[];
   }>(

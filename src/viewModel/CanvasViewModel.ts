@@ -12,7 +12,7 @@ import {
   AddTemplateShapeCommand,
   CanvasResetCommand,
   SetPropertyCommand,
-  ZOrderMoveCommandFactory,
+  ZOrderMoveCommand,
 } from "../command";
 
 export class CanvasViewModel extends Observable<any> {
@@ -20,7 +20,6 @@ export class CanvasViewModel extends Observable<any> {
   private selectedShapeModel: SelectedShapeModel;
   private state: ICanvasState;
   private canvasStateCommandFactory: CanvasStateCommandFactory;
-  private zOrderMoveCommandFactory: ZOrderMoveCommandFactory;
 
   private shapeType: string = "rectangle";
 
@@ -39,7 +38,6 @@ export class CanvasViewModel extends Observable<any> {
       this.shapeModel,
       this.selectedShapeModel
     );
-    this.zOrderMoveCommandFactory = new ZOrderMoveCommandFactory(this.shapeModel);
   }
 
   setState(state: ICanvasState) {
@@ -122,7 +120,11 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   requestZOrderMove(action: string, shapeId: number) {
-    const command = this.zOrderMoveCommandFactory.createCommand(action, shapeId);
+    const command = new ZOrderMoveCommand(
+      this.shapeModel,
+      action,
+      shapeId
+    );
     command.execute();
     this.notifyShapesUpdated();
   }
@@ -150,6 +152,10 @@ export class CanvasViewModel extends Observable<any> {
     this.notifyShapesUpdated();
   }
 
+  saveText(newText: string) {
+    (this.state as any).saveText(newText);
+  }
+
   notifyShapesUpdated() {
     const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
       type: "SHAPES_UPDATED",
@@ -171,6 +177,30 @@ export class CanvasViewModel extends Observable<any> {
             this.state instanceof DrawState ? this.shapeType : undefined,
         },
       };
+    this.notify(event);
+  }
+
+  notifyResetInput() {
+    const event: CanvasEvent<{}> = {
+      type: "RESET_INPUT_FIELDS",
+      data: {},
+    };
+    this.notify(event);
+  }
+
+  notifyShowTextInput(props: any) {
+    const event: CanvasEvent<any> = {
+      type: "SHOW_TEXT_INPUT",
+      data: props,
+    };
+    this.notify(event);
+  }
+
+  notifyHideTextInput() {
+    const event: CanvasEvent<{}> = {
+      type: "HIDE_TEXT_INPUT",
+      data: {},
+    };
     this.notify(event);
   }
 }

@@ -49,3 +49,10 @@ export const DROPDOWN_OPTIONS: { [key: string]: string[] } = {
     "Brush Script MT"
   ],
 };
+
+export enum ResizeHandlePosition {
+  TopLeft = "top-left",
+  TopRight = "top-right",
+  BottomRight = "bottom-right",
+  BottomLeft = "bottom-left",
+}

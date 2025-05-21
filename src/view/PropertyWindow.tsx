@@ -1,14 +1,14 @@
 import React from "react";
 import { Shape } from "../entity/shape/Shape"; // Shape 인터페이스 또는 클래스 import 경로 맞춰줘
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import useCanvasEvent from "../hooks/useCanvasEvent";
 import "./PropertyWindow.css";
 import { PropertyRendererFactory } from "../components/propertyRenderFactory";
+import { useCanvasStateListener } from "../hooks";
 
 const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
   viewModel,
 }) => {
-  const selectedShapes = useCanvasEvent<{
+  const selectedShapes = useCanvasStateListener<{
     shapes: Shape[];
     selectedShapes: Shape[];
   }>(
