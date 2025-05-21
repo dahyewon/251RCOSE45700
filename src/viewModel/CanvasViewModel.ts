@@ -152,6 +152,10 @@ export class CanvasViewModel extends Observable<any> {
     this.notifyShapesUpdated();
   }
 
+  saveText(newText: string) {
+    (this.state as any).saveText(newText);
+  }
+
   notifyShapesUpdated() {
     const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
       type: "SHAPES_UPDATED",
@@ -179,6 +183,22 @@ export class CanvasViewModel extends Observable<any> {
   notifyResetInput() {
     const event: CanvasEvent<{}> = {
       type: "RESET_INPUT_FIELDS",
+      data: {},
+    };
+    this.notify(event);
+  }
+
+  notifyShowTextInput(props: any) {
+    const event: CanvasEvent<any> = {
+      type: "SHOW_TEXT_INPUT",
+      data: props,
+    };
+    this.notify(event);
+  }
+
+  notifyHideTextInput() {
+    const event: CanvasEvent<{}> = {
+      type: "HIDE_TEXT_INPUT",
       data: {},
     };
     this.notify(event);
