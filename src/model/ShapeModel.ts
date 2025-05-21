@@ -143,4 +143,19 @@ export class ShapeModel {
     this.addShape(shape);
     return shape;
   }
+
+  getTextProperty(shape: Shape): TextShapeProps {
+    if (!(shape instanceof TextShape)) throw new Error("Requested shape is not a TextShape.");
+    return {
+      id: shape.id,
+      textContent: shape.textContent,
+      startX: shape.startX,
+      startY: shape.startY,
+      endX: shape.endX,
+      endY: shape.endY,
+      fontSize: shape.fontSize,
+      fontFamily: shape.fontFamily,
+      color: shape.color,
+    };
+  }
 }
