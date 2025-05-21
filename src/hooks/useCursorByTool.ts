@@ -6,10 +6,11 @@ export function useCursorByTool(currentState: string | undefined) {
       document.body.style.cursor = "crosshair";
     } else if (
       currentState === "SelectState" ||
-      currentState === "MoveState" ||
-      currentState === "ResizeState"
+      currentState === "MoveState"
     ) {
       document.body.style.cursor = "grab";
+    } else if (currentState === "ResizeState") {
+      document.body.style.cursor = "grabbing";
     } else {
       document.body.style.cursor = "default";
     }

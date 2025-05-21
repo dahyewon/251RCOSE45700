@@ -2,7 +2,6 @@ import { CANVAS, DEFAULT_SHAPE } from "../constants";
 import { TextShape } from "../entity/shape";
 import { Shape } from "../entity/shape/Shape";
 import { ShapeFactory } from "../entity/shape/ShapeFactory";
-import { TextShapeProps } from "../entity/shape/TextShape";
 
 export class ShapeModel {
   private shapes: Shape[] = [];
