@@ -18,9 +18,8 @@ export class EditTextState implements ICanvasState {
         if (shape instanceof TextShape) {
             this.editingShapeId = shape.id;
             shape.isEditing = true;
-            const props = this.shapeModel.getTextProperty(shape);
+            const props = this.selectedShapeModel.getTextShapeProperties();
             this.viewModel.notifyShowTextInput({
-                shapeId: shape.id,
                 ...props
             });
         }

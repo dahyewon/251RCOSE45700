@@ -14,6 +14,7 @@ import {
   SetPropertyCommand,
   ZOrderMoveCommand,
 } from "../command";
+import { TextShapeProps } from "../entity/shape/TextShape";
 
 export class CanvasViewModel extends Observable<any> {
   private shapeModel: ShapeModel;
@@ -188,8 +189,8 @@ export class CanvasViewModel extends Observable<any> {
     this.notify(event);
   }
 
-  notifyShowTextInput(props: any) {
-    const event: CanvasEvent<any> = {
+  notifyShowTextInput(props: TextShapeProps) {
+    const event: CanvasEvent<TextShapeProps> = {
       type: "SHOW_TEXT_INPUT",
       data: props,
     };

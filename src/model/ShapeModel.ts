@@ -2,7 +2,6 @@ import { CANVAS, DEFAULT_SHAPE } from "../constants";
 import { TextShape } from "../entity/shape";
 import { Shape } from "../entity/shape/Shape";
 import { ShapeFactory } from "../entity/shape/ShapeFactory";
-import { TextShapeProps } from "../entity/shape/TextShape";
 
 export class ShapeModel {
   private shapes: Shape[] = [];
@@ -142,20 +141,5 @@ export class ShapeModel {
     });
     this.addShape(shape);
     return shape;
-  }
-
-  getTextProperty(shape: Shape): TextShapeProps {
-    if (!(shape instanceof TextShape)) throw new Error("Requested shape is not a TextShape.");
-    return {
-      id: shape.id,
-      textContent: shape.textContent,
-      startX: shape.startX,
-      startY: shape.startY,
-      endX: shape.endX,
-      endY: shape.endY,
-      fontSize: shape.fontSize,
-      fontFamily: shape.fontFamily,
-      color: shape.color,
-    };
   }
 }
