@@ -72,7 +72,7 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   }, [textInput, didFocus]);
 
   return (
-    <div>
+    <div className="canvas-container">
       <canvas
         ref={canvasRef}
         width={CANVAS.WIDTH}
