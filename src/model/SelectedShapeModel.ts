@@ -1,8 +1,9 @@
+import { Observable } from "../core/Observable";
 import { TextShape } from "../entity/shape";
 import { Shape } from "../entity/shape/Shape";
 import { TextShapeProps } from "../entity/shape/TextShape";
 
-export class SelectedShapeModel {
+export class SelectedShapeModel extends Observable {
   private selectedShapes: Shape[] = [];
   private startX: number = 0;
   private startY: number = 0;

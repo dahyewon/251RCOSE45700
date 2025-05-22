@@ -1,9 +1,10 @@
 import { CANVAS, DEFAULT_SHAPE } from "../constants";
+import { Observable } from "../core/Observable";
 import { TextShape } from "../entity/shape";
 import { Shape } from "../entity/shape/Shape";
 import { ShapeFactory } from "../entity/shape/ShapeFactory";
 
-export class ShapeModel {
+export class ShapeModel extends Observable {
   private shapes: Shape[] = [];
   private zOrder: number[] = []; // z-order - shapeId map
   private startX: number = 0;

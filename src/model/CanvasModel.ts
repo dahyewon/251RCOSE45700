@@ -1,33 +1,27 @@
 import { Observable } from "../core/Observable";
-import { CanvasEvent } from "../viewModel/CanvasEvents";
-import { ICanvasState } from "../viewModel/canvasState/CanvasState";
-import { DrawState } from "../viewModel/canvasState/DrawState";
 
-export class CanvasModel extends Observable<any> {
-  private state: ICanvasState | null = null;
+export class CanvasModel extends Observable {
+  private state: string;
   private shapeType: string;
 
   constructor() {
     super();
+    this.state = "DrawState"; // default state
     this.shapeType = "rectangle"; // default shape type
   }
 
-  public setCanvasState(state: ICanvasState) {
-    this.state = state;
-    this.notifyStateChanged();
+  public getCurrentState(): string {
+    return this.state.constructor.name;
   }
-
-  private notifyStateChanged() {
-    if (this.state === null) return;
-    const event: CanvasEvent<{ currentState: string; drawingShape?: string }> =
-      {
-        type: "STATE_CHANGED",
-        data: {
-          currentState: this.state.constructor.name,
-          drawingShape:
-            this.state instanceof DrawState ? this.shapeType : undefined,
-        },
-      };
-    this.notify(event);
+  public setCanvasState(state: string) {
+    this.state = state;
+    this.notify();
+  }
+  public getShapeType(): string {
+    return this.shapeType;
+  }
+  public setShapeType(type: string) {
+    this.shapeType = type;
+    this.notify();
   }
 }
