@@ -4,12 +4,20 @@ import { Shape } from "../entity/shape/Shape";
 import { TextShapeProps } from "../entity/shape/TextShape";
 
 export class SelectedShapeModel extends Observable {
+  private static instance: SelectedShapeModel;
   private selectedShapes: Shape[] = [];
   private startX: number = 0;
   private startY: number = 0;
   private endX: number = 0;
   private endY: number = 0;
   private pos: string = "none"; // resize handle position
+
+  public static getInstance(): SelectedShapeModel {
+    if (!SelectedShapeModel.instance) {
+      SelectedShapeModel.instance = new SelectedShapeModel();
+    }
+    return SelectedShapeModel.instance;
+  }
 
   clearSelectedShapes() {
     this.selectedShapes = [];

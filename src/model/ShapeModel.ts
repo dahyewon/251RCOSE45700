@@ -5,6 +5,7 @@ import { Shape } from "../entity/shape/Shape";
 import { ShapeFactory } from "../entity/shape/ShapeFactory";
 
 export class ShapeModel extends Observable {
+  private static instance: ShapeModel;
   private shapes: Shape[] = [];
   private zOrder: number[] = []; // z-order - shapeId map
   private startX: number = 0;
@@ -14,6 +15,12 @@ export class ShapeModel extends Observable {
   private shapeType: string = "rectangle"; // default shape type
   private drawingShape: Shape | null = null;
 
+  public static getInstance(): ShapeModel {
+    if (!ShapeModel.instance) {
+      ShapeModel.instance = new ShapeModel();
+    }
+    return ShapeModel.instance;
+  }
   addShape(shape: Shape) {
     this.shapes.push(shape);
     this.zOrder.push(shape.id); // z-order는 도형 추가 시 자동으로 설정

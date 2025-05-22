@@ -1,19 +1,21 @@
 import { Observable } from "../core/Observable";
 
 export class CanvasModel extends Observable {
-  private state: string;
-  private shapeType: string;
+  private static instance: CanvasModel;
+  private state: string = "DrawState"; // default state
+  private shapeType: string = "rectangle"; // default shape type
 
-  constructor() {
-    super();
-    this.state = "DrawState"; // default state
-    this.shapeType = "rectangle"; // default shape type
+  public static getInstance(): CanvasModel {
+    if (!CanvasModel.instance) {
+      CanvasModel.instance = new CanvasModel();
+    }
+    return CanvasModel.instance;
   }
 
-  public getCurrentState(): string {
+  public getState(): string {
     return this.state.constructor.name;
   }
-  public setCanvasState(state: string) {
+  public setState(state: string) {
     this.state = state;
     this.notify();
   }

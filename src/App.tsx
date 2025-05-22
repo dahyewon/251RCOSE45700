@@ -6,11 +6,18 @@ import ResizeHandle from "./view/ResizeHandle";
 import PropertyWindow from "./view/PropertyWindow";
 import { ShapeModel } from "./model/ShapeModel";
 import { SelectedShapeModel } from "./model/SelectedShapeModel";
+import { CanvasModel } from "./model/CanvasModel";
 
 const App: React.FC = () => {
-  const shapeModel = new ShapeModel();
-  const selectedShapeModel = new SelectedShapeModel();
-  const viewModel = new CanvasViewModel(shapeModel, selectedShapeModel);
+  const shapeModel = ShapeModel.getInstance();
+  const selectedShapeModel = SelectedShapeModel.getInstance();
+  const canvasModel = CanvasModel.getInstance();
+
+  const viewModel = new CanvasViewModel(
+    shapeModel,
+    selectedShapeModel,
+    canvasModel
+  );
 
   return (
     <div>
