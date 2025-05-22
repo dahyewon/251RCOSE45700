@@ -1,24 +1,20 @@
-import React from "react";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
+import React, { useEffect, useState } from "react";
 import "./Toolbar.css";
 import { DEFAULT_SHAPE } from "../constants";
-import { useCanvasStateListener, useCursorByTool } from "../hooks";
+import { useCursorByTool } from "../hooks";
+import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
 
-const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
-  const initialState = {
-    currentState: "DrawState",
-    drawingShape: "rectangle",
-  }; // 초기 상태 설정
+const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
+  const [currentState, setCurrentState] = useState(viewModel.getState());
+  const [drawingShape, setDrawingShape] = useState(viewModel.getShapeType());
 
-  const currentState = useCanvasStateListener<{
-    currentState: string;
-    drawingShape?: string;
-  }>(viewModel, "STATE_CHANGED", initialState, "currentState");
-
-  const drawingShape = useCanvasStateListener<{
-    currentState: string;
-    drawingShape?: string;
-  }>(viewModel, "STATE_CHANGED", initialState, "drawingShape");
+  useEffect(() => {
+    const unsubscribe = viewModel.onChange(() => {
+      setCurrentState(viewModel.getState());
+      setDrawingShape(viewModel.getShapeType());
+    });
+    return unsubscribe;
+  });
 
   const isActive = (shapeType: string) =>
     currentState === "DrawState" && drawingShape === shapeType;
@@ -29,13 +25,13 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     currentState === "ResizeState";
 
   useCursorByTool(currentState);
-  
+
   return (
     <div className="toolbar">
       <button
         className={`tool-button ${isActive("rectangle") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("DrawState", { shapeType: "rectangle" });
+          viewModel.setState("DrawState", { shapeType: "rectangle" });
         }}
       >
         ▭ 사각형
@@ -44,7 +40,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("ellipse") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("DrawState", { shapeType: "ellipse" });
+          viewModel.setState("DrawState", { shapeType: "ellipse" });
         }}
       >
         ◯ 원
@@ -53,7 +49,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("line") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("DrawState", { shapeType: "line" });
+          viewModel.setState("DrawState", { shapeType: "line" });
         }}
       >
         ㅡ 선
@@ -81,13 +77,13 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
                   const baseWidth = DEFAULT_SHAPE.WIDTH;
                   const baseHeight = Math.round(baseWidth / aspectRatio); // 비율에 따른 높이 계산
 
-                  viewModel.requestAddTemplateShape("image", {
-                    imageUrl,
-                    width: baseWidth,
-                    height: baseHeight,
-                  });
+                  // viewModel.requestAddTemplateShape("image", {
+                  //   imageUrl,
+                  //   width: baseWidth,
+                  //   height: baseHeight,
+                  // });
 
-                  viewModel.requestSetState("SelectState", {});
+                  viewModel.setState("SelectState", {});
                 };
                 img.onerror = () => {
                   console.error("이미지 로드 실패:", file.name);
@@ -105,11 +101,11 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("text") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestAddTemplateShape("text", {
-            width: DEFAULT_SHAPE.WIDTH,
-            height: DEFAULT_SHAPE.HEIGHT,
-          });
-          viewModel.requestSetState("SelectState", {});
+          // viewModel.requestAddTemplateShape("text", {
+          //   width: DEFAULT_SHAPE.WIDTH,
+          //   height: DEFAULT_SHAPE.HEIGHT,
+          // });
+          viewModel.setState("SelectState", {});
         }}
       >
         텍스트
@@ -118,7 +114,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isSelectActive() ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("SelectState", {});
+          viewModel.setState("SelectState", {});
         }}
       >
         선택
@@ -127,7 +123,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button`}
         onClick={() => {
-          viewModel.requestResetCanvas();
+          // viewModel.requestResetCanvas();
         }}
       >
         리셋
