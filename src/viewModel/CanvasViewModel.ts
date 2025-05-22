@@ -17,9 +17,9 @@ import {
 import { TextShapeProps } from "../entity/shape/TextShape";
 import { CanvasModel } from "../model/CanvasModel";
 
-export class CanvasViewModel extends Observable<any> {
-  private shapeModel: ShapeModel;
-  private selectedShapeModel: SelectedShapeModel;
+export class CanvasViewModel {
+  public shapeModel: ShapeModel;
+  public selectedShapeModel: SelectedShapeModel;
   private canvasModel: CanvasModel;
   private state: ICanvasState;
   private canvasStateCommandFactory: CanvasStateCommandFactory;
@@ -29,12 +29,13 @@ export class CanvasViewModel extends Observable<any> {
   private shapes: Shape[] = [];
   private selectedShapes: Shape[] = [];
 
+  private listeners: (() => void)[] = [];
+
   constructor(
     shapeModel: ShapeModel,
     selectedShapeModel: SelectedShapeModel,
     canvasModel: CanvasModel
   ) {
-    super();
     this.shapeModel = shapeModel;
     this.selectedShapeModel = selectedShapeModel;
     this.canvasModel = canvasModel;
@@ -65,6 +66,17 @@ export class CanvasViewModel extends Observable<any> {
     this.canvasModel.subscribe(observer);
   }
 
+  onChange(fn: () => void) {
+    this.listeners.push(fn);
+    return () => {
+      this.listeners.filter((listener) => listener !== fn);
+    };
+  }
+
+  notify() {
+    this.listeners.forEach((listener) => listener());
+  }
+
   setState(state: ICanvasState) {
     this.state = state;
     this.notifyStateChanged();
@@ -92,16 +104,6 @@ export class CanvasViewModel extends Observable<any> {
     this.state.handleDoubleClick(event);
     this.notifyShapesUpdated();
   };
-
-  requestResetCanvas() {
-    const command = new CanvasResetCommand(
-      this,
-      this.shapeModel,
-      this.selectedShapeModel
-    );
-    command.execute();
-    this.notifyShapesUpdated();
-  }
 
   startResizing(
     handle: { x: number; y: number; pos: string },
@@ -137,7 +139,10 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   getShapes() {
-    return this.shapeModel.getShapes();
+    return this.shapes;
+  }
+  getSelectedShapes() {
+    return this.selectedShapes;
   }
 
   getShapeType() {

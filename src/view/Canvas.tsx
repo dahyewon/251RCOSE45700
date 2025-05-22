@@ -12,35 +12,43 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const [textInput, setTextInput] = useState<null | any>(null);
   const [didFocus, setDidFocus] = useState(false); // 추가
 
-  const shapes = useCanvasStateListener<{ shapes: Shape[]; selectedShapes: Shape[] }>(
-    viewModel,
-    "SHAPES_UPDATED",
-    { shapes: [], selectedShapes: [] },
-    "shapes"
+  const [shapes, setShapes] = useState<Shape[]>(viewModel.getShapes());
+  const [selectedShapes, setSelectedShapes] = useState<Shape[]>(
+    viewModel.getSelectedShapes()
   );
 
-  useCanvasActionListener(viewModel, "RESET_INPUT_FIELDS", () => {
-    const textareas = document.querySelectorAll("textarea");
-    textareas.forEach((textarea) => {
-        textarea.remove();
+  useEffect(() => {
+    const unsubscribe = viewModel.onChange(() => {
+      setShapes(viewModel.getShapes());
+      setSelectedShapes(viewModel.getSelectedShapes());
     });
-  });
+    return unsubscribe;
+  }, [viewModel]);
 
-  useCanvasActionListener<any>(viewModel, "SHOW_TEXT_INPUT", (props) => {
-    setTextInput(props);
-    setDidFocus(false);
-  });
-  useCanvasActionListener(viewModel, "HIDE_TEXT_INPUT", () => {
-    setTextInput(null);
-    setDidFocus(false);
-  });
+  // useCanvasActionListener(viewModel, "RESET_INPUT_FIELDS", () => {
+  //   const textareas = document.querySelectorAll("textarea");
+  //   textareas.forEach((textarea) => {
+  //     textarea.remove();
+  //   });
+  // });
 
-  const handleTextInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      textareaRef.current?.blur();
-    }
-  };
+  // useCanvasActionListener<any>(viewModel, "SHOW_TEXT_INPUT", (props) => {
+  //   setTextInput(props);
+  //   setDidFocus(false);
+  // });
+  // useCanvasActionListener(viewModel, "HIDE_TEXT_INPUT", () => {
+  //   setTextInput(null);
+  //   setDidFocus(false);
+  // });
+
+  // const handleTextInputKeyDown = (
+  //   e: React.KeyboardEvent<HTMLTextAreaElement>
+  // ) => {
+  //   if (e.key === "Enter" && !e.shiftKey) {
+  //     e.preventDefault();
+  //     textareaRef.current?.blur();
+  //   }
+  // };
 
   //캔버스 렌더링
   const redrawCanvas = useCallback(() => {
@@ -63,13 +71,13 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     }
   }, [shapes, canvasRef, redrawCanvas]);
 
-  useEffect(() => {
-    if (textInput && textareaRef.current && !didFocus) {
-      textareaRef.current.focus();
-      textareaRef.current.select();
-      setDidFocus(true);
-    }
-  }, [textInput, didFocus]);
+  // useEffect(() => {
+  //   if (textInput && textareaRef.current && !didFocus) {
+  //     textareaRef.current.focus();
+  //     textareaRef.current.select();
+  //     setDidFocus(true);
+  //   }
+  // }, [textInput, didFocus]);
 
   return (
     <div className="canvas-container">
@@ -86,14 +94,20 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         onDoubleClick={viewModel.handleDoubleClick}
         style={{ border: "1px solid black" }}
       />
-      {textInput && (
+      {/* {textInput && (
         <textarea
           ref={textareaRef}
           className="canvas-textarea"
           style={{
             position: "absolute",
-            left: textInput.startX < textInput.endX ? textInput.startX : textInput.endX,
-            top: textInput.startY < textInput.endY ? textInput.startY : textInput.endY,
+            left:
+              textInput.startX < textInput.endX
+                ? textInput.startX
+                : textInput.endX,
+            top:
+              textInput.startY < textInput.endY
+                ? textInput.startY
+                : textInput.endY,
             width: Math.abs(textInput.endX - textInput.startX),
             height: Math.abs(textInput.endY - textInput.startY),
             fontSize: textInput.fontSize,
@@ -112,7 +126,7 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
             setTextInput({ ...textInput, textContent: e.target.value });
           }}
         />
-      )}
+      )} */}
     </div>
   );
 };
