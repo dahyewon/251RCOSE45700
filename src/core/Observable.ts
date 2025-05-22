@@ -1,7 +1,6 @@
 import { Observer } from "./Observer";
-import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-class Observable<T> {
+class Observable {
   private observers: Observer[] = [];
 
   subscribe(observer: Observer): void {
