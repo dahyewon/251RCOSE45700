@@ -3,9 +3,10 @@ import "./Toolbar.css";
 import { DEFAULT_SHAPE } from "../constants";
 import { useCursorByTool } from "../hooks";
 import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
-import { AddTemplateShapeCommand, CanvasResetCommand } from "../command";
+import { CommandManager } from "../command/CommandManager";
 
 const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
+  const commandManager = CommandManager.getInstance();
   const [currentState, setCurrentState] = useState(viewModel.getState());
   const [drawingShape, setDrawingShape] = useState(viewModel.getShapeType());
 
@@ -78,11 +79,14 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
                   const baseWidth = DEFAULT_SHAPE.WIDTH;
                   const baseHeight = Math.round(baseWidth / aspectRatio); // 비율에 따른 높이 계산
 
-                  new AddTemplateShapeCommand(viewModel, "image", {
-                    imageUrl,
-                    width: baseWidth,
-                    height: baseHeight,
-                  }).execute();
+                  commandManager.execute("addTemplateShape", {
+                    shapeType: "image",
+                    properties: {
+                      imageUrl,
+                      width: baseWidth,
+                      height: baseHeight,
+                    },
+                  });
 
                   viewModel.setState("SelectState", {});
                 };
@@ -102,10 +106,13 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("text") ? "active" : ""}`}
         onClick={() => {
-          new AddTemplateShapeCommand(viewModel, "text", {
-            width: DEFAULT_SHAPE.WIDTH,
-            height: DEFAULT_SHAPE.HEIGHT,
-          }).execute();
+          commandManager.execute("addTemplateShape", {
+            shapeType: "text",
+            properties: {
+              width: DEFAULT_SHAPE.WIDTH,
+              height: DEFAULT_SHAPE.HEIGHT,
+            },
+          });
           viewModel.setState("SelectState", {});
         }}
       >
@@ -124,7 +131,7 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button`}
         onClick={() => {
-          new CanvasResetCommand(viewModel).execute();
+          commandManager.execute("canvasResetCommand");
         }}
       >
         리셋

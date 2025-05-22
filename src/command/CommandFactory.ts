@@ -1,11 +1,7 @@
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { PropertyWindowViewModel } from "../viewModel/PropertyWindowViewModel";
-import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
 import {
   AddTemplateShapeCommand,
   CanvasResetCommand,
   SetPropertyCommand,
-  SetStateCommand,
   ZOrderMoveCommand,
 } from "./";
 import { Command } from "./Command";
@@ -54,11 +50,7 @@ export class CommandFactory {
     zOrderMove: new ZOrderMoveCommandCreator(),
   };
 
-  static createCommand(
-    commandName: string,
-    viewModel: any,
-    props: any
-  ): Command {
+  static createCommand(commandName: string, props: any): Command {
     const commandCreator = this.commandCreators[commandName];
     if (!commandCreator) {
       throw new Error(`Command ${commandName} not found`);
