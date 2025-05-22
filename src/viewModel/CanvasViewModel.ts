@@ -15,19 +15,29 @@ import {
   ZOrderMoveCommand,
 } from "../command";
 import { TextShapeProps } from "../entity/shape/TextShape";
+import { CanvasModel } from "../model/CanvasModel";
 
 export class CanvasViewModel extends Observable<any> {
   private shapeModel: ShapeModel;
   private selectedShapeModel: SelectedShapeModel;
+  private canvasModel: CanvasModel;
   private state: ICanvasState;
   private canvasStateCommandFactory: CanvasStateCommandFactory;
 
   private shapeType: string = "rectangle";
+  private currentState: string = "DrawState";
+  private shapes: Shape[] = [];
+  private selectedShapes: Shape[] = [];
 
-  constructor(shapeModel: ShapeModel, selectedShapeModel: SelectedShapeModel) {
+  constructor(
+    shapeModel: ShapeModel,
+    selectedShapeModel: SelectedShapeModel,
+    canvasModel: CanvasModel
+  ) {
     super();
     this.shapeModel = shapeModel;
     this.selectedShapeModel = selectedShapeModel;
+    this.canvasModel = canvasModel;
     this.state = new DrawState(
       this,
       this.shapeModel,
@@ -39,6 +49,20 @@ export class CanvasViewModel extends Observable<any> {
       this.shapeModel,
       this.selectedShapeModel
     );
+
+    const observer = {
+      update: () => {
+        this.shapeType = this.canvasModel.getShapeType();
+        this.requestSetState(this.canvasModel.getCurrentState(), {
+          shapeType: this.shapeType,
+        });
+        this.shapes = this.shapeModel.getShapes();
+        this.selectedShapes = this.selectedShapeModel.getSelectedShapes();
+      },
+    };
+    this.shapeModel.subscribe(observer);
+    this.selectedShapeModel.subscribe(observer);
+    this.canvasModel.subscribe(observer);
   }
 
   setState(state: ICanvasState) {
@@ -121,11 +145,7 @@ export class CanvasViewModel extends Observable<any> {
   }
 
   requestZOrderMove(action: string, shapeId: number) {
-    const command = new ZOrderMoveCommand(
-      this.shapeModel,
-      action,
-      shapeId
-    );
+    const command = new ZOrderMoveCommand(this.shapeModel, action, shapeId);
     command.execute();
     this.notifyShapesUpdated();
   }
