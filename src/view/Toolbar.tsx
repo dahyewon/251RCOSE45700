@@ -3,6 +3,7 @@ import "./Toolbar.css";
 import { DEFAULT_SHAPE } from "../constants";
 import { useCursorByTool } from "../hooks";
 import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
+import { AddTemplateShapeCommand, CanvasResetCommand } from "../command";
 
 const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
   const [currentState, setCurrentState] = useState(viewModel.getState());
@@ -77,11 +78,11 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
                   const baseWidth = DEFAULT_SHAPE.WIDTH;
                   const baseHeight = Math.round(baseWidth / aspectRatio); // 비율에 따른 높이 계산
 
-                  // viewModel.requestAddTemplateShape("image", {
-                  //   imageUrl,
-                  //   width: baseWidth,
-                  //   height: baseHeight,
-                  // });
+                  new AddTemplateShapeCommand(viewModel, "image", {
+                    imageUrl,
+                    width: baseWidth,
+                    height: baseHeight,
+                  }).execute();
 
                   viewModel.setState("SelectState", {});
                 };
@@ -101,10 +102,10 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("text") ? "active" : ""}`}
         onClick={() => {
-          // viewModel.requestAddTemplateShape("text", {
-          //   width: DEFAULT_SHAPE.WIDTH,
-          //   height: DEFAULT_SHAPE.HEIGHT,
-          // });
+          new AddTemplateShapeCommand(viewModel, "text", {
+            width: DEFAULT_SHAPE.WIDTH,
+            height: DEFAULT_SHAPE.HEIGHT,
+          }).execute();
           viewModel.setState("SelectState", {});
         }}
       >
@@ -123,7 +124,7 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button`}
         onClick={() => {
-          // viewModel.requestResetCanvas();
+          new CanvasResetCommand(viewModel).execute();
         }}
       >
         리셋

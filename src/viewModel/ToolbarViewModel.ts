@@ -4,9 +4,9 @@ import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { ShapeModel } from "../model/ShapeModel";
 
 export class ToolbarViewModel {
-  private selectedShapeModel: SelectedShapeModel;
-  private shapeModel: ShapeModel;
-  private canvasModel: CanvasModel;
+  public selectedShapeModel: SelectedShapeModel;
+  public shapeModel: ShapeModel;
+  public canvasModel: CanvasModel;
   private currentState: string = "DrawState"; // default state
   private shapeType: string = "rectangle"; // default shape type
   private listeners: (() => void)[] = [];
@@ -21,7 +21,7 @@ export class ToolbarViewModel {
 
     const observer = {
       update: () => {
-        this.currentState = this.canvasModel.getCurrentState();
+        this.currentState = this.canvasModel.getState();
         this.shapeType = this.canvasModel.getShapeType();
       },
     };
@@ -52,7 +52,7 @@ export class ToolbarViewModel {
       this.shapeType = props.shapeType;
       this.canvasModel.setShapeType(this.shapeType);
     }
-    this.canvasModel.setCanvasState(state);
+    this.canvasModel.setState(state);
   }
 
   //   requestResetCanvas() {
