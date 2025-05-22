@@ -1,22 +1,17 @@
 import { CanvasModel } from "../model/CanvasModel";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { ShapeModel } from "../model/ShapeModel";
-import { DrawState } from "../viewModel/canvasState/DrawState";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
 import { Command } from "./Command";
 
 export class CanvasResetCommand implements Command {
-  private toolbarViewModel: ToolbarViewModel;
   private canvasModel: CanvasModel;
   private shapeModel: ShapeModel;
   private selectedShapeModel: SelectedShapeModel;
 
-  constructor(toolbarViewModel: ToolbarViewModel) {
-    this.toolbarViewModel = toolbarViewModel;
-    this.canvasModel = toolbarViewModel.canvasModel;
-    this.shapeModel = toolbarViewModel.shapeModel;
-    this.selectedShapeModel = toolbarViewModel.selectedShapeModel;
+  constructor() {
+    this.canvasModel = CanvasModel.getInstance();
+    this.shapeModel = ShapeModel.getInstance();
+    this.selectedShapeModel = SelectedShapeModel.getInstance();
   }
 
   execute(): void {

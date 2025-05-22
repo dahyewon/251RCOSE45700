@@ -1,19 +1,13 @@
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { ShapeModel } from "../model/ShapeModel";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
 import { Command } from "./Command";
 
 export class AddTemplateShapeCommand implements Command {
   private shapeModel: ShapeModel;
   private selectedShapeModel: SelectedShapeModel;
-  constructor(
-    private viewModel: CanvasViewModel | ToolbarViewModel,
-    private type: string,
-    private properties: any
-  ) {
-    this.shapeModel = viewModel.shapeModel;
-    this.selectedShapeModel = viewModel.selectedShapeModel;
+  constructor(private type: string, private properties: any) {
+    this.shapeModel = ShapeModel.getInstance();
+    this.selectedShapeModel = SelectedShapeModel.getInstance();
   }
 
   execute(): void {
