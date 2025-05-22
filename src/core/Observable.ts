@@ -2,18 +2,18 @@ import { Observer } from "./Observer";
 import { CanvasEvent } from "../viewModel/CanvasEvents";
 
 class Observable<T> {
-  private observers: Observer<CanvasEvent<T>>[] = [];
+  private observers: Observer[] = [];
 
-  subscribe(observer: Observer<CanvasEvent<T>>): void {
+  subscribe(observer: Observer): void {
     this.observers.push(observer);
   }
 
-  unsubscribe(observer: Observer<CanvasEvent<T>>): void {
+  unsubscribe(observer: Observer): void {
     this.observers = this.observers.filter((obs) => obs !== observer);
   }
 
-  notify(event: CanvasEvent<T>): void {
-    this.observers.forEach((observer) => observer.update(event));
+  notify(): void {
+    this.observers.forEach((observer) => observer.update());
   }
 }
 
