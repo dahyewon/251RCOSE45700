@@ -1,16 +1,16 @@
 export const CANVAS = {
   WIDTH: 800,
   HEIGHT: 600,
-}
+};
 
 export const DEFAULT_SHAPE = {
   WIDTH: 300,
   HEIGHT: 100,
-  COLOR: '#000000',
+  COLOR: "#000000",
   FONT_SIZE: 30,
-  TEXT_CONTENT: 'Enter text here.',
-  FONT_FAMILY: 'Arial',
-}
+  TEXT_CONTENT: "Enter text here.",
+  FONT_FAMILY: "Arial",
+};
 
 export const PROPERTY_NAMES = {
   COLOR: "색",
@@ -46,7 +46,7 @@ export const DROPDOWN_OPTIONS: { [key: string]: string[] } = {
     "Tahoma",
     "Georgia",
     "Courier New",
-    "Brush Script MT"
+    "Brush Script MT",
   ],
 };
 
@@ -55,4 +55,12 @@ export enum ResizeHandlePosition {
   TopRight = "top-right",
   BottomRight = "bottom-right",
   BottomLeft = "bottom-left",
+}
+
+export enum CommandType {
+  ADD_TEMPLATE_SHAPE = "ADD_TEMPLATE_SHAPE",
+  SET_PROPERTY = "SET_PROPERTY",
+  Z_ORDER_MOVE = "Z_ORDER_MOVE",
+  CANVAS_RESET = "CANVAS_RESET",
+  SET_STATE = "SET_STATE",
 }
