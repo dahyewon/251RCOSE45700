@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
 import "./PropertyWindow.css";
 import { PropertyRendererFactory } from "../components/propertyRenderFactory";
 import { CommandManager } from "../command/CommandManager";
 import { CommandType } from "../constants";
+import { PropertyWindowViewModel } from "../viewModel/PropertyWindowViewModel";
 
-const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
+const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
   viewModel,
 }) => {
   const commandManager = CommandManager.getInstance();
   const [selectedShapes, setSelectedShapes] = useState(
     viewModel.getSelectedShapes()
   );
+
   useEffect(() => {
     const unsubscribe = viewModel.onChange(() => {
       setSelectedShapes(viewModel.getSelectedShapes());

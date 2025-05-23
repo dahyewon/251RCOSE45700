@@ -64,3 +64,11 @@ export enum CommandType {
   CANVAS_RESET = "CANVAS_RESET",
   SET_STATE = "SET_STATE",
 }
+
+export enum CanvasStateType {
+  SELECT = "SelectState",
+  RESIZE = "ResizeState",
+  MOVE = "MoveState",
+  DRAW = "DrawState",
+  EDIT_TEXT = "EditTextState",
+}

@@ -1,21 +1,22 @@
-import React from "react";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { Shape } from "../entity/shape/Shape";
-import { useCanvasStateListener } from "../hooks";
+import React, { useEffect, useState } from "react";
 import "./ResizeHandle.css";
+import { ResizeHandleViewModel } from "../viewModel/ResizeHandleViewModel";
+import { CommandManager } from "../command/CommandManager";
 
-const ResizeHandle: React.FC<{ viewModel: CanvasViewModel }> = ({
+const ResizeHandle: React.FC<{ viewModel: ResizeHandleViewModel }> = ({
   viewModel,
 }) => {
-  const selectedShapes = useCanvasStateListener<{
-    shapes: Shape[];
-    selectedShapes: Shape[];
-  }>(
-    viewModel,
-    "SHAPES_UPDATED",
-    { shapes: [], selectedShapes: [] },
-    "selectedShapes"
+  const commandManager = CommandManager.getInstance();
+  const [selectedShapes, setSelectedShapes] = useState(
+    viewModel.getSelectedShapes()
   );
+
+  useEffect(() => {
+    const unsubscribe = viewModel.onChange(() => {
+      setSelectedShapes(viewModel.getSelectedShapes());
+    });
+    return unsubscribe;
+  }, [viewModel]);
 
   return selectedShapes.map((shape) => (
     <React.Fragment key={shape.id}>

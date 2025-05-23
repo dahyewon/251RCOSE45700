@@ -4,6 +4,7 @@ export class CanvasModel extends Observable {
   private static instance: CanvasModel;
   private state: string = "DrawState"; // default state
   private shapeType: string = "rectangle"; // default shape type
+  private stateProps: any | null = null; // default state props
 
   public static getInstance(): CanvasModel {
     if (!CanvasModel.instance) {
@@ -15,8 +16,9 @@ export class CanvasModel extends Observable {
   public getState(): string {
     return this.state.constructor.name;
   }
-  public setState(state: string) {
+  public setState(state: string, props?: any) {
     this.state = state;
+    this.stateProps = props ? props : null;
     this.notify();
   }
   public getShapeType(): string {

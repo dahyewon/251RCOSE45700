@@ -12,6 +12,7 @@ export class ToolbarViewModel extends Bindable {
       update: () => {
         this.currentState = this.canvasModel.getState();
         this.shapeType = this.canvasModel.getShapeType();
+        this.notify();
       },
     };
     this.canvasModel.subscribe(observer);
