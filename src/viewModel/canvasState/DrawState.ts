@@ -6,14 +6,12 @@ import { ICanvasState } from "./CanvasState";
 import { SelectState } from "./SelectState";
 
 export class DrawState implements ICanvasState {
+  private shapeModel = ShapeModel.getInstance();
+  private selectedShapeModel = SelectedShapeModel.getInstance();
   private shapeType = "rectangle"; // default shape type
   private drawing = false;
-  constructor(
-    private viewModel: CanvasViewModel,
-    private shapeModel: ShapeModel,
-    private selectedShapeModel: SelectedShapeModel,
-    shapeType: string
-  ) {
+
+  constructor(private viewModel: CanvasViewModel, shapeType: string) {
     this.shapeType = shapeType;
   }
 

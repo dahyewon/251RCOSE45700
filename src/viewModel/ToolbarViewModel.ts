@@ -1,24 +1,16 @@
-import { CanvasResetCommand } from "../command";
 import { CanvasModel } from "../model/CanvasModel";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { ShapeModel } from "../model/ShapeModel";
 
 export class ToolbarViewModel {
-  public selectedShapeModel: SelectedShapeModel;
-  public shapeModel: ShapeModel;
-  public canvasModel: CanvasModel;
+  public selectedShapeModel: SelectedShapeModel =
+    SelectedShapeModel.getInstance();
+  public shapeModel: ShapeModel = ShapeModel.getInstance();
+  public canvasModel: CanvasModel = CanvasModel.getInstance();
   private currentState: string = "DrawState"; // default state
   private shapeType: string = "rectangle"; // default shape type
   private listeners: (() => void)[] = [];
-  constructor(
-    shapeModel: ShapeModel,
-    selectedShapeModel: SelectedShapeModel,
-    canvasModel: CanvasModel
-  ) {
-    this.shapeModel = shapeModel;
-    this.selectedShapeModel = selectedShapeModel;
-    this.canvasModel = canvasModel;
-
+  constructor() {
     const observer = {
       update: () => {
         this.currentState = this.canvasModel.getState();
@@ -54,26 +46,4 @@ export class ToolbarViewModel {
     }
     this.canvasModel.setState(state);
   }
-
-  //   requestResetCanvas() {
-  //     const command = new CanvasResetCommand(
-  //       this,
-  //       this.shapeModel,
-  //       this.selectedShapeModel
-  //     );
-  //     command.execute();
-  //     this.notifyShapesUpdated();
-  //   }
-
-  // requestAddTemplateShape(type: string, properties: any) {
-  //     const command = new AddTemplateShapeCommand(
-  //       this,
-  //       this.shapeModel,
-  //       this.selectedShapeModel,
-  //       type,
-  //       properties
-  //     );
-  //     command.execute();
-  //     this.notifyShapesUpdated();
-  //   }
 }

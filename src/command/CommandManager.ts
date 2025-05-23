@@ -14,7 +14,7 @@ export class CommandManager {
   }
 
   public execute(commandName: string, ...args: any[]): void {
-    const command = CommandFactory.createCommand(commandName, args);
+    const command = CommandFactory.createCommand(commandName, { args });
     if (command) {
       command.execute();
       this.undoStack.push(command);

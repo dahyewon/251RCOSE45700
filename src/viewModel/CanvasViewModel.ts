@@ -18,9 +18,10 @@ import { TextShapeProps } from "../entity/shape/TextShape";
 import { CanvasModel } from "../model/CanvasModel";
 
 export class CanvasViewModel {
-  public shapeModel: ShapeModel;
-  public selectedShapeModel: SelectedShapeModel;
-  private canvasModel: CanvasModel;
+  public shapeModel: ShapeModel = ShapeModel.getInstance();
+  public selectedShapeModel: SelectedShapeModel =
+    SelectedShapeModel.getInstance();
+  private canvasModel: CanvasModel = CanvasModel.getInstance();
   private state: ICanvasState;
   private canvasStateCommandFactory: CanvasStateCommandFactory;
 
@@ -31,14 +32,7 @@ export class CanvasViewModel {
 
   private listeners: (() => void)[] = [];
 
-  constructor(
-    shapeModel: ShapeModel,
-    selectedShapeModel: SelectedShapeModel,
-    canvasModel: CanvasModel
-  ) {
-    this.shapeModel = shapeModel;
-    this.selectedShapeModel = selectedShapeModel;
-    this.canvasModel = canvasModel;
+  constructor() {
     this.state = new DrawState(
       this,
       this.shapeModel,
@@ -54,7 +48,7 @@ export class CanvasViewModel {
     const observer = {
       update: () => {
         this.shapeType = this.canvasModel.getShapeType();
-        this.requestSetState(this.canvasModel.getCurrentState(), {
+        this.setState(this.canvasModel.getState(), {
           shapeType: this.shapeType,
         });
         this.shapes = this.shapeModel.getShapes();
