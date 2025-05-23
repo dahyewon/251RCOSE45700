@@ -19,10 +19,8 @@ export function useCanvasStateListener<T>(
       },
     };
 
-    viewModel.subscribe(observer);
-    return () => {
-      viewModel.unsubscribe(observer);
-    };
+    const unsubscribe = viewModel.onChange(observer);
+    return unsubscribe;
   }, [viewModel, eventType, key]);
 
   return state;

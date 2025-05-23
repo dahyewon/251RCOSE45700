@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Toolbar.css";
 import { CommandType, DEFAULT_SHAPE } from "../constants";
-import { useCursorByTool } from "../hooks";
+import { useCanvasActionListener, useCursorByTool } from "../hooks";
 import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
 import { CommandManager } from "../command/CommandManager";
+import { CanvasEvent } from "../viewModel/CanvasEvents";
 
 const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
   const commandManager = CommandManager.getInstance();
   const [currentState, setCurrentState] = useState(viewModel.getState());
   const [drawingShape, setDrawingShape] = useState(viewModel.getShapeType());
 
-  useEffect(() => {
-    const unsubscribe = viewModel.onChange(() => {
-      setCurrentState(viewModel.getState());
-      setDrawingShape(viewModel.getShapeType());
-    });
-    return unsubscribe;
-  }, [viewModel]);
+  useCanvasActionListener(
+    viewModel,
+    "STATE_CHANGED",
+    (event: CanvasEvent<any>) => {
+      setCurrentState(event.data.currentState);
+      setDrawingShape(event.data.shapeType);
+    }
+  );
 
   const isActive = (shapeType: string) =>
     currentState === "DrawState" && drawingShape === shapeType;

@@ -52,6 +52,7 @@ export class CanvasViewModel extends Observable<any> {
         this.notify(event);
       },
     };
+
     this.shapeModel.subscribe("SHAPES_UPDATED", shapesObserver);
     this.selectedShapeModel.subscribe(
       "SELECTED_SHAPES_UPDATED",

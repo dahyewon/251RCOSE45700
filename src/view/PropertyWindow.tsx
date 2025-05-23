@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./PropertyWindow.css";
 import { PropertyRendererFactory } from "../components/propertyRenderFactory";
 import { CommandManager } from "../command/CommandManager";
 import { CommandType } from "../constants";
 import { PropertyWindowViewModel } from "../viewModel/PropertyWindowViewModel";
+import { CanvasEvent } from "../viewModel/CanvasEvents";
+import { useCanvasActionListener } from "../hooks";
 
 const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
   viewModel,
@@ -13,12 +15,13 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
     viewModel.getSelectedShapes()
   );
 
-  useEffect(() => {
-    const unsubscribe = viewModel.onChange(() => {
-      setSelectedShapes(viewModel.getSelectedShapes());
-    });
-    return () => unsubscribe();
-  }, [viewModel]);
+  useCanvasActionListener(
+    viewModel,
+    "SELECTED_SHAPES_UPDATED",
+    (event: CanvasEvent<{ selectedShapes: any[] }>) => {
+      setSelectedShapes(event.data.selectedShapes);
+    }
+  );
 
   if (selectedShapes.length === 0) {
     return (

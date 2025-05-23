@@ -17,38 +17,34 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     viewModel.getSelectedShapes()
   );
 
-  useEffect(() => {
-    const unsubscribe = viewModel.onChange(() => {
-      setShapes(viewModel.getShapes());
-      setSelectedShapes(viewModel.getSelectedShapes());
+  useCanvasActionListener(viewModel, "SHAPES_UPDATED", (shapes: Shape[]) => {
+    setShapes(shapes);
+  });
+
+  useCanvasActionListener(viewModel, "RESET_INPUT_FIELDS", () => {
+    const textareas = document.querySelectorAll("textarea");
+    textareas.forEach((textarea) => {
+      textarea.remove();
     });
-    return unsubscribe;
-  }, [viewModel]);
+  });
 
-  // useCanvasActionListener(viewModel, "RESET_INPUT_FIELDS", () => {
-  //   const textareas = document.querySelectorAll("textarea");
-  //   textareas.forEach((textarea) => {
-  //     textarea.remove();
-  //   });
-  // });
+  useCanvasActionListener<any>(viewModel, "SHOW_TEXT_INPUT", (props) => {
+    setTextInput(props);
+    setDidFocus(false);
+  });
+  useCanvasActionListener(viewModel, "HIDE_TEXT_INPUT", () => {
+    setTextInput(null);
+    setDidFocus(false);
+  });
 
-  // useCanvasActionListener<any>(viewModel, "SHOW_TEXT_INPUT", (props) => {
-  //   setTextInput(props);
-  //   setDidFocus(false);
-  // });
-  // useCanvasActionListener(viewModel, "HIDE_TEXT_INPUT", () => {
-  //   setTextInput(null);
-  //   setDidFocus(false);
-  // });
-
-  // const handleTextInputKeyDown = (
-  //   e: React.KeyboardEvent<HTMLTextAreaElement>
-  // ) => {
-  //   if (e.key === "Enter" && !e.shiftKey) {
-  //     e.preventDefault();
-  //     textareaRef.current?.blur();
-  //   }
-  // };
+  const handleTextInputKeyDown = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      textareaRef.current?.blur();
+    }
+  };
 
   //캔버스 렌더링
   const redrawCanvas = useCallback(() => {
@@ -71,13 +67,13 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     }
   }, [shapes, canvasRef, redrawCanvas]);
 
-  // useEffect(() => {
-  //   if (textInput && textareaRef.current && !didFocus) {
-  //     textareaRef.current.focus();
-  //     textareaRef.current.select();
-  //     setDidFocus(true);
-  //   }
-  // }, [textInput, didFocus]);
+  useEffect(() => {
+    if (textInput && textareaRef.current && !didFocus) {
+      textareaRef.current.focus();
+      textareaRef.current.select();
+      setDidFocus(true);
+    }
+  }, [textInput, didFocus]);
 
   return (
     <div className="canvas-container">
@@ -94,7 +90,7 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
         onDoubleClick={viewModel.handleDoubleClick}
         style={{ border: "1px solid black" }}
       />
-      {/* {textInput && (
+      {textInput && (
         <textarea
           ref={textareaRef}
           className="canvas-textarea"
@@ -126,7 +122,7 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
             setTextInput({ ...textInput, textContent: e.target.value });
           }}
         />
-      )} */}
+      )}
     </div>
   );
 };
