@@ -1,3 +1,4 @@
+import { CommandType } from "../constants";
 import {
   AddTemplateShapeCommand,
   CanvasResetCommand,
@@ -44,16 +45,16 @@ class ZOrderMoveCommandCreator implements CommandCreator {
 
 export class CommandFactory {
   private static commandCreators: Record<string, CommandCreator> = {
-    addTemplateShape: new AddTemplateShapeCommandCreator(),
-    canvasReset: new CanvasResetCommandCreator(),
-    setProperty: new SetPropertyCommandCreator(),
-    zOrderMove: new ZOrderMoveCommandCreator(),
+    [CommandType.ADD_TEMPLATE_SHAPE]: new AddTemplateShapeCommandCreator(),
+    [CommandType.CANVAS_RESET]: new CanvasResetCommandCreator(),
+    [CommandType.SET_PROPERTY]: new SetPropertyCommandCreator(),
+    [CommandType.Z_ORDER_MOVE]: new ZOrderMoveCommandCreator(),
   };
 
-  static createCommand(commandName: string, props: any): Command {
-    const commandCreator = this.commandCreators[commandName];
+  static createCommand(commandType: string, props: any): Command {
+    const commandCreator = this.commandCreators[commandType];
     if (!commandCreator) {
-      throw new Error(`Command ${commandName} not found`);
+      throw new Error(`Command ${commandType} not found`);
     }
     return commandCreator.create(props);
   }

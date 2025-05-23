@@ -5,8 +5,8 @@ export class PropertyWindowViewModel {
   private selectedShapeModel: SelectedShapeModel;
   private shapeModel: ShapeModel;
 
-  constructor(selectedShapeModel: SelectedShapeModel, shapeModel: ShapeModel) {
-    this.selectedShapeModel = selectedShapeModel;
-    this.shapeModel = shapeModel;
+  constructor() {
+    this.selectedShapeModel = SelectedShapeModel.getInstance();
+    this.shapeModel = ShapeModel.getInstance();
   }
 }

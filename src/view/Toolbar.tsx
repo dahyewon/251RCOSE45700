@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Toolbar.css";
-import { DEFAULT_SHAPE } from "../constants";
+import { CommandType, DEFAULT_SHAPE } from "../constants";
 import { useCursorByTool } from "../hooks";
 import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
 import { CommandManager } from "../command/CommandManager";
@@ -79,7 +79,7 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
                   const baseWidth = DEFAULT_SHAPE.WIDTH;
                   const baseHeight = Math.round(baseWidth / aspectRatio); // 비율에 따른 높이 계산
 
-                  commandManager.execute("addTemplateShape", {
+                  commandManager.execute(CommandType.ADD_TEMPLATE_SHAPE, {
                     shapeType: "image",
                     properties: {
                       imageUrl,
@@ -106,7 +106,7 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("text") ? "active" : ""}`}
         onClick={() => {
-          commandManager.execute("addTemplateShape", {
+          commandManager.execute(CommandType.ADD_TEMPLATE_SHAPE, {
             shapeType: "text",
             properties: {
               width: DEFAULT_SHAPE.WIDTH,
@@ -131,7 +131,7 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button`}
         onClick={() => {
-          commandManager.execute("canvasResetCommand");
+          commandManager.execute(CommandType.CANVAS_RESET);
         }}
       >
         리셋

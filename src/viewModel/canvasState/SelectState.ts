@@ -61,13 +61,7 @@ export class SelectState implements ICanvasState {
     );
     if (clickedShape) {
       this.selectedShapeModel.updateSelectedShapes([clickedShape]);
-      this.canvasViewModel.setState(
-        new EditTextState(
-          this.canvasViewModel,
-          this.shapeModel,
-          this.selectedShapeModel
-        )
-      );
+      this.canvasViewModel.setState(new EditTextState(this.canvasViewModel));
     }
   }
 

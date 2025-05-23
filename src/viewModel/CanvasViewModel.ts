@@ -144,30 +144,19 @@ export class CanvasViewModel {
   }
 
   requestZOrderMove(action: string, shapeId: number) {
-    const command = new ZOrderMoveCommand(this.shapeModel, action, shapeId);
+    const command = new ZOrderMoveCommand(action, shapeId);
     command.execute();
     this.notifyShapesUpdated();
   }
 
   requestSetProperty(shapeId: number, propertyName: string, value: any) {
-    const command = new SetPropertyCommand(
-      this.shapeModel,
-      shapeId,
-      propertyName,
-      value
-    );
+    const command = new SetPropertyCommand(shapeId, propertyName, value);
     command.execute();
     this.notifyShapesUpdated();
   }
 
   requestAddTemplateShape(type: string, properties: any) {
-    const command = new AddTemplateShapeCommand(
-      this,
-      this.shapeModel,
-      this.selectedShapeModel,
-      type,
-      properties
-    );
+    const command = new AddTemplateShapeCommand(this, type, properties);
     command.execute();
     this.notifyShapesUpdated();
   }
