@@ -1,16 +1,13 @@
+import { Bindable } from "../core/Bindable";
 import { CanvasModel } from "../model/CanvasModel";
-import { SelectedShapeModel } from "../model/SelectedShapeModel";
-import { ShapeModel } from "../model/ShapeModel";
 
-export class ToolbarViewModel {
-  public selectedShapeModel: SelectedShapeModel =
-    SelectedShapeModel.getInstance();
-  public shapeModel: ShapeModel = ShapeModel.getInstance();
+export class ToolbarViewModel extends Bindable {
   public canvasModel: CanvasModel = CanvasModel.getInstance();
   private currentState: string = "DrawState"; // default state
   private shapeType: string = "rectangle"; // default shape type
-  private listeners: (() => void)[] = [];
+
   constructor() {
+    super();
     const observer = {
       update: () => {
         this.currentState = this.canvasModel.getState();
@@ -18,17 +15,6 @@ export class ToolbarViewModel {
       },
     };
     this.canvasModel.subscribe(observer);
-  }
-
-  onChange(fn: () => void) {
-    this.listeners.push(fn);
-    return () => {
-      this.listeners.filter((listener) => listener !== fn);
-    };
-  }
-
-  notify() {
-    this.listeners.forEach((listener) => listener());
   }
 
   getShapeType() {
