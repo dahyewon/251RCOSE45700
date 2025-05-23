@@ -3,8 +3,9 @@ import { Observable } from "../core/Observable";
 import { TextShape } from "../entity/shape";
 import { Shape } from "../entity/shape/Shape";
 import { ShapeFactory } from "../entity/shape/ShapeFactory";
+import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-export class ShapeModel extends Observable {
+export class ShapeModel extends Observable<any> {
   private static instance: ShapeModel;
   private shapes: Shape[] = [];
   private zOrder: number[] = []; // z-order - shapeId map
@@ -21,14 +22,36 @@ export class ShapeModel extends Observable {
     }
     return ShapeModel.instance;
   }
+
+  notifyShapesUpdated() {
+    const event: CanvasEvent<{ shapes: Shape[] }> = {
+      type: "SHAPES_UPDATED",
+      data: {
+        shapes: this.getShapes(),
+      },
+    };
+    this.notify(event);
+  }
+
+  notifyResetInput() {
+    const event: CanvasEvent<{}> = {
+      type: "RESET_INPUT_FIELDS",
+      data: {},
+    };
+    this.notify(event);
+  }
+
   addShape(shape: Shape) {
     this.shapes.push(shape);
     this.zOrder.push(shape.id); // z-order는 도형 추가 시 자동으로 설정
+    this.notifyShapesUpdated();
   }
 
   clearShapes() {
     this.shapes = [];
     this.zOrder = [];
+    this.notifyShapesUpdated();
+    this.notifyResetInput();
   }
 
   getShapes(): Shape[] {
@@ -67,6 +90,7 @@ export class ShapeModel extends Observable {
       this.addShape(this.drawingShape);
       this.drawingShape = null; // reset drawing shape
     }
+    this.notifyShapesUpdated();
   }
 
   getZOrder(): number[] {
@@ -125,6 +149,7 @@ export class ShapeModel extends Observable {
       if (shape instanceof TextShape) {
         shape.isEditing = false;
       }
+      this.notifyShapesUpdated();
       return shape;
     } else {
       throw new Error("Shape not found.");
@@ -148,6 +173,8 @@ export class ShapeModel extends Observable {
       ...properties,
     });
     this.addShape(shape);
+
+    this.notifyShapesUpdated();
     return shape;
   }
 }

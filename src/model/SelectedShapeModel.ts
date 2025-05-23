@@ -2,8 +2,9 @@ import { Observable } from "../core/Observable";
 import { TextShape } from "../entity/shape";
 import { Shape } from "../entity/shape/Shape";
 import { TextShapeProps } from "../entity/shape/TextShape";
+import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-export class SelectedShapeModel extends Observable {
+export class SelectedShapeModel extends Observable<any> {
   private static instance: SelectedShapeModel;
   private selectedShapes: Shape[] = [];
   private startX: number = 0;
@@ -19,8 +20,19 @@ export class SelectedShapeModel extends Observable {
     return SelectedShapeModel.instance;
   }
 
+  notifySelectedShapesUpdated() {
+    const event: CanvasEvent<{ selectedShapes: Shape[] }> = {
+      type: "SELECTED_SHAPES_UPDATED",
+      data: {
+        selectedShapes: this.selectedShapes,
+      },
+    };
+    this.notify(event);
+  }
+
   clearSelectedShapes() {
     this.selectedShapes = [];
+    this.notifySelectedShapesUpdated();
   }
 
   getSelectedShapes(): Shape[] {
@@ -30,6 +42,7 @@ export class SelectedShapeModel extends Observable {
   updateSelectedShapes(shapes: Shape[]): void {
     this.clearSelectedShapes();
     this.selectedShapes = shapes;
+    this.notifySelectedShapesUpdated();
   }
 
   clickSelectedShape(offsetX: number, offsetY: number): Shape | null {
