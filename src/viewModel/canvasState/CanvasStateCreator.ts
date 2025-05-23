@@ -7,6 +7,8 @@ import { DrawState } from "./DrawState";
 import { MoveState } from "./MoveState";
 import { ResizeState } from "./ResizeState";
 import { SelectState } from "./SelectState";
+import { CanvasStateType } from "../../constants";
+import { ICanvasState } from "./CanvasState";
 
 export interface CanvasStateCreator {
   createCommand(
@@ -73,20 +75,22 @@ export class MoveStateCreator implements CanvasStateCreator {
 export class ResizeStateCreator implements CanvasStateCreator {
   createCommand(
     canvasViewModel: CanvasViewModel,
-    shapeModel: ShapeModel,
-    selectedShapeModel: SelectedShapeModel,
     params: { pos: string; offsetX: number; offsetY: number }
-  ): Command {
-    return new SetStateCommand(
+  ): ICanvasState {
+    return new ResizeState(
       canvasViewModel,
-      new ResizeState(
-        canvasViewModel,
-        shapeModel,
-        selectedShapeModel,
-        params.pos,
-        params.offsetX,
-        params.offsetY
-      )
+      params.pos,
+      params.offsetX,
+      params.offsetY
     );
   }
+}
+
+export class CanvasStateFactory {
+  private static CanvasStateCreators: Record<string, CanvasStateCreator> = {
+    [CanvasStateType.DRAW]: new DrawStateCreator(),
+    [CanvasStateType.SELECT]: new SelectStateCreator(),
+    [CanvasStateType.MOVE]: new MoveStateCreator(),
+    [CanvasStateType.RESIZE]: new ResizeStateCreator(),
+  };
 }

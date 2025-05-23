@@ -1,17 +1,18 @@
+import { CanvasStateType } from "../../constants";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
-import { SelectState } from "./SelectState";
 
 // 이동 모드
 export class MoveState implements ICanvasState {
+  private shapeModel: ShapeModel = ShapeModel.getInstance();
+  private selectedShapeModel: SelectedShapeModel =
+    SelectedShapeModel.getInstance();
   private moving = false;
 
   constructor(
     private viewModel: CanvasViewModel,
-    private shapeModel: ShapeModel,
-    private selectedShapeModel: SelectedShapeModel,
     offsetX: number,
     offsetY: number
   ) {
@@ -35,9 +36,7 @@ export class MoveState implements ICanvasState {
 
   handleMouseUp(): void {
     this.moving = false;
-    this.viewModel.setState(
-      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
-    ); // switch back to select state
+    this.viewModel.setState(CanvasStateType.SELECT); // switch back to select state
   }
   handleDoubleClick(event: React.MouseEvent): void {}
 }

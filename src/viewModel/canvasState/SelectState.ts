@@ -1,22 +1,24 @@
+import { CanvasStateType } from "../../constants";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 import { EditTextState } from "./EditTextState";
-import { MoveState } from "./MoveState";
 
 // 선택 모드
 export class SelectState implements ICanvasState {
+  private canvasViewModel: CanvasViewModel;
+  private shapeModel: ShapeModel = ShapeModel.getInstance();
+  private selectedShapeModel: SelectedShapeModel =
+    SelectedShapeModel.getInstance();
   private startX = 0;
   private startY = 0;
   private endX = 0;
   private endY = 0;
   private selecting = false;
-  constructor(
-    private canvasViewModel: CanvasViewModel,
-    private shapeModel: ShapeModel,
-    private selectedShapeModel: SelectedShapeModel
-  ) {}
+  constructor(canvasViewModel: CanvasViewModel) {
+    this.canvasViewModel = canvasViewModel;
+  }
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
@@ -61,7 +63,7 @@ export class SelectState implements ICanvasState {
     );
     if (clickedShape) {
       this.selectedShapeModel.updateSelectedShapes([clickedShape]);
-      this.canvasViewModel.setState(new EditTextState(this.canvasViewModel));
+      this.canvasViewModel.setState(CanvasStateType.EDIT_TEXT);
     }
   }
 
@@ -71,30 +73,20 @@ export class SelectState implements ICanvasState {
       offsetY
     );
     if (clickedSelectedShape) {
-      this.canvasViewModel.setState(
-        new MoveState(
-          this.canvasViewModel,
-          this.shapeModel,
-          this.selectedShapeModel,
-          offsetX,
-          offsetY
-        )
-      );
+      this.canvasViewModel.setState(CanvasStateType.MOVE, {
+        offsetX,
+        offsetY,
+      });
       return true;
     }
 
     const clickedShape = this.shapeModel.clickShape(offsetX, offsetY);
     if (clickedShape) {
       this.selectedShapeModel.updateSelectedShapes([clickedShape]); // 클릭한 도형을 선택
-      this.canvasViewModel.setState(
-        new MoveState(
-          this.canvasViewModel,
-          this.shapeModel,
-          this.selectedShapeModel,
-          offsetX,
-          offsetY
-        )
-      );
+      this.canvasViewModel.setState(CanvasStateType.MOVE, {
+        offsetX,
+        offsetY,
+      });
       return true;
     }
     return false;

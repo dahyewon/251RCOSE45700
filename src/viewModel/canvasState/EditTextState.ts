@@ -1,5 +1,6 @@
-import { PROPERTY_NAMES } from "../../constants";
+import { CanvasStateType, PROPERTY_NAMES } from "../../constants";
 import { TextShape } from "../../entity/shape";
+import { Shape } from "../../entity/shape/Shape";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
@@ -13,7 +14,7 @@ export class EditTextState implements ICanvasState {
   private editingShapeId: number | null = null;
 
   constructor(private viewModel: CanvasViewModel) {
-    const shape = this.selectedShapeModel.getSelectedShapes()[0];
+    const shape = this.viewModel.getSelectedShapes()[0];
     if (shape instanceof TextShape) {
       this.editingShapeId = shape.id;
       shape.isEditing = true;
@@ -36,18 +37,13 @@ export class EditTextState implements ICanvasState {
       }
       this.editingShapeId = null;
     }
-    this.viewModel.setState(
-      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
-    );
-    this.viewModel.notifyShapesUpdated();
+    this.viewModel.setState(CanvasStateType.SELECT);
     this.viewModel.notifyHideTextInput();
   }
 
   handleMouseDown(event: React.MouseEvent): void {
     this.viewModel.notifyHideTextInput();
-    this.viewModel.setState(
-      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
-    );
+    this.viewModel.setState(CanvasStateType.SELECT);
   }
   handleMouseMove(): void {}
   handleMouseUp(): void {}

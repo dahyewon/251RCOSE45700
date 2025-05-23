@@ -1,9 +1,9 @@
 import { Command } from "../../command/Command";
+import { CanvasStateType } from "../../constants";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
-import { SelectState } from "./SelectState";
 
 export class DrawState implements ICanvasState {
   private shapeModel = ShapeModel.getInstance();
@@ -38,9 +38,7 @@ export class DrawState implements ICanvasState {
     this.selectedShapeModel.updateSelectedShapes(
       this.shapeModel.getShapes().slice(-1)
     );
-    this.viewModel.setState(
-      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
-    ); // switch back to select state
+    this.viewModel.setState(CanvasStateType.SELECT); // switch back to select state
   }
   handleDoubleClick(event: React.MouseEvent): void {}
 }
