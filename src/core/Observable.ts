@@ -19,7 +19,7 @@ class Observable<T> {
     const observers = this.observers.get(event.type);
     if (observers) {
       for (const observer of observers) {
-        observer.update(event.data);
+        observer.update(event);
       }
     }
   }
