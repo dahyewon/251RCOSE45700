@@ -13,8 +13,8 @@ export class CommandManager {
     return CommandManager.instance;
   }
 
-  public execute(commandName: string, ...args: any[]): void {
-    const command = CommandFactory.createCommand(commandName, { args });
+  public execute(commandName: string, ...props: any): void {
+    const command = CommandFactory.createCommand(commandName, { props });
     if (command) {
       command.execute();
       this.undoStack.push(command);

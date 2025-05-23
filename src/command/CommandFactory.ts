@@ -51,7 +51,7 @@ export class CommandFactory {
     [CommandType.Z_ORDER_MOVE]: new ZOrderMoveCommandCreator(),
   };
 
-  static createCommand(commandType: string, props: any): Command {
+  static createCommand(commandType: string, ...props: any): Command {
     const commandCreator = this.commandCreators[commandType];
     if (!commandCreator) {
       throw new Error(`Command ${commandType} not found`);

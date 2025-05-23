@@ -16,7 +16,7 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       setDrawingShape(viewModel.getShapeType());
     });
     return unsubscribe;
-  });
+  }, [viewModel]);
 
   const isActive = (shapeType: string) =>
     currentState === "DrawState" && drawingShape === shapeType;
