@@ -1,3 +1,4 @@
+import { CommandManager } from "../command/CommandManager";
 import { CanvasStateType } from "../constants";
 import { Observable } from "../core/Observable";
 import { CanvasModel } from "../model/CanvasModel";
@@ -5,7 +6,8 @@ import { CanvasEvent } from "./CanvasEvents";
 
 export class ToolbarViewModel extends Observable<any> {
   public canvasModel: CanvasModel = CanvasModel.getInstance();
-  private currentState: string = "DrawState"; // default state
+  private commandManager: CommandManager = CommandManager.getInstance();
+  private stateType: string = "DrawState"; // default state
   private shapeType?: string = "rectangle"; // default shape type
   private stateProps?: any = null; // default state props
 
@@ -14,14 +16,12 @@ export class ToolbarViewModel extends Observable<any> {
     const canvasStateObserver = {
       update: (
         event: CanvasEvent<{
-          currentState: string;
+          stateType: string;
           shapeType?: string;
-          stateProps?: any;
         }>
       ) => {
-        this.currentState = event.data.currentState;
+        this.stateType = event.data.stateType;
         this.shapeType = event.data.shapeType;
-        this.stateProps = event.data.stateProps;
         this.notify(event);
       },
     };
@@ -32,15 +32,6 @@ export class ToolbarViewModel extends Observable<any> {
     return this.shapeType;
   }
   getState() {
-    return this.currentState;
-  }
-
-  setState(state: string, props: any) {
-    this.currentState = state;
-    if (this.currentState === CanvasStateType.DRAW) {
-      this.shapeType = props.shapeType;
-      this.canvasModel.setShapeType(this.shapeType);
-    }
-    this.canvasModel.setState(state);
+    return this.stateType;
   }
 }

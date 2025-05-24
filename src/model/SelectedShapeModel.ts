@@ -49,7 +49,6 @@ export class SelectedShapeModel extends Observable<any> {
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
-    console.log("initial position", this.startX, this.startY);
   }
   moveSelectedShapes(offsetX: number, offsetY: number): void {
     if (offsetX === this.endX && offsetY === this.endY) return;

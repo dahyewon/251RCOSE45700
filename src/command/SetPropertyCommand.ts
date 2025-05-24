@@ -1,8 +1,11 @@
+import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
 export class SetPropertyCommand implements Command {
   private shapeModel: ShapeModel;
+  private selectedShapeModel: SelectedShapeModel =
+    SelectedShapeModel.getInstance();
   constructor(
     private shapeId: number,
     private propertyName: string,
@@ -13,6 +16,7 @@ export class SetPropertyCommand implements Command {
 
   execute(): void {
     this.shapeModel.setProperty(this.shapeId, this.propertyName, this.value);
+    this.selectedShapeModel.notifySelectedShapesUpdated();
   }
 
   undo(): void {

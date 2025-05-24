@@ -18,6 +18,7 @@ export class ZOrderMoveCommand implements Command {
     if (index !== -1) {
       this.action.execute(zOrder, index);
     }
+    this.shapeModel.notifyShapesUpdated();
   }
 
   redo(): void {

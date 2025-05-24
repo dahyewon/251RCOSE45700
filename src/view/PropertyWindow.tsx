@@ -15,12 +15,23 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
   const [selectedShapes, setSelectedShapes] = useState(
     viewModel.getSelectedShapes()
   );
+  const [propertyValues, setPropertyValues] = useState<Record<string, any>>({});
+  const [version, setVersion] = useState(0);
 
   useCanvasActionListener(
     viewModel,
     "SELECTED_SHAPES_UPDATED",
     (data: { selectedShapes: Shape[] }) => {
       setSelectedShapes(data.selectedShapes);
+      setVersion((prevVersion) => prevVersion + 1);
+      if (selectedShapes.length === 1) {
+        const properties = selectedShapes[0].getProperties();
+        const newPropertyValues: Record<string, any> = {};
+        properties.forEach((property) => {
+          newPropertyValues[property.name] = property.value;
+        });
+        setPropertyValues(newPropertyValues);
+      }
     }
   );
 
@@ -45,8 +56,12 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
             return PropertyRendererFactory.createRenderer(
               property.type,
               property.name,
-              property.value,
+              propertyValues[property.name] ?? property.value,
               (newValue) => {
+                setPropertyValues((prevValues) => ({
+                  ...prevValues,
+                  [property.name]: newValue,
+                }));
                 commandManager.execute(CommandType.SET_PROPERTY, {
                   shapeId: selectedShapes[0].id,
                   propertyName: property.name,

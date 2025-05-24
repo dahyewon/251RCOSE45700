@@ -47,6 +47,7 @@ export class CanvasStateCreator {
     [CanvasStateType.SELECT]: new SelectStateCreator(),
     [CanvasStateType.MOVE]: new MoveStateCreator(),
     [CanvasStateType.RESIZE]: new ResizeStateCreator(),
+    [CanvasStateType.EDIT_TEXT]: new EditTextStateCreator(),
   };
 
   static createState(

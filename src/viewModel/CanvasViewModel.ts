@@ -58,9 +58,6 @@ export class CanvasViewModel extends Observable<any> {
 
   setState(state: string) {
     this.state = CanvasStateCreator.createState(this, state);
-    console.log(
-      `CanvasViewModel: State changed to ${this.state.constructor.name}`
-    );
   }
 
   setShapeType(type: string) {
