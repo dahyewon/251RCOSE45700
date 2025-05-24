@@ -64,15 +64,14 @@ export class ShapeModel extends Observable<any> {
     return this.shapes.length;
   }
 
-  startDrawShape(shapeType: string, offsetX: number, offsetY: number): void {
-    this.shapeType = shapeType;
+  startDraw(offsetX: number, offsetY: number): void {
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
   }
 
-  continueDrawShape(offsetX: number, offsetY: number): void {
+  continueDraw(offsetX: number, offsetY: number): void {
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
 
     this.endX = offsetX;

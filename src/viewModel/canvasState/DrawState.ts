@@ -1,4 +1,5 @@
 import { Command } from "../../command/Command";
+import { CommandManager } from "../../command/CommandManager";
 import { CanvasStateType } from "../../constants";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
@@ -8,7 +9,7 @@ import { ICanvasState } from "./CanvasState";
 export class DrawState implements ICanvasState {
   private shapeModel = ShapeModel.getInstance();
   private selectedShapeModel = SelectedShapeModel.getInstance();
-  private shapeType = "rectangle"; // default shape type
+  private commandManager = CommandManager.getInstance();
   private drawing = false;
 
   constructor(private viewModel: CanvasViewModel) {}
@@ -16,7 +17,7 @@ export class DrawState implements ICanvasState {
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
 
-    this.shapeModel.startDrawShape(this.shapeType, offsetX, offsetY);
+    this.commandManager.execute("START_DRAW", { offsetX, offsetY });
 
     this.drawing = true;
   }
@@ -25,17 +26,17 @@ export class DrawState implements ICanvasState {
     const { offsetX, offsetY } = event.nativeEvent;
     if (!this.drawing) return;
 
-    this.shapeModel.continueDrawShape(offsetX, offsetY);
+    this.commandManager.execute("CONTINUE_DRAW", {
+      offsetX,
+      offsetY,
+    });
   }
 
   handleMouseUp(): Command | void {
     if (!this.drawing) return;
     this.drawing = false;
 
-    this.shapeModel.endDrawShape();
-    this.selectedShapeModel.updateSelectedShapes(
-      this.shapeModel.getShapes().slice(-1)
-    );
+    this.commandManager.execute("END_DRAW");
     this.viewModel.setState(CanvasStateType.SELECT); // switch back to select state
   }
   handleDoubleClick(event: React.MouseEvent): void {}
