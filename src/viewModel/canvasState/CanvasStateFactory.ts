@@ -8,18 +8,12 @@ import { CanvasStateType } from "../../constants";
 import { EditTextState } from "./EditTextState";
 
 export interface CanvasStateCreator {
-  createState(
-    canvasViewModel: CanvasViewModel,
-    params?: any // 상태별로 필요한 추가 인자
-  ): ICanvasState;
+  createState(canvasViewModel: CanvasViewModel): ICanvasState;
 }
 
 export class DrawStateCreator implements CanvasStateCreator {
-  createState(
-    canvasViewModel: CanvasViewModel,
-    params: { shapeType: string }
-  ): ICanvasState {
-    return new DrawState(canvasViewModel, params.shapeType);
+  createState(canvasViewModel: CanvasViewModel): ICanvasState {
+    return new DrawState(canvasViewModel);
   }
 }
 
@@ -30,25 +24,14 @@ export class SelectStateCreator implements CanvasStateCreator {
 }
 
 export class MoveStateCreator implements CanvasStateCreator {
-  createState(
-    canvasViewModel: CanvasViewModel,
-    params: { offsetX: number; offsetY: number }
-  ): ICanvasState {
-    return new MoveState(canvasViewModel, params.offsetX, params.offsetY);
+  createState(canvasViewModel: CanvasViewModel): ICanvasState {
+    return new MoveState(canvasViewModel);
   }
 }
 
 export class ResizeStateCreator implements CanvasStateCreator {
-  createState(
-    canvasViewModel: CanvasViewModel,
-    params: { pos: string; offsetX: number; offsetY: number }
-  ): ICanvasState {
-    return new ResizeState(
-      canvasViewModel,
-      params.pos,
-      params.offsetX,
-      params.offsetY
-    );
+  createState(canvasViewModel: CanvasViewModel): ICanvasState {
+    return new ResizeState(canvasViewModel);
   }
 }
 
@@ -68,13 +51,12 @@ export class CanvasStateCreator {
 
   static createState(
     canvasViewModel: CanvasViewModel,
-    stateType: string,
-    params: any
+    stateType: string
   ): ICanvasState {
     const creator = this.CanvasStateCreators[stateType];
     if (!creator) {
       throw new Error(`Unknown state type: ${stateType}`);
     }
-    return creator.createState(canvasViewModel, params);
+    return creator.createState(canvasViewModel);
   }
 }

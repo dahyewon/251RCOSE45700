@@ -11,9 +11,7 @@ export class DrawState implements ICanvasState {
   private shapeType = "rectangle"; // default shape type
   private drawing = false;
 
-  constructor(private viewModel: CanvasViewModel, shapeType: string) {
-    this.shapeType = shapeType;
-  }
+  constructor(private viewModel: CanvasViewModel) {}
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;

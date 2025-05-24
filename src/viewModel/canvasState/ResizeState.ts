@@ -11,16 +11,10 @@ export class ResizeState implements ICanvasState {
     SelectedShapeModel.getInstance();
   private resizing: boolean = false;
 
-  constructor(
-    private viewModel: CanvasViewModel,
-    pos: string, // "top-left", "top-right", "bottom-right", "bottom-left"
-    offsetX: number,
-    offsetY: number
-  ) {
+  constructor(private viewModel: CanvasViewModel) {
     this.resizing = true;
 
     document.addEventListener("mouseup", this.handleMouseUpBound);
-    this.selectedShapeModel.startResizeSelectedShapes(offsetX, offsetY, pos);
   }
 
   private handleMouseUpBound = this.handleMouseUp.bind(this);
