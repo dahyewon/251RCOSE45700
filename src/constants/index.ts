@@ -70,6 +70,7 @@ export enum CommandType {
   CONTINUE_MOVE = "CONTINUE_MOVE",
   START_RESIZE = "START_RESIZE",
   CONTINUE_RESIZE = "CONTINUE_RESIZE",
+  UPDATE_SELECTED = "UPDATE_SELECTED",
 }
 
 export enum CanvasStateType {

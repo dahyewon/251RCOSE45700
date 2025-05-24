@@ -14,6 +14,7 @@ import {
 } from "./DrawShapeCommand";
 import { ContinueMoveCommand, StartMoveCommand } from "./MoveCommand";
 import { ContinueResizeCommand, StartResizeCommand } from "./ResizeCommand";
+import { UpdateSelectedCommand } from "./UpdateSelectedCommand";
 
 interface CommandCreator {
   create(props?: any): Command;
@@ -99,6 +100,12 @@ class continueResizeCommandCreator implements CommandCreator {
   }
 }
 
+class UpdateSelectedCommandCreator implements CommandCreator {
+  create(props: { selectedShapes: any[] }): Command {
+    return new UpdateSelectedCommand(props.selectedShapes);
+  }
+}
+
 export class CommandFactory {
   private static commandCreators: Record<string, CommandCreator> = {
     [CommandType.ADD_TEMPLATE_SHAPE]: new AddTemplateShapeCommandCreator(),
@@ -113,6 +120,7 @@ export class CommandFactory {
     [CommandType.CONTINUE_MOVE]: new continueMoveCommandCreator(),
     [CommandType.START_RESIZE]: new startResizeCommandCreator(),
     [CommandType.CONTINUE_RESIZE]: new continueResizeCommandCreator(),
+    [CommandType.UPDATE_SELECTED]: new UpdateSelectedCommandCreator(),
   };
 
   static createCommand(commandType: string, props: any): Command {

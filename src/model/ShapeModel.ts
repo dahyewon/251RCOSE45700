@@ -110,39 +110,6 @@ export class ShapeModel extends Observable<any> {
     } else return sortedShapes as Shape[];
   }
 
-  selectShapes(
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number
-  ): Shape[] {
-    const minX = Math.min(startX, endX);
-    const maxX = Math.max(startX, endX);
-    const minY = Math.min(startY, endY);
-    const maxY = Math.max(startY, endY);
-
-    return this.shapes.filter((shape) => {
-      const shapeMinX = Math.min(shape.startX, shape.endX);
-      const shapeMaxX = Math.max(shape.startX, shape.endX);
-      const shapeMinY = Math.min(shape.startY, shape.endY);
-      const shapeMaxY = Math.max(shape.startY, shape.endY);
-
-      return (
-        !(shapeMaxX < minX || maxX < shapeMinX) &&
-        !(shapeMaxY < minY || maxY < shapeMinY)
-      );
-    });
-  }
-
-  clickShape(offsetX: number, offsetY: number): Shape | null {
-    for (let shape of this.shapes) {
-      if (shape.isPointInside(offsetX, offsetY)) {
-        return shape;
-      }
-    }
-    return null;
-  }
-
   setProperty(shapeId: number, propertyName: string, value: any): Shape {
     const shape = this.shapes.find((shape) => shape.id === shapeId);
     if (shape) {

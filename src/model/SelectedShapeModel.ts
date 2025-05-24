@@ -44,15 +44,6 @@ export class SelectedShapeModel extends Observable<any> {
     this.notifySelectedShapesUpdated();
   }
 
-  clickSelectedShape(offsetX: number, offsetY: number): Shape | null {
-    for (let shape of this.selectedShapes) {
-      if (shape.isPointInside(offsetX, offsetY)) {
-        return shape;
-      }
-    }
-    return null;
-  }
-
   startMoveSelectedShapes(offsetX: number, offsetY: number): void {
     this.startX = offsetX;
     this.startY = offsetY;
@@ -100,18 +91,6 @@ export class SelectedShapeModel extends Observable<any> {
     return this.selectedShapes.forEach((shape) => {
       shape.resize(dx, dy, this.resize_pos);
     });
-  }
-
-  insertShapeText(offsetX: number, offsetY: number): Shape | null {
-    if (this.selectedShapes.length === 0) return null;
-
-    for (let shape of this.selectedShapes) {
-      if (shape.isPointInside(offsetX, offsetY)) {
-        return shape;
-      }
-    }
-
-    return null;
   }
 
   getTextShapeProperties(): TextShapeProps {
