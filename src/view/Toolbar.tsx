@@ -14,9 +14,9 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
   useCanvasActionListener(
     viewModel,
     "STATE_CHANGED",
-    (event: CanvasEvent<any>) => {
-      setCurrentState(event.data.currentState);
-      setDrawingShape(event.data.shapeType);
+    (data: { currentState: string; shapeType: string }) => {
+      setCurrentState(data.currentState);
+      setDrawingShape(data.shapeType);
     }
   );
 
@@ -35,7 +35,10 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("rectangle") ? "active" : ""}`}
         onClick={() => {
-          viewModel.setState("DrawState", { shapeType: "rectangle" });
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "rectangle",
+          });
         }}
       >
         ▭ 사각형
@@ -44,7 +47,10 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("ellipse") ? "active" : ""}`}
         onClick={() => {
-          viewModel.setState("DrawState", { shapeType: "ellipse" });
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "ellipse",
+          });
         }}
       >
         ◯ 원
@@ -53,7 +59,10 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("line") ? "active" : ""}`}
         onClick={() => {
-          viewModel.setState("DrawState", { shapeType: "line" });
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "line",
+          });
         }}
       >
         ㅡ 선
@@ -90,7 +99,9 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
                     },
                   });
 
-                  viewModel.setState("SelectState", {});
+                  commandManager.execute(CommandType.SET_STATE, {
+                    stateType: "SelectState",
+                  });
                 };
                 img.onerror = () => {
                   console.error("이미지 로드 실패:", file.name);
@@ -115,7 +126,10 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
               height: DEFAULT_SHAPE.HEIGHT,
             },
           });
-          viewModel.setState("SelectState", {});
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "text",
+          });
         }}
       >
         텍스트
@@ -124,7 +138,9 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isSelectActive() ? "active" : ""}`}
         onClick={() => {
-          viewModel.setState("SelectState", {});
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "SelectState",
+          });
         }}
       >
         선택

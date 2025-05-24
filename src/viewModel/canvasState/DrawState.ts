@@ -33,7 +33,9 @@ export class DrawState implements ICanvasState {
     this.drawing = false;
 
     this.commandManager.execute("END_DRAW");
-    this.viewModel.setState(CanvasStateType.SELECT); // switch back to select state
+    this.commandManager.execute("SET_STATE", {
+      stateType: CanvasStateType.SELECT,
+    });
   }
   handleDoubleClick(event: React.MouseEvent): void {}
 }

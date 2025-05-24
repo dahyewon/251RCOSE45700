@@ -1,8 +1,6 @@
 import { CommandManager } from "../../command/CommandManager";
 import { CanvasStateType } from "../../constants";
 import { Shape } from "../../entity/shape/Shape";
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
-import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 

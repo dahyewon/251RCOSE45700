@@ -53,8 +53,8 @@ class ZOrderMoveCommandCreator implements CommandCreator {
 }
 
 class SetStateCommandCreator implements CommandCreator {
-  create(props: { stateType: string }): Command {
-    return new SetStateCommand(props.stateType);
+  create(props: { stateType: string; shapeType?: string }): Command {
+    return new SetStateCommand(props.stateType, props.shapeType);
   }
 }
 

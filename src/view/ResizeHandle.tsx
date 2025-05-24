@@ -4,6 +4,7 @@ import { ResizeHandleViewModel } from "../viewModel/ResizeHandleViewModel";
 import { CommandManager } from "../command/CommandManager";
 import { CanvasEvent } from "../viewModel/CanvasEvents";
 import { useCanvasActionListener } from "../hooks";
+import { Shape } from "../entity/shape/Shape";
 
 const ResizeHandle: React.FC<{ viewModel: ResizeHandleViewModel }> = ({
   viewModel,
@@ -16,8 +17,8 @@ const ResizeHandle: React.FC<{ viewModel: ResizeHandleViewModel }> = ({
   useCanvasActionListener(
     viewModel,
     "SELECTED_SHAPES_UPDATED",
-    (event: CanvasEvent<{ selectedShapes: any[] }>) => {
-      setSelectedShapes(event.data.selectedShapes);
+    (data: { selectedShapes: Shape[] }) => {
+      setSelectedShapes(data.selectedShapes);
     }
   );
 
@@ -32,7 +33,13 @@ const ResizeHandle: React.FC<{ viewModel: ResizeHandleViewModel }> = ({
               left: handle.x,
               top: handle.y,
             }}
-            onMouseDown={(e) => viewModel.startResizing(handle, e)}
+            onMouseDown={(e) =>
+              commandManager.execute("SET_STATE", {
+                stateType: "ResizeState",
+                pos: handle.pos,
+                event: e,
+              })
+            }
           />
         ))}
       </>

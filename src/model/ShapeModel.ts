@@ -41,6 +41,9 @@ export class ShapeModel extends Observable<any> {
     this.notify(event);
   }
 
+  setShapeType(type: string) {
+    this.shapeType = type;
+  }
   addShape(shape: Shape) {
     this.shapes.push(shape);
     this.zOrder.push(shape.id); // z-order는 도형 추가 시 자동으로 설정
