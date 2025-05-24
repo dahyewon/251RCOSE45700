@@ -1,14 +1,7 @@
-import { SetStateCommand } from "../../command/SetStateCommand";
 import { Command } from "../../command/Command";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
-import { DrawState } from "./DrawState";
-import { MoveState } from "./MoveState";
-import { ResizeState } from "./ResizeState";
-import { SelectState } from "./SelectState";
-import { CanvasStateType } from "../../constants";
-import { ICanvasState } from "./CanvasState";
 
 export interface CanvasStateCreator {
   createCommand(

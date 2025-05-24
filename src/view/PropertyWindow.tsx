@@ -4,7 +4,6 @@ import { PropertyRendererFactory } from "../components/propertyRenderFactory";
 import { CommandManager } from "../command/CommandManager";
 import { CommandType } from "../constants";
 import { PropertyWindowViewModel } from "../viewModel/PropertyWindowViewModel";
-import { CanvasEvent } from "../viewModel/CanvasEvents";
 import { useCanvasActionListener } from "../hooks";
 import { Shape } from "../entity/shape/Shape";
 

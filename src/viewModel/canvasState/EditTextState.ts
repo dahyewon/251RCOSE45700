@@ -1,11 +1,9 @@
 import { CanvasStateType, PROPERTY_NAMES } from "../../constants";
 import { TextShape } from "../../entity/shape";
-import { Shape } from "../../entity/shape/Shape";
 import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
-import { SelectState } from "./SelectState";
 
 export class EditTextState implements ICanvasState {
   private shapeModel: ShapeModel = ShapeModel.getInstance();

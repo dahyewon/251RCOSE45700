@@ -1,8 +1,7 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./ResizeHandle.css";
 import { ResizeHandleViewModel } from "../viewModel/ResizeHandleViewModel";
 import { CommandManager } from "../command/CommandManager";
-import { CanvasEvent } from "../viewModel/CanvasEvents";
 import { useCanvasActionListener } from "../hooks";
 import { Shape } from "../entity/shape/Shape";
 

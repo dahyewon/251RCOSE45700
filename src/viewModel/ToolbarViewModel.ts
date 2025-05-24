@@ -1,5 +1,4 @@
 import { CommandManager } from "../command/CommandManager";
-import { CanvasStateType } from "../constants";
 import { Observable } from "../core/Observable";
 import { CanvasModel } from "../model/CanvasModel";
 import { CanvasEvent } from "./CanvasEvents";
@@ -9,7 +8,6 @@ export class ToolbarViewModel extends Observable<any> {
   private commandManager: CommandManager = CommandManager.getInstance();
   private stateType: string = "DrawState"; // default state
   private shapeType?: string = "rectangle"; // default shape type
-  private stateProps?: any = null; // default state props
 
   constructor() {
     super();

@@ -12,6 +12,7 @@ import { ToolbarViewModel } from "./viewModel/ToolbarViewModel";
 import { ResizeHandleViewModel } from "./viewModel/ResizeHandleViewModel";
 
 const App: React.FC = () => {
+  //initialize models
   const shapeModel = ShapeModel.getInstance();
   const selectedShapeModel = SelectedShapeModel.getInstance();
   const canvasModel = CanvasModel.getInstance();
