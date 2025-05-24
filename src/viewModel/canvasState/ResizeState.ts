@@ -1,14 +1,11 @@
+import { CommandManager } from "../../command/CommandManager";
 import { CanvasStateType } from "../../constants";
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
-import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 
 // 리사이즈 모드
 export class ResizeState implements ICanvasState {
-  private shapeModel: ShapeModel = ShapeModel.getInstance();
-  private selectedShapeModel: SelectedShapeModel =
-    SelectedShapeModel.getInstance();
+  private commandManager = CommandManager.getInstance();
   private resizing: boolean = false;
 
   constructor(private viewModel: CanvasViewModel) {
@@ -26,7 +23,10 @@ export class ResizeState implements ICanvasState {
     if (!this.resizing) return;
     const { offsetX, offsetY } = event.nativeEvent;
 
-    this.selectedShapeModel.resizeSelectedShapes(offsetX, offsetY);
+    this.commandManager.execute("CONTINUE_RESIZE", {
+      offsetX,
+      offsetY,
+    });
   }
 
   handleMouseUp(): void {

@@ -1,14 +1,10 @@
 import { Command } from "../../command/Command";
 import { CommandManager } from "../../command/CommandManager";
 import { CanvasStateType } from "../../constants";
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
-import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 
 export class DrawState implements ICanvasState {
-  private shapeModel = ShapeModel.getInstance();
-  private selectedShapeModel = SelectedShapeModel.getInstance();
   private commandManager = CommandManager.getInstance();
   private drawing = false;
 

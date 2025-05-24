@@ -80,9 +80,9 @@ export class SelectedShapeModel extends Observable<any> {
   }
 
   startResizeSelectedShapes(
+    resize_pos: string,
     offsetX: number,
-    offsetY: number,
-    resize_pos: string
+    offsetY: number
   ): void {
     this.startX = offsetX;
     this.startY = offsetY;

@@ -1,17 +1,15 @@
-import { ICanvasState } from "../viewModel/canvasState/CanvasState";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
+import { CanvasModel } from "../model/CanvasModel";
 import { Command } from "./Command";
 
 export class SetStateCommand implements Command {
-  private canvasViewModel: CanvasViewModel;
-  private state: ICanvasState;
+  private canvasModel: CanvasModel = CanvasModel.getInstance();
+  private state: string;
 
-  constructor(canvasViewModel: CanvasViewModel, state: ICanvasState) {
-    this.canvasViewModel = canvasViewModel;
+  constructor(state: string) {
     this.state = state;
   }
   execute() {
-    this.canvasViewModel.setState(this.state);
+    this.canvasModel.setState(this.state);
   }
 
   undo(): void {

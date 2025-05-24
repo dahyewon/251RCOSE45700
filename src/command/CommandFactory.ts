@@ -12,6 +12,8 @@ import {
   EndDrawShapeCommand,
   StartDrawShapeCommand,
 } from "./DrawShapeCommand";
+import { ContinueMoveCommand, StartMoveCommand } from "./MoveCommand";
+import { ContinueResizeCommand, StartResizeCommand } from "./ResizeCommand";
 
 interface CommandCreator {
   create(props?: any): Command;
@@ -73,6 +75,30 @@ class EndDrawShapeCommandCreator implements CommandCreator {
   }
 }
 
+class startMoveCommandCreator implements CommandCreator {
+  create(props: { offsetX: number; offsetY: number }): Command {
+    return new StartMoveCommand(props.offsetX, props.offsetY);
+  }
+}
+
+class continueMoveCommandCreator implements CommandCreator {
+  create(props: { offsetX: number; offsetY: number }): Command {
+    return new ContinueMoveCommand(props.offsetX, props.offsetY);
+  }
+}
+
+class startResizeCommandCreator implements CommandCreator {
+  create(props: { pos: string; offsetX: number; offsetY: number }): Command {
+    return new StartResizeCommand(props.pos, props.offsetX, props.offsetY);
+  }
+}
+
+class continueResizeCommandCreator implements CommandCreator {
+  create(props: { offsetX: number; offsetY: number }): Command {
+    return new ContinueResizeCommand(props.offsetX, props.offsetY);
+  }
+}
+
 export class CommandFactory {
   private static commandCreators: Record<string, CommandCreator> = {
     [CommandType.ADD_TEMPLATE_SHAPE]: new AddTemplateShapeCommandCreator(),
@@ -83,6 +109,10 @@ export class CommandFactory {
     [CommandType.START_DRAW]: new StartDrawShapeCommandCreator(),
     [CommandType.CONTINUE_DRAW]: new ContinueDrawShapeCommandCreator(),
     [CommandType.END_DRAW]: new EndDrawShapeCommandCreator(),
+    [CommandType.START_MOVE]: new startMoveCommandCreator(),
+    [CommandType.CONTINUE_MOVE]: new continueMoveCommandCreator(),
+    [CommandType.START_RESIZE]: new startResizeCommandCreator(),
+    [CommandType.CONTINUE_RESIZE]: new continueResizeCommandCreator(),
   };
 
   static createCommand(commandType: string, props: any): Command {

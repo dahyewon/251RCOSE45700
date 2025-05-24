@@ -1,28 +1,18 @@
+import { CommandManager } from "../../command/CommandManager";
 import { CanvasStateType } from "../../constants";
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
-import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 
 // 이동 모드
 export class MoveState implements ICanvasState {
-  private shapeModel: ShapeModel = ShapeModel.getInstance();
-  private selectedShapeModel: SelectedShapeModel =
-    SelectedShapeModel.getInstance();
+  private commandManager = CommandManager.getInstance();
   private moving = false;
 
-  constructor(
-    private viewModel: CanvasViewModel,
-    offsetX: number,
-    offsetY: number
-  ) {
-    this.selectedShapeModel.startMoveSelectedShapes(offsetX, offsetY);
+  constructor(private viewModel: CanvasViewModel) {
     this.moving = true;
   }
 
   handleMouseDown(event: React.MouseEvent): void {
-    //? required?
-
     this.moving = true;
   }
 
@@ -30,8 +20,10 @@ export class MoveState implements ICanvasState {
     if (!this.moving) return;
     const { offsetX, offsetY } = event.nativeEvent;
 
-    if (this.selectedShapeModel.getSelectedShapes().length === 0) return;
-    this.selectedShapeModel.moveSelectedShapes(offsetX, offsetY);
+    this.commandManager.execute("CONTINUE_MOVE", {
+      offsetX,
+      offsetY,
+    });
   }
 
   handleMouseUp(): void {
