@@ -55,7 +55,9 @@ export class ShapeModel extends Observable<any> {
   }
 
   getShapes(): Shape[] {
-    return [...this.getShapesByZOrder()]; // 원본 배열이 수정되지 않도록 복사본 반환
+    if (this.drawingShape) {
+      return [...this.getShapesByZOrder(), this.drawingShape];
+    } else return [...this.getShapesByZOrder()]; // 원본 배열이 수정되지 않도록 복사본 반환
   }
 
   countShapes(): number {

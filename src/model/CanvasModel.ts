@@ -3,9 +3,8 @@ import { CanvasEvent } from "../viewModel/CanvasEvents";
 
 export class CanvasModel extends Observable<any> {
   private static instance: CanvasModel;
-  private state: string = "DrawState"; // default state
+  private stateType: string = "DrawState"; // default state
   private shapeType?: string = "rectangle"; // default shape type
-  private stateProps?: any = null; // default state props
 
   public static getInstance(): CanvasModel {
     if (!CanvasModel.instance) {
@@ -18,24 +17,21 @@ export class CanvasModel extends Observable<any> {
     const event: CanvasEvent<{
       currentState: string;
       shapeType: string;
-      stateProps: any;
     }> = {
       type: "STATE_CHANGED",
       data: {
         currentState: this.getState(),
         shapeType: this.getShapeType(),
-        stateProps: this.getStateProps(),
       },
     };
     this.notify(event);
   }
 
   public getState(): string {
-    return this.state;
+    return this.stateType;
   }
-  public setState(state: string, props?: any) {
-    this.state = state;
-    this.stateProps = props ? props : null;
+  public setState(stateType: string) {
+    this.stateType = stateType;
     this.notifyStateChanged();
   }
   public getShapeType(): string {
@@ -47,8 +43,5 @@ export class CanvasModel extends Observable<any> {
   public setShapeType(type?: string) {
     if (type) this.shapeType = type;
     this.notifyStateChanged();
-  }
-  public getStateProps(): any {
-    return this.stateProps;
   }
 }

@@ -11,7 +11,7 @@ export class SelectedShapeModel extends Observable<any> {
   private startY: number = 0;
   private endX: number = 0;
   private endY: number = 0;
-  private pos: string = "none"; // resize handle position
+  private resize_pos: string = "none"; // resize handle position
 
   public static getInstance(): SelectedShapeModel {
     if (!SelectedShapeModel.instance) {
@@ -32,7 +32,6 @@ export class SelectedShapeModel extends Observable<any> {
 
   clearSelectedShapes() {
     this.selectedShapes = [];
-    this.notifySelectedShapesUpdated();
   }
 
   getSelectedShapes(): Shape[] {
@@ -83,13 +82,13 @@ export class SelectedShapeModel extends Observable<any> {
   startResizeSelectedShapes(
     offsetX: number,
     offsetY: number,
-    pos: string
+    resize_pos: string
   ): void {
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
-    this.pos = pos; // resize handle position
+    this.resize_pos = resize_pos; // resize handle position
   }
 
   resizeSelectedShapes(offsetX: number, offsetY: number): void {
@@ -99,7 +98,7 @@ export class SelectedShapeModel extends Observable<any> {
     this.startX = offsetX;
     this.startY = offsetY;
     return this.selectedShapes.forEach((shape) => {
-      shape.resize(dx, dy, this.pos);
+      shape.resize(dx, dy, this.resize_pos);
     });
   }
 
