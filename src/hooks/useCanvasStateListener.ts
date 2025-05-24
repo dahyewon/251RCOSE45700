@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { CanvasEvent } from "../viewModel/CanvasEvents";
+import { CanvasEvent, CanvasEventType } from "../viewModel/CanvasEvents";
 
 export function useCanvasStateListener<T>(
   viewModel: CanvasViewModel,
-  eventType: string,
+  eventType: CanvasEventType,
   initialState: T,
   key: keyof T
 ): T[keyof T] {
@@ -19,8 +19,10 @@ export function useCanvasStateListener<T>(
       },
     };
 
-    const unsubscribe = viewModel.onChange(observer);
-    return unsubscribe;
+    viewModel.subscribe(eventType, observer);
+    return () => {
+      viewModel.unsubscribe(eventType, observer);
+    };
   }, [viewModel, eventType, key]);
 
   return state;

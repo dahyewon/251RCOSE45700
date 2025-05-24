@@ -1,8 +1,10 @@
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
+import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
 export class StartResizeCommand implements Command {
   private selectedShapeModel = SelectedShapeModel.getInstance();
+  private shapeModel = ShapeModel.getInstance();
   private pos: string;
   private offsetX: number;
   private offsetY: number;
@@ -19,6 +21,7 @@ export class StartResizeCommand implements Command {
       this.offsetX,
       this.offsetY
     );
+    this.shapeModel.notifyShapesUpdated();
   }
 
   undo(): void {
@@ -38,6 +41,7 @@ export class StartResizeCommand implements Command {
 
 export class ContinueResizeCommand implements Command {
   private selectedShapeModel = SelectedShapeModel.getInstance();
+  private shapeModel = ShapeModel.getInstance();
   private offsetX: number;
   private offsetY: number;
 
@@ -48,6 +52,8 @@ export class ContinueResizeCommand implements Command {
 
   execute(): void {
     this.selectedShapeModel.resizeSelectedShapes(this.offsetX, this.offsetY);
+    this.shapeModel.notifyShapesUpdated();
+    this.selectedShapeModel.notifySelectedShapesUpdated();
   }
   undo(): void {
     // Logic to undo the continuation of resizing a shape

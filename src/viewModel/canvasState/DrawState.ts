@@ -26,6 +26,7 @@ export class DrawState implements ICanvasState {
       offsetX,
       offsetY,
     });
+    this.viewModel.notifyShapesUpdated();
   }
 
   handleMouseUp(): Command | void {
@@ -33,6 +34,8 @@ export class DrawState implements ICanvasState {
     this.drawing = false;
 
     this.commandManager.execute("END_DRAW");
+    this.viewModel.notifyShapesUpdated();
+
     this.commandManager.execute("SET_STATE", {
       stateType: CanvasStateType.SELECT,
     });

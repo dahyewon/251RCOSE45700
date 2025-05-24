@@ -6,6 +6,7 @@ import { CommandType } from "../constants";
 import { PropertyWindowViewModel } from "../viewModel/PropertyWindowViewModel";
 import { CanvasEvent } from "../viewModel/CanvasEvents";
 import { useCanvasActionListener } from "../hooks";
+import { Shape } from "../entity/shape/Shape";
 
 const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
   viewModel,
@@ -18,8 +19,8 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
   useCanvasActionListener(
     viewModel,
     "SELECTED_SHAPES_UPDATED",
-    (event: CanvasEvent<{ selectedShapes: any[] }>) => {
-      setSelectedShapes(event.data.selectedShapes);
+    (data: { selectedShapes: Shape[] }) => {
+      setSelectedShapes(data.selectedShapes);
     }
   );
 

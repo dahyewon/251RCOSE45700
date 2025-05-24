@@ -13,12 +13,14 @@ const ResizeHandle: React.FC<{ viewModel: ResizeHandleViewModel }> = ({
   const [selectedShapes, setSelectedShapes] = useState(
     viewModel.getSelectedShapes()
   );
+  const [version, setVersion] = useState(0);
 
   useCanvasActionListener(
     viewModel,
     "SELECTED_SHAPES_UPDATED",
     (data: { selectedShapes: Shape[] }) => {
       setSelectedShapes(data.selectedShapes);
+      setVersion((v) => v + 1);
     }
   );
 
@@ -33,13 +35,16 @@ const ResizeHandle: React.FC<{ viewModel: ResizeHandleViewModel }> = ({
               left: handle.x,
               top: handle.y,
             }}
-            onMouseDown={(e) =>
+            onMouseDown={(e) => {
               commandManager.execute("SET_STATE", {
                 stateType: "ResizeState",
+              });
+              commandManager.execute("START_RESIZE", {
                 pos: handle.pos,
-                event: e,
-              })
-            }
+                offsetX: e.clientX,
+                offsetY: e.clientY,
+              });
+            }}
           />
         ))}
       </>

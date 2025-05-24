@@ -7,13 +7,6 @@ import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
 import { ResizeState } from "./canvasState/ResizeState";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
-import { CanvasStateFactory } from "./canvasState/CanvasStateCommandFactory";
-import {
-  AddTemplateShapeCommand,
-  CanvasResetCommand,
-  SetPropertyCommand,
-  ZOrderMoveCommand,
-} from "../command";
 import { TextShapeProps } from "../entity/shape/TextShape";
 import { CanvasModel } from "../model/CanvasModel";
 import { CanvasStateCreator } from "./canvasState/CanvasStateFactory";
@@ -32,7 +25,7 @@ export class CanvasViewModel extends Observable<any> {
 
   constructor() {
     super();
-    this.state = new DrawState(this, this.shapeType); //default: 그리기 모드
+    this.state = new DrawState(this); //default: 그리기 모드
 
     const shapesObserver = {
       update: (event: CanvasEvent<{ shapes: Shape[] }>) => {
@@ -50,10 +43,7 @@ export class CanvasViewModel extends Observable<any> {
       update: (event: CanvasEvent<any>) => {
         this.currentState = event.data.currentState;
         this.shapeType = event.data.shapeType;
-        this.setState(this.currentState, {
-          shapeType: this.shapeType,
-          ...event.data.stateProps,
-        });
+        this.setState(this.currentState);
         this.notify(event);
       },
     };
@@ -66,8 +56,11 @@ export class CanvasViewModel extends Observable<any> {
     this.canvasModel.subscribe("STATE_CHANGED", canvasStateObserver);
   }
 
-  setState(state: CanvasStateType, props?: any) {
-    CanvasStateCreator.createState(this, state, props);
+  setState(state: string) {
+    this.state = CanvasStateCreator.createState(this, state);
+    console.log(
+      `CanvasViewModel: State changed to ${this.state.constructor.name}`
+    );
   }
 
   setShapeType(type: string) {
@@ -100,12 +93,7 @@ export class CanvasViewModel extends Observable<any> {
     ).getBoundingClientRect();
     if (!canvas) return;
 
-    return this.setState(CanvasStateType.RESIZE, {
-      shapeType: this.shapeType,
-      handle: handle.pos,
-      offsetX: event.clientX - canvas.left,
-      offsetY: event.clientY - canvas.top,
-    });
+    return this.setState(CanvasStateType.RESIZE);
   }
 
   // requestSetState(stateType: string, params: any) {
@@ -148,9 +136,9 @@ export class CanvasViewModel extends Observable<any> {
   //   this.notifyShapesUpdated();
   // }
 
-  // saveText(newText: string) {
-  //   (this.state as any).saveText(newText);
-  // }
+  saveText(newText: string) {
+    (this.state as any).saveText(newText);
+  }
 
   notifyShowTextInput(props: TextShapeProps) {
     const event: CanvasEvent<TextShapeProps> = {
@@ -164,6 +152,16 @@ export class CanvasViewModel extends Observable<any> {
     const event: CanvasEvent<{}> = {
       type: "HIDE_TEXT_INPUT",
       data: {},
+    };
+    this.notify(event);
+  }
+
+  notifyShapesUpdated() {
+    const event: CanvasEvent<{ shapes: Shape[] }> = {
+      type: "SHAPES_UPDATED",
+      data: {
+        shapes: this.getShapes(),
+      },
     };
     this.notify(event);
   }

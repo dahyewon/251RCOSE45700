@@ -87,6 +87,7 @@ export class ShapeModel extends Observable<any> {
       endX: this.endX,
       endY: this.endY,
     });
+    this.notifyShapesUpdated();
   }
 
   endDrawShape(): void {

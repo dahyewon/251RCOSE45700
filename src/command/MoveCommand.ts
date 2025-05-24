@@ -1,4 +1,5 @@
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
+import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
 export class StartMoveCommand implements Command {
@@ -32,6 +33,7 @@ export class StartMoveCommand implements Command {
 
 export class ContinueMoveCommand implements Command {
   private selectedShapeModel = SelectedShapeModel.getInstance();
+  private shapeModel = ShapeModel.getInstance();
   private offsetX: number;
   private offsetY: number;
 
@@ -42,6 +44,8 @@ export class ContinueMoveCommand implements Command {
 
   execute(): void {
     this.selectedShapeModel.moveSelectedShapes(this.offsetX, this.offsetY);
+    this.shapeModel.notifyShapesUpdated();
+    this.selectedShapeModel.notifySelectedShapesUpdated();
   }
 
   undo(): void {

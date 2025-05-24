@@ -13,14 +13,14 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const [didFocus, setDidFocus] = useState(false); // 추가
 
   const [shapes, setShapes] = useState<Shape[]>(viewModel.getShapes());
-  const [selectedShapes, setSelectedShapes] = useState<Shape[]>(
-    viewModel.getSelectedShapes()
+
+  useCanvasActionListener(
+    viewModel,
+    "SHAPES_UPDATED",
+    (data: { shapes: Shape[] }) => {
+      setShapes(data.shapes);
+    }
   );
-
-  useCanvasActionListener(viewModel, "SHAPES_UPDATED", (shapes: Shape[]) => {
-    setShapes(shapes);
-  });
-
   useCanvasActionListener(viewModel, "RESET_INPUT_FIELDS", () => {
     const textareas = document.querySelectorAll("textarea");
     textareas.forEach((textarea) => {

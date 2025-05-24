@@ -70,6 +70,7 @@ export class SelectState implements ICanvasState {
   checkShapeClick(offsetX: number, offsetY: number): boolean {
     const clickedSelectedShape = this.clickSelectedShape(offsetX, offsetY);
     if (clickedSelectedShape) {
+      this.commandManager.execute("START_MOVE", { offsetX, offsetY });
       this.canvasViewModel.setState(CanvasStateType.MOVE);
       return true;
     }
@@ -79,6 +80,7 @@ export class SelectState implements ICanvasState {
       this.commandManager.execute("UPDATE_SELECTED", {
         selectedShapes: [clickedShape],
       });
+      this.commandManager.execute("START_MOVE", { offsetX, offsetY });
       this.canvasViewModel.setState(CanvasStateType.MOVE);
       return true;
     }
