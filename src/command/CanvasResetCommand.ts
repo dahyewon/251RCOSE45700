@@ -4,15 +4,10 @@ import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
 export class CanvasResetCommand implements Command {
-  private canvasModel: CanvasModel;
-  private shapeModel: ShapeModel;
-  private selectedShapeModel: SelectedShapeModel;
-
-  constructor() {
-    this.canvasModel = CanvasModel.getInstance();
-    this.shapeModel = ShapeModel.getInstance();
-    this.selectedShapeModel = SelectedShapeModel.getInstance();
-  }
+  private canvasModel: CanvasModel = CanvasModel.getInstance();
+  private shapeModel: ShapeModel = ShapeModel.getInstance();
+  private selectedShapeModel: SelectedShapeModel =
+    SelectedShapeModel.getInstance();
 
   execute(): void {
     this.shapeModel.clearShapes();
