@@ -13,7 +13,7 @@ export class StartDrawShapeCommand implements Command {
   }
 
   execute(): void {
-    this.shapeModel.startDraw(this.offsetX, this.offsetY);
+    this.shapeModel.startCreate(this.offsetX, this.offsetY);
   }
 
   undo(): void {
@@ -36,7 +36,7 @@ export class ContinueDrawShapeCommand implements Command {
   }
 
   execute(): void {
-    this.shapeModel.continueDraw(this.offsetX, this.offsetY);
+    this.shapeModel.continueCreate(this.offsetX, this.offsetY);
   }
 
   undo(): void {
@@ -59,7 +59,7 @@ export class EndDrawShapeCommand implements Command {
   private selectedShapeModel = SelectedShapeModel.getInstance();
 
   execute(): void {
-    this.shapeModel.endDrawShape();
+    this.shapeModel.endCreateShape();
     this.selectedShapeModel.updateSelectedShapes(
       this.shapeModel.getShapes().slice(-1)
     );

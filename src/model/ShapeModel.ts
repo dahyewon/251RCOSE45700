@@ -67,14 +67,14 @@ export class ShapeModel extends Observable<any> {
     return this.shapes.length;
   }
 
-  startDraw(offsetX: number, offsetY: number): void {
+  startCreate(offsetX: number, offsetY: number): void {
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
   }
 
-  continueDraw(offsetX: number, offsetY: number): void {
+  continueCreate(offsetX: number, offsetY: number): void {
     if (offsetX === this.endX && offsetY === this.endY) return; // 변화 없으면 무시
 
     this.endX = offsetX;
@@ -90,7 +90,7 @@ export class ShapeModel extends Observable<any> {
     this.notifyShapesUpdated();
   }
 
-  endDrawShape(): void {
+  endCreateShape(): void {
     if (this.drawingShape) {
       this.addShape(this.drawingShape);
       this.drawingShape = null; // reset drawing shape
