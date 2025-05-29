@@ -1,19 +1,27 @@
+import { CanvasEvent, CanvasEventType } from "../viewModel/CanvasEvents";
 import { Observer } from "./Observer";
-import { CanvasEvent } from "../viewModel/CanvasEvents";
 
 class Observable<T> {
-  private observers: Observer<CanvasEvent<T>>[] = [];
+  private observers: Map<CanvasEventType, Set<Observer<T>>> = new Map();
 
-  subscribe(observer: Observer<CanvasEvent<T>>): void {
-    this.observers.push(observer);
+  subscribe(type: CanvasEventType, observer: Observer<T>): void {
+    if (!this.observers.has(type)) {
+      this.observers.set(type, new Set());
+    }
+    this.observers.get(type)?.add(observer);
   }
 
-  unsubscribe(observer: Observer<CanvasEvent<T>>): void {
-    this.observers = this.observers.filter((obs) => obs !== observer);
+  unsubscribe(type: CanvasEventType, observer: Observer<T>): void {
+    this.observers.get(type)?.delete(observer);
   }
 
   notify(event: CanvasEvent<T>): void {
-    this.observers.forEach((observer) => observer.update(event));
+    const observers = this.observers.get(event.type);
+    if (observers) {
+      for (const observer of observers) {
+        observer.update(event);
+      }
+    }
   }
 }
 

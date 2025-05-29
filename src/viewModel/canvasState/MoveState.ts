@@ -1,27 +1,18 @@
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
-import { ShapeModel } from "../../model/ShapeModel";
+import { CommandManager } from "../../command/CommandManager";
+import { CanvasStateType } from "../../constants";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
-import { SelectState } from "./SelectState";
 
 // 이동 모드
 export class MoveState implements ICanvasState {
+  private commandManager = CommandManager.getInstance();
   private moving = false;
 
-  constructor(
-    private viewModel: CanvasViewModel,
-    private shapeModel: ShapeModel,
-    private selectedShapeModel: SelectedShapeModel,
-    offsetX: number,
-    offsetY: number
-  ) {
-    this.selectedShapeModel.startMoveSelectedShapes(offsetX, offsetY);
+  constructor(private viewModel: CanvasViewModel) {
     this.moving = true;
   }
 
   handleMouseDown(event: React.MouseEvent): void {
-    //? required?
-
     this.moving = true;
   }
 
@@ -29,15 +20,15 @@ export class MoveState implements ICanvasState {
     if (!this.moving) return;
     const { offsetX, offsetY } = event.nativeEvent;
 
-    if (this.selectedShapeModel.getSelectedShapes().length === 0) return;
-    this.selectedShapeModel.moveSelectedShapes(offsetX, offsetY);
+    this.commandManager.execute("CONTINUE_MOVE", {
+      offsetX,
+      offsetY,
+    });
   }
 
   handleMouseUp(): void {
     this.moving = false;
-    this.viewModel.setState(
-      new SelectState(this.viewModel, this.shapeModel, this.selectedShapeModel)
-    ); // switch back to select state
+    this.viewModel.setState(CanvasStateType.SELECT); // switch back to select state
   }
   handleDoubleClick(event: React.MouseEvent): void {}
 }

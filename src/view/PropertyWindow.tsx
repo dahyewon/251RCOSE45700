@@ -1,21 +1,37 @@
-import React from "react";
-import { Shape } from "../entity/shape/Shape"; // Shape 인터페이스 또는 클래스 import 경로 맞춰줘
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
+import React, { useState } from "react";
 import "./PropertyWindow.css";
 import { PropertyRendererFactory } from "../components/propertyRenderFactory";
-import { useCanvasStateListener } from "../hooks";
+import { CommandManager } from "../command/CommandManager";
+import { CommandType } from "../constants";
+import { PropertyWindowViewModel } from "../viewModel/PropertyWindowViewModel";
+import { useCanvasActionListener } from "../hooks";
+import { Shape } from "../entity/shape/Shape";
 
-const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
+const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
   viewModel,
 }) => {
-  const selectedShapes = useCanvasStateListener<{
-    shapes: Shape[];
-    selectedShapes: Shape[];
-  }>(
+  const commandManager = CommandManager.getInstance();
+  const [selectedShapes, setSelectedShapes] = useState(
+    viewModel.getSelectedShapes()
+  );
+  const [propertyValues, setPropertyValues] = useState<Record<string, any>>({});
+  const [version, setVersion] = useState(0);
+
+  useCanvasActionListener(
     viewModel,
-    "SHAPES_UPDATED",
-    { shapes: [], selectedShapes: [] },
-    "selectedShapes"
+    "SELECTED_SHAPES_UPDATED",
+    (data: { selectedShapes: Shape[] }) => {
+      setSelectedShapes(data.selectedShapes);
+      setVersion((prevVersion) => prevVersion + 1);
+      if (selectedShapes.length === 1) {
+        const properties = selectedShapes[0].getProperties();
+        const newPropertyValues: Record<string, any> = {};
+        properties.forEach((property) => {
+          newPropertyValues[property.name] = property.value;
+        });
+        setPropertyValues(newPropertyValues);
+      }
+    }
   );
 
   if (selectedShapes.length === 0) {
@@ -39,13 +55,17 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
             return PropertyRendererFactory.createRenderer(
               property.type,
               property.name,
-              property.value,
+              propertyValues[property.name] ?? property.value,
               (newValue) => {
-                viewModel.requestSetProperty(
-                  selectedShapes[0].id,
-                  property.name,
-                  newValue
-                );
+                setPropertyValues((prevValues) => ({
+                  ...prevValues,
+                  [property.name]: newValue,
+                }));
+                commandManager.execute(CommandType.SET_PROPERTY, {
+                  shapeId: selectedShapes[0].id,
+                  propertyName: property.name,
+                  value: newValue,
+                });
               }
             );
           })}
@@ -54,7 +74,10 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
           <button
             className="zorder-btn"
             onClick={() => {
-              viewModel.requestZOrderMove("forward", selectedShapes[0].id);
+              commandManager.execute(CommandType.Z_ORDER_MOVE, {
+                actionType: "forward",
+                shapeId: selectedShapes[0].id,
+              });
             }}
           >
             앞으로
@@ -62,7 +85,10 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
           <button
             className="zorder-btn"
             onClick={() => {
-              viewModel.requestZOrderMove("backward", selectedShapes[0].id);
+              commandManager.execute(CommandType.Z_ORDER_MOVE, {
+                actionType: "backward",
+                shapeId: selectedShapes[0].id,
+              });
             }}
           >
             뒤로
@@ -70,7 +96,10 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
           <button
             className="zorder-btn"
             onClick={() => {
-              viewModel.requestZOrderMove("toFront", selectedShapes[0].id);
+              commandManager.execute(CommandType.Z_ORDER_MOVE, {
+                actionType: "toFront",
+                shapeId: selectedShapes[0].id,
+              });
             }}
           >
             맨 앞으로
@@ -78,7 +107,10 @@ const PropertyWindow: React.FC<{ viewModel: CanvasViewModel }> = ({
           <button
             className="zorder-btn"
             onClick={() => {
-              viewModel.requestZOrderMove("toBack", selectedShapes[0].id);
+              commandManager.execute(CommandType.Z_ORDER_MOVE, {
+                actionType: "toBack",
+                shapeId: selectedShapes[0].id,
+              });
             }}
           >
             맨 뒤로

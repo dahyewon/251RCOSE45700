@@ -1,5 +1,7 @@
+import { CanvasEvent } from "../viewModel/CanvasEvents";
+
 interface Observer<T> {
-  update: (data: T) => void;
+  update: (event: CanvasEvent<T>) => void;
 }
 
 export { Observer };

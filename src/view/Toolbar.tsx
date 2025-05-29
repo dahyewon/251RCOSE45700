@@ -1,24 +1,24 @@
-import React from "react";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
+import React, { useState } from "react";
 import "./Toolbar.css";
-import { DEFAULT_SHAPE } from "../constants";
-import { useCanvasStateListener, useCursorByTool } from "../hooks";
+import { CommandType, DEFAULT_SHAPE } from "../constants";
+import { useCanvasActionListener, useCursorByTool } from "../hooks";
+import { ToolbarViewModel } from "../viewModel/ToolbarViewModel";
+import { CommandManager } from "../command/CommandManager";
+import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
-  const initialState = {
-    currentState: "DrawState",
-    drawingShape: "rectangle",
-  }; // 초기 상태 설정
+const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
+  const commandManager = CommandManager.getInstance();
+  const [currentState, setCurrentState] = useState(viewModel.getState());
+  const [drawingShape, setDrawingShape] = useState(viewModel.getShapeType());
 
-  const currentState = useCanvasStateListener<{
-    currentState: string;
-    drawingShape?: string;
-  }>(viewModel, "STATE_CHANGED", initialState, "currentState");
-
-  const drawingShape = useCanvasStateListener<{
-    currentState: string;
-    drawingShape?: string;
-  }>(viewModel, "STATE_CHANGED", initialState, "drawingShape");
+  useCanvasActionListener(
+    viewModel,
+    "STATE_CHANGED",
+    (data: { currentState: string; shapeType: string }) => {
+      setCurrentState(data.currentState);
+      setDrawingShape(data.shapeType);
+    }
+  );
 
   const isActive = (shapeType: string) =>
     currentState === "DrawState" && drawingShape === shapeType;
@@ -29,13 +29,16 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     currentState === "ResizeState";
 
   useCursorByTool(currentState);
-  
+
   return (
     <div className="toolbar">
       <button
         className={`tool-button ${isActive("rectangle") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("DrawState", { shapeType: "rectangle" });
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "rectangle",
+          });
         }}
       >
         ▭ 사각형
@@ -44,7 +47,10 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("ellipse") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("DrawState", { shapeType: "ellipse" });
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "ellipse",
+          });
         }}
       >
         ◯ 원
@@ -53,7 +59,10 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("line") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("DrawState", { shapeType: "line" });
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "line",
+          });
         }}
       >
         ㅡ 선
@@ -81,13 +90,18 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
                   const baseWidth = DEFAULT_SHAPE.WIDTH;
                   const baseHeight = Math.round(baseWidth / aspectRatio); // 비율에 따른 높이 계산
 
-                  viewModel.requestAddTemplateShape("image", {
-                    imageUrl,
-                    width: baseWidth,
-                    height: baseHeight,
+                  commandManager.execute(CommandType.ADD_TEMPLATE_SHAPE, {
+                    shapeType: "image",
+                    properties: {
+                      imageUrl,
+                      width: baseWidth,
+                      height: baseHeight,
+                    },
                   });
 
-                  viewModel.requestSetState("SelectState", {});
+                  commandManager.execute(CommandType.SET_STATE, {
+                    stateType: "SelectState",
+                  });
                 };
                 img.onerror = () => {
                   console.error("이미지 로드 실패:", file.name);
@@ -105,11 +119,17 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isActive("text") ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestAddTemplateShape("text", {
-            width: DEFAULT_SHAPE.WIDTH,
-            height: DEFAULT_SHAPE.HEIGHT,
+          commandManager.execute(CommandType.ADD_TEMPLATE_SHAPE, {
+            shapeType: "text",
+            properties: {
+              width: DEFAULT_SHAPE.WIDTH,
+              height: DEFAULT_SHAPE.HEIGHT,
+            },
           });
-          viewModel.requestSetState("SelectState", {});
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "DrawState",
+            shapeType: "text",
+          });
         }}
       >
         텍스트
@@ -118,7 +138,9 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button ${isSelectActive() ? "active" : ""}`}
         onClick={() => {
-          viewModel.requestSetState("SelectState", {});
+          commandManager.execute(CommandType.SET_STATE, {
+            stateType: "SelectState",
+          });
         }}
       >
         선택
@@ -127,7 +149,7 @@ const Toolbar: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
       <button
         className={`tool-button`}
         onClick={() => {
-          viewModel.requestResetCanvas();
+          commandManager.execute(CommandType.CANVAS_RESET);
         }}
       >
         리셋

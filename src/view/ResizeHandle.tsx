@@ -1,20 +1,26 @@
-import React from "react";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { Shape } from "../entity/shape/Shape";
-import { useCanvasStateListener } from "../hooks";
+import React, { useState } from "react";
 import "./ResizeHandle.css";
+import { ResizeHandleViewModel } from "../viewModel/ResizeHandleViewModel";
+import { CommandManager } from "../command/CommandManager";
+import { useCanvasActionListener } from "../hooks";
+import { Shape } from "../entity/shape/Shape";
 
-const ResizeHandle: React.FC<{ viewModel: CanvasViewModel }> = ({
+const ResizeHandle: React.FC<{ viewModel: ResizeHandleViewModel }> = ({
   viewModel,
 }) => {
-  const selectedShapes = useCanvasStateListener<{
-    shapes: Shape[];
-    selectedShapes: Shape[];
-  }>(
+  const commandManager = CommandManager.getInstance();
+  const [selectedShapes, setSelectedShapes] = useState(
+    viewModel.getSelectedShapes()
+  );
+  const [version, setVersion] = useState(0);
+
+  useCanvasActionListener(
     viewModel,
-    "SHAPES_UPDATED",
-    { shapes: [], selectedShapes: [] },
-    "selectedShapes"
+    "SELECTED_SHAPES_UPDATED",
+    (data: { selectedShapes: Shape[] }) => {
+      setSelectedShapes(data.selectedShapes);
+      setVersion((v) => v + 1);
+    }
   );
 
   return selectedShapes.map((shape) => (
@@ -28,7 +34,16 @@ const ResizeHandle: React.FC<{ viewModel: CanvasViewModel }> = ({
               left: handle.x,
               top: handle.y,
             }}
-            onMouseDown={(e) => viewModel.startResizing(handle, e)}
+            onMouseDown={(e) => {
+              commandManager.execute("SET_STATE", {
+                stateType: "ResizeState",
+              });
+              commandManager.execute("START_RESIZE", {
+                pos: handle.pos,
+                offsetX: e.clientX,
+                offsetY: e.clientY,
+              });
+            }}
           />
         ))}
       </>

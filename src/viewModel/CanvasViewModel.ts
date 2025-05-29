@@ -5,45 +5,58 @@ import { Shape } from "../entity/shape/Shape";
 import { CanvasEvent } from "./CanvasEvents";
 import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
-import { ResizeState } from "./canvasState/ResizeState";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
-import { CanvasStateCommandFactory } from "./canvasState/CanvasStateCommandFactory";
-import {
-  AddTemplateShapeCommand,
-  CanvasResetCommand,
-  SetPropertyCommand,
-  ZOrderMoveCommand,
-} from "../command";
 import { TextShapeProps } from "../entity/shape/TextShape";
+import { CanvasModel } from "../model/CanvasModel";
+import { CanvasStateCreator } from "./canvasState/CanvasStateFactory";
+import { CanvasStateType } from "../constants";
 
 export class CanvasViewModel extends Observable<any> {
-  private shapeModel: ShapeModel;
-  private selectedShapeModel: SelectedShapeModel;
+  public shapeModel: ShapeModel = ShapeModel.getInstance();
+  public selectedShapeModel: SelectedShapeModel =
+    SelectedShapeModel.getInstance();
+  private canvasModel: CanvasModel = CanvasModel.getInstance();
   private state: ICanvasState;
-  private canvasStateCommandFactory: CanvasStateCommandFactory;
-
   private shapeType: string = "rectangle";
+  private currentState: CanvasStateType = CanvasStateType.DRAW;
+  private shapes: Shape[] = [];
+  private selectedShapes: Shape[] = [];
 
-  constructor(shapeModel: ShapeModel, selectedShapeModel: SelectedShapeModel) {
+  constructor() {
     super();
-    this.shapeModel = shapeModel;
-    this.selectedShapeModel = selectedShapeModel;
-    this.state = new DrawState(
-      this,
-      this.shapeModel,
-      this.selectedShapeModel,
-      this.shapeType
-    ); //default: 그리기 모드
-    this.canvasStateCommandFactory = new CanvasStateCommandFactory(
-      this,
-      this.shapeModel,
-      this.selectedShapeModel
+    this.state = new DrawState(this); //default: 그리기 모드
+
+    const shapesObserver = {
+      update: (event: CanvasEvent<{ shapes: Shape[] }>) => {
+        this.shapes = event.data.shapes;
+        this.notify(event);
+      },
+    };
+    const selectedShapesObserver = {
+      update: (event: CanvasEvent<{ selectedShapes: Shape[] }>) => {
+        this.selectedShapes = event.data.selectedShapes;
+        this.notify(event);
+      },
+    };
+    const canvasStateObserver = {
+      update: (event: CanvasEvent<any>) => {
+        this.currentState = event.data.currentState;
+        this.shapeType = event.data.shapeType;
+        this.setState(this.currentState);
+        this.notify(event);
+      },
+    };
+
+    this.shapeModel.subscribe("SHAPES_UPDATED", shapesObserver);
+    this.selectedShapeModel.subscribe(
+      "SELECTED_SHAPES_UPDATED",
+      selectedShapesObserver
     );
+    this.canvasModel.subscribe("STATE_CHANGED", canvasStateObserver);
   }
 
-  setState(state: ICanvasState) {
-    this.state = state;
-    this.notifyStateChanged();
+  setState(state: string) {
+    this.state = CanvasStateCreator.createState(this, state);
   }
 
   setShapeType(type: string) {
@@ -56,28 +69,15 @@ export class CanvasViewModel extends Observable<any> {
 
   handleMouseMove = (event: React.MouseEvent) => {
     this.state.handleMouseMove(event);
-    this.notifyShapesUpdated();
   };
 
   handleMouseUp = () => {
     this.state.handleMouseUp();
-    this.notifyShapesUpdated();
   };
 
   handleDoubleClick = (event: React.MouseEvent) => {
     this.state.handleDoubleClick(event);
-    this.notifyShapesUpdated();
   };
-
-  requestResetCanvas() {
-    const command = new CanvasResetCommand(
-      this,
-      this.shapeModel,
-      this.selectedShapeModel
-    );
-    command.execute();
-    this.notifyShapesUpdated();
-  }
 
   startResizing(
     handle: { x: number; y: number; pos: string },
@@ -89,104 +89,51 @@ export class CanvasViewModel extends Observable<any> {
     ).getBoundingClientRect();
     if (!canvas) return;
 
-    return this.setState(
-      new ResizeState(
-        this,
-        this.shapeModel,
-        this.selectedShapeModel,
-        handle.pos,
-        canvas.left - event.nativeEvent.offsetX,
-        canvas.top - event.nativeEvent.offsetY
-      )
-    );
+    return this.setState(CanvasStateType.RESIZE);
   }
 
-  requestSetState(stateType: string, params: any) {
-    if (stateType === "DrawState") {
-      this.setShapeType(params.shapeType); // shapeType을 DrawState에 전달
-    } else this.setShapeType("");
-    const command = this.canvasStateCommandFactory.createCommand(
-      stateType,
-      params
-    );
-    command.execute();
-  }
+  // requestSetState(stateType: string, params: any) {
+  //   if (stateType === "DrawState") {
+  //     this.setShapeType(params.shapeType); // shapeType을 DrawState에 전달
+  //   } else this.setShapeType("");
+  //   const command = this.canvasStateCommandFactory.createCommand(
+  //     stateType,
+  //     params
+  //   );
+  //   command.execute();
+  // }
 
   getShapes() {
-    return this.shapeModel.getShapes();
+    return this.shapes;
+  }
+  getSelectedShapes() {
+    return this.selectedShapes;
   }
 
   getShapeType() {
     return this.shapeType;
   }
 
-  requestZOrderMove(action: string, shapeId: number) {
-    const command = new ZOrderMoveCommand(
-      this.shapeModel,
-      action,
-      shapeId
-    );
-    command.execute();
-    this.notifyShapesUpdated();
-  }
+  // requestZOrderMove(action: string, shapeId: number) {
+  //   const command = new ZOrderMoveCommand(action, shapeId);
+  //   command.execute();
+  //   this.notifyShapesUpdated();
+  // }
 
-  requestSetProperty(shapeId: number, propertyName: string, value: any) {
-    const command = new SetPropertyCommand(
-      this.shapeModel,
-      shapeId,
-      propertyName,
-      value
-    );
-    command.execute();
-    this.notifyShapesUpdated();
-  }
+  // requestSetProperty(shapeId: number, propertyName: string, value: any) {
+  //   const command = new SetPropertyCommand(shapeId, propertyName, value);
+  //   command.execute();
+  //   this.notifyShapesUpdated();
+  // }
 
-  requestAddTemplateShape(type: string, properties: any) {
-    const command = new AddTemplateShapeCommand(
-      this,
-      this.shapeModel,
-      this.selectedShapeModel,
-      type,
-      properties
-    );
-    command.execute();
-    this.notifyShapesUpdated();
-  }
+  // requestAddTemplateShape(type: string, properties: any) {
+  //   const command = new AddTemplateShapeCommand(this, type, properties);
+  //   command.execute();
+  //   this.notifyShapesUpdated();
+  // }
 
   saveText(newText: string) {
     (this.state as any).saveText(newText);
-  }
-
-  notifyShapesUpdated() {
-    const event: CanvasEvent<{ shapes: Shape[]; selectedShapes: Shape[] }> = {
-      type: "SHAPES_UPDATED",
-      data: {
-        shapes: this.getShapes(),
-        selectedShapes: this.selectedShapeModel.getSelectedShapes(),
-      },
-    };
-    this.notify(event);
-  }
-
-  notifyStateChanged() {
-    const event: CanvasEvent<{ currentState: string; drawingShape?: string }> =
-      {
-        type: "STATE_CHANGED",
-        data: {
-          currentState: this.state.constructor.name,
-          drawingShape:
-            this.state instanceof DrawState ? this.shapeType : undefined,
-        },
-      };
-    this.notify(event);
-  }
-
-  notifyResetInput() {
-    const event: CanvasEvent<{}> = {
-      type: "RESET_INPUT_FIELDS",
-      data: {},
-    };
-    this.notify(event);
   }
 
   notifyShowTextInput(props: TextShapeProps) {
@@ -201,6 +148,16 @@ export class CanvasViewModel extends Observable<any> {
     const event: CanvasEvent<{}> = {
       type: "HIDE_TEXT_INPUT",
       data: {},
+    };
+    this.notify(event);
+  }
+
+  notifyShapesUpdated() {
+    const event: CanvasEvent<{ shapes: Shape[] }> = {
+      type: "SHAPES_UPDATED",
+      data: {
+        shapes: this.getShapes(),
+      },
     };
     this.notify(event);
   }

@@ -1,22 +1,21 @@
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
-import { ShapeModel } from "../../model/ShapeModel";
+import { CommandManager } from "../../command/CommandManager";
+import { CanvasStateType } from "../../constants";
+import { Shape } from "../../entity/shape/Shape";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
-import { EditTextState } from "./EditTextState";
-import { MoveState } from "./MoveState";
 
 // 선택 모드
 export class SelectState implements ICanvasState {
+  private canvasViewModel: CanvasViewModel;
+  private commandManager = CommandManager.getInstance();
   private startX = 0;
   private startY = 0;
   private endX = 0;
   private endY = 0;
   private selecting = false;
-  constructor(
-    private canvasViewModel: CanvasViewModel,
-    private shapeModel: ShapeModel,
-    private selectedShapeModel: SelectedShapeModel
-  ) {}
+  constructor(canvasViewModel: CanvasViewModel) {
+    this.canvasViewModel = canvasViewModel;
+  }
 
   handleMouseDown(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
@@ -29,7 +28,9 @@ export class SelectState implements ICanvasState {
     this.endY = offsetY;
 
     this.selecting = true;
-    this.selectedShapeModel.clearSelectedShapes();
+    this.commandManager.execute("UPDATE_SELECTED", {
+      selectedShapes: [],
+    });
   }
 
   handleMouseMove(event: React.MouseEvent): void {
@@ -40,13 +41,15 @@ export class SelectState implements ICanvasState {
     this.endX = offsetX;
     this.endY = offsetY;
 
-    const shapes = this.shapeModel.selectShapes(
+    const shapes = this.selectShapes(
       this.startX,
       this.startY,
       this.endX,
       this.endY
     );
-    this.selectedShapeModel.updateSelectedShapes(shapes);
+    this.commandManager.execute("UPDATE_SELECTED", {
+      selectedShapes: shapes,
+    });
   }
 
   handleMouseUp(): void {
@@ -55,54 +58,87 @@ export class SelectState implements ICanvasState {
 
   handleDoubleClick(event: React.MouseEvent): void {
     const { offsetX, offsetY } = event.nativeEvent;
-    const clickedShape = this.selectedShapeModel.insertShapeText(
-      offsetX,
-      offsetY
-    );
+    const clickedShape = this.insertShapeText(offsetX, offsetY);
     if (clickedShape) {
-      this.selectedShapeModel.updateSelectedShapes([clickedShape]);
-      this.canvasViewModel.setState(
-        new EditTextState(
-          this.canvasViewModel,
-          this.shapeModel,
-          this.selectedShapeModel
-        )
-      );
+      this.commandManager.execute("UPDATE_SELECTED", {
+        selectedShapes: [clickedShape],
+      });
+      this.canvasViewModel.setState(CanvasStateType.EDIT_TEXT);
     }
   }
 
   checkShapeClick(offsetX: number, offsetY: number): boolean {
-    const clickedSelectedShape = this.selectedShapeModel.clickSelectedShape(
-      offsetX,
-      offsetY
-    );
+    const clickedSelectedShape = this.clickSelectedShape(offsetX, offsetY);
     if (clickedSelectedShape) {
-      this.canvasViewModel.setState(
-        new MoveState(
-          this.canvasViewModel,
-          this.shapeModel,
-          this.selectedShapeModel,
-          offsetX,
-          offsetY
-        )
-      );
+      this.commandManager.execute("START_MOVE", { offsetX, offsetY });
+      this.canvasViewModel.setState(CanvasStateType.MOVE);
       return true;
     }
 
-    const clickedShape = this.shapeModel.clickShape(offsetX, offsetY);
+    const clickedShape = this.clickShape(offsetX, offsetY);
     if (clickedShape) {
-      this.selectedShapeModel.updateSelectedShapes([clickedShape]); // 클릭한 도형을 선택
-      this.canvasViewModel.setState(
-        new MoveState(
-          this.canvasViewModel,
-          this.shapeModel,
-          this.selectedShapeModel,
-          offsetX,
-          offsetY
-        )
-      );
+      this.commandManager.execute("UPDATE_SELECTED", {
+        selectedShapes: [clickedShape],
+      });
+      this.commandManager.execute("START_MOVE", { offsetX, offsetY });
+      this.canvasViewModel.setState(CanvasStateType.MOVE);
       return true;
     }
     return false;
+  }
+
+  selectShapes(
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number
+  ): Shape[] {
+    const minX = Math.min(startX, endX);
+    const maxX = Math.max(startX, endX);
+    const minY = Math.min(startY, endY);
+    const maxY = Math.max(startY, endY);
+
+    return this.canvasViewModel.getShapes().filter((shape) => {
+      const shapeMinX = Math.min(shape.startX, shape.endX);
+      const shapeMaxX = Math.max(shape.startX, shape.endX);
+      const shapeMinY = Math.min(shape.startY, shape.endY);
+      const shapeMaxY = Math.max(shape.startY, shape.endY);
+
+      return (
+        !(shapeMaxX < minX || maxX < shapeMinX) &&
+        !(shapeMaxY < minY || maxY < shapeMinY)
+      );
+    });
+  }
+
+  clickShape(offsetX: number, offsetY: number): Shape | null {
+    for (let shape of this.canvasViewModel.getShapes()) {
+      if (shape.isPointInside(offsetX, offsetY)) {
+        return shape;
+      }
+    }
+    return null;
+  }
+
+  clickSelectedShape(offsetX: number, offsetY: number): Shape | null {
+    for (let shape of this.canvasViewModel.getSelectedShapes()) {
+      if (shape.isPointInside(offsetX, offsetY)) {
+        return shape;
+      }
+    }
+    return null;
+  }
+
+  insertShapeText(offsetX: number, offsetY: number): Shape | null {
+    const selectedShapes = this.canvasViewModel.getSelectedShapes();
+    if (selectedShapes.length === 0) return null;
+
+    for (let shape of selectedShapes) {
+      if (shape.isPointInside(offsetX, offsetY)) {
+        return shape;
+      }
+    }
+
+    return null;
   }
 }

@@ -3,12 +3,10 @@ import { Command } from "./Command";
 
 export class ZOrderMoveCommand implements Command {
   private action: ZOrderAction;
+  private shapeModel: ShapeModel;
 
-  constructor(
-    private shapeModel: ShapeModel,
-    actionType: string,
-    private shapeId: number,
-  ) {
+  constructor(actionType: string, private shapeId: number) {
+    this.shapeModel = ShapeModel.getInstance();
     const actionRegistry = ZOrderMoveActionRegistry.getInstance();
     this.action = actionRegistry.getAction(actionType);
   }
@@ -20,6 +18,7 @@ export class ZOrderMoveCommand implements Command {
     if (index !== -1) {
       this.action.execute(zOrder, index);
     }
+    this.shapeModel.notifyShapesUpdated();
   }
 
   redo(): void {

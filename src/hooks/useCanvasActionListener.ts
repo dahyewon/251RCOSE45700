@@ -1,14 +1,14 @@
 import { useEffect } from "react";
-import { CanvasViewModel } from "../viewModel/CanvasViewModel";
-import { CanvasEvent } from "../viewModel/CanvasEvents";
+import { CanvasEvent, CanvasEventType } from "../viewModel/CanvasEvents";
+import { Observable } from "../core/Observable";
 
 export function useCanvasActionListener<T>(
-  viewModel: CanvasViewModel,
-  eventType: string,
+  viewModel: Observable<any>,
+  eventType: CanvasEventType,
   handler: (data: T) => void
 ) {
   useEffect(() => {
-    const observer = {
+    const listener = {
       update: (event: CanvasEvent<T>) => {
         if (event.type === eventType) {
           handler(event.data);
@@ -16,9 +16,9 @@ export function useCanvasActionListener<T>(
       },
     };
 
-    viewModel.subscribe(observer);
+    viewModel.subscribe(eventType, listener);
     return () => {
-      viewModel.unsubscribe(observer);
+      viewModel.unsubscribe(eventType, listener);
     };
   }, [viewModel, eventType, handler]);
 }

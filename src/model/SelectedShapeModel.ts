@@ -1,14 +1,34 @@
+import { Observable } from "../core/Observable";
 import { TextShape } from "../entity/shape";
 import { Shape } from "../entity/shape/Shape";
 import { TextShapeProps } from "../entity/shape/TextShape";
+import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-export class SelectedShapeModel {
+export class SelectedShapeModel extends Observable<any> {
+  private static instance: SelectedShapeModel;
   private selectedShapes: Shape[] = [];
   private startX: number = 0;
   private startY: number = 0;
   private endX: number = 0;
   private endY: number = 0;
-  private pos: string = "none"; // resize handle position
+  private resize_pos: string = "none"; // resize handle position
+
+  public static getInstance(): SelectedShapeModel {
+    if (!SelectedShapeModel.instance) {
+      SelectedShapeModel.instance = new SelectedShapeModel();
+    }
+    return SelectedShapeModel.instance;
+  }
+
+  notifySelectedShapesUpdated() {
+    const event: CanvasEvent<{ selectedShapes: Shape[] }> = {
+      type: "SELECTED_SHAPES_UPDATED",
+      data: {
+        selectedShapes: this.selectedShapes,
+      },
+    };
+    this.notify(event);
+  }
 
   clearSelectedShapes() {
     this.selectedShapes = [];
@@ -21,15 +41,7 @@ export class SelectedShapeModel {
   updateSelectedShapes(shapes: Shape[]): void {
     this.clearSelectedShapes();
     this.selectedShapes = shapes;
-  }
-
-  clickSelectedShape(offsetX: number, offsetY: number): Shape | null {
-    for (let shape of this.selectedShapes) {
-      if (shape.isPointInside(offsetX, offsetY)) {
-        return shape;
-      }
-    }
-    return null;
+    this.notifySelectedShapesUpdated();
   }
 
   startMoveSelectedShapes(offsetX: number, offsetY: number): void {
@@ -43,7 +55,6 @@ export class SelectedShapeModel {
 
     this.endX = offsetX;
     this.endY = offsetY;
-
     const dx = this.endX - this.startX;
     const dy = this.endY - this.startY;
     this.startX = offsetX;
@@ -59,15 +70,15 @@ export class SelectedShapeModel {
   }
 
   startResizeSelectedShapes(
+    resize_pos: string,
     offsetX: number,
-    offsetY: number,
-    pos: string
+    offsetY: number
   ): void {
     this.startX = offsetX;
     this.startY = offsetY;
     this.endX = offsetX;
     this.endY = offsetY;
-    this.pos = pos; // resize handle position
+    this.resize_pos = resize_pos; // resize handle position
   }
 
   resizeSelectedShapes(offsetX: number, offsetY: number): void {
@@ -77,20 +88,8 @@ export class SelectedShapeModel {
     this.startX = offsetX;
     this.startY = offsetY;
     return this.selectedShapes.forEach((shape) => {
-      shape.resize(dx, dy, this.pos);
+      shape.resize(dx, dy, this.resize_pos);
     });
-  }
-
-  insertShapeText(offsetX: number, offsetY: number): Shape | null {
-    if (this.selectedShapes.length === 0) return null;
-
-    for (let shape of this.selectedShapes) {
-      if (shape.isPointInside(offsetX, offsetY)) {
-        return shape;
-      }
-    }
-
-    return null;
   }
 
   getTextShapeProperties(): TextShapeProps {

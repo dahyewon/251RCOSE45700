@@ -12,17 +12,19 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
   const [textInput, setTextInput] = useState<null | any>(null);
   const [didFocus, setDidFocus] = useState(false); // 추가
 
-  const shapes = useCanvasStateListener<{ shapes: Shape[]; selectedShapes: Shape[] }>(
+  const [shapes, setShapes] = useState<Shape[]>(viewModel.getShapes());
+
+  useCanvasActionListener(
     viewModel,
     "SHAPES_UPDATED",
-    { shapes: [], selectedShapes: [] },
-    "shapes"
+    (data: { shapes: Shape[] }) => {
+      setShapes(data.shapes);
+    }
   );
-
   useCanvasActionListener(viewModel, "RESET_INPUT_FIELDS", () => {
     const textareas = document.querySelectorAll("textarea");
     textareas.forEach((textarea) => {
-        textarea.remove();
+      textarea.remove();
     });
   });
 
@@ -35,7 +37,9 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
     setDidFocus(false);
   });
 
-  const handleTextInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleTextInputKeyDown = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       textareaRef.current?.blur();
@@ -92,8 +96,14 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
           className="canvas-textarea"
           style={{
             position: "absolute",
-            left: textInput.startX < textInput.endX ? textInput.startX : textInput.endX,
-            top: textInput.startY < textInput.endY ? textInput.startY : textInput.endY,
+            left:
+              textInput.startX < textInput.endX
+                ? textInput.startX
+                : textInput.endX,
+            top:
+              textInput.startY < textInput.endY
+                ? textInput.startY
+                : textInput.endY,
             width: Math.abs(textInput.endX - textInput.startX),
             height: Math.abs(textInput.endY - textInput.startY),
             fontSize: textInput.fontSize,
