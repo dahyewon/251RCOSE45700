@@ -1,11 +1,12 @@
+import { Shape } from "../entity/shape/Shape";
 import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { Command } from "./Command";
 
 export class UpdateSelectedCommand implements Command {
   private selectedShapeModel = SelectedShapeModel.getInstance();
-  private selectedShapes: any[];
+  private selectedShapes: Shape[];
 
-  constructor(selectedShapes: any[]) {
+  constructor(selectedShapes: Shape[]) {
     this.selectedShapes = selectedShapes;
   }
 
