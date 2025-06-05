@@ -12,8 +12,8 @@ import { ResizeHandleViewModel } from "./viewModel/ResizeHandleViewModel";
 
 const App: React.FC = () => {
   //initialize models
-  const shapeModel = ShapeModel.getInstance();
-  const canvasModel = CanvasModel.getInstance();
+  ShapeModel.getInstance();
+  CanvasModel.getInstance();
 
   const canvasViewModel = new CanvasViewModel();
   const propertyWindowViewModel = new PropertyWindowViewModel();
