@@ -1,4 +1,3 @@
-import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
@@ -56,13 +55,10 @@ export class ContinueDrawShapeCommand implements Command {
 
 export class EndDrawShapeCommand implements Command {
   private shapeModel = ShapeModel.getInstance();
-  private selectedShapeModel = SelectedShapeModel.getInstance();
 
   execute(): void {
     this.shapeModel.endCreateShape();
-    this.selectedShapeModel.updateSelectedShapes(
-      this.shapeModel.getShapes().slice(-1)
-    );
+    this.shapeModel.updateSelectedShapes(this.shapeModel.getShapes().slice(-1));
   }
 
   undo(): void {

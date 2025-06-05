@@ -4,7 +4,7 @@ import { Shape } from "../entity/shape/Shape";
 import { TextShapeProps } from "../entity/shape/TextShape";
 import { CanvasEvent } from "../viewModel/CanvasEvents";
 
-export class SelectedShapeModel extends Observable<any> {
+class SelectedShapeModel extends Observable<any> {
   private static instance: SelectedShapeModel;
   private selectedShapes: Shape[] = [];
   private startX: number = 0;
