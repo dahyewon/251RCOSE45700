@@ -28,7 +28,7 @@ export class ShapeModel extends Observable<any> {
     return ShapeModel.instance;
   }
 
-  notifyShapesUpdated() {
+  notifyShapesUpdated(updatedShapes?: Shape | Shape[]) {
     const event: CanvasEvent<{ shapes: Shape[] }> = {
       type: "SHAPES_UPDATED",
       data: {
@@ -36,6 +36,15 @@ export class ShapeModel extends Observable<any> {
       },
     };
     this.notify(event);
+
+    if (updatedShapes instanceof Array) {
+      if (updatedShapes.some((shape) => this.shapes.includes(shape))) {
+        this.notifySelectedShapesUpdated();
+      }
+    } else if (updatedShapes) {
+      if (this.shapes.includes(updatedShapes))
+        this.notifySelectedShapesUpdated();
+    }
   }
 
   notifySelectedShapesUpdated() {
@@ -63,7 +72,7 @@ export class ShapeModel extends Observable<any> {
   addShape(shape: Shape) {
     this.shapes.push(shape);
     this.zOrder.push(shape.id); // z-order는 도형 추가 시 자동으로 설정
-    this.notifyShapesUpdated();
+    this.notifyShapesUpdated(shape);
   }
 
   clearShapes() {
@@ -154,8 +163,7 @@ export class ShapeModel extends Observable<any> {
       if (shape instanceof TextShape) {
         shape.isEditing = false;
       }
-      this.notifyShapesUpdated();
-      this.notifySelectedShapesUpdated();
+      this.notifyShapesUpdated(shape);
       return shape;
     } else {
       throw new Error("Shape not found.");
@@ -204,8 +212,7 @@ export class ShapeModel extends Observable<any> {
       shape.move(dx, dy);
     });
 
-    this.notifyShapesUpdated();
-    this.notifySelectedShapesUpdated();
+    this.notifyShapesUpdated(this.selectedShapes);
   }
 
   getSelectedShapesHandles(): { x: number; y: number; pos: string }[][] {
@@ -235,8 +242,7 @@ export class ShapeModel extends Observable<any> {
       shape.resize(dx, dy, this.resize_pos);
     });
 
-    this.notifyShapesUpdated();
-    this.notifySelectedShapesUpdated();
+    this.notifyShapesUpdated(this.selectedShapes);
   }
 
   getTextShapeProperties(): TextShapeProps {

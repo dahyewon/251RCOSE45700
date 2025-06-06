@@ -75,11 +75,27 @@ export abstract class AbstractShape implements Shape {
   // Line은 override 필요
   getResizeHandles(): { x: number; y: number; pos: ResizeHandlePosition }[] {
     return [
-    { x: this.startX - 5, y: this.startY - 5, pos: ResizeHandlePosition.TopLeft },
-    { x: this.endX - 5, y: this.startY - 5, pos: ResizeHandlePosition.TopRight },
-    { x: this.endX - 5, y: this.endY - 5, pos: ResizeHandlePosition.BottomRight },
-    { x: this.startX - 5, y: this.endY - 5, pos: ResizeHandlePosition.BottomLeft },
-  ];
+      {
+        x: this.startX - 5,
+        y: this.startY - 5,
+        pos: ResizeHandlePosition.TopLeft,
+      },
+      {
+        x: this.endX - 5,
+        y: this.startY - 5,
+        pos: ResizeHandlePosition.TopRight,
+      },
+      {
+        x: this.endX - 5,
+        y: this.endY - 5,
+        pos: ResizeHandlePosition.BottomRight,
+      },
+      {
+        x: this.startX - 5,
+        y: this.endY - 5,
+        pos: ResizeHandlePosition.BottomLeft,
+      },
+    ];
   }
 
   resize(dx: number, dy: number, pos: ResizeHandlePosition): void {
