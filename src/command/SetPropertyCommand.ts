@@ -11,7 +11,6 @@ export class SetPropertyCommand implements Command {
 
   execute(): void {
     this.shapeModel.setProperty(this.shapeId, this.propertyName, this.value);
-    this.shapeModel.notifySelectedShapesUpdated();
   }
 
   undo(): void {

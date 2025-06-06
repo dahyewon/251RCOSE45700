@@ -68,8 +68,10 @@ export class ShapeModel extends Observable<any> {
 
   clearShapes() {
     this.shapes = [];
+    this.selectedShapes = [];
     this.zOrder = [];
     this.notifyShapesUpdated();
+    this.notifySelectedShapesUpdated();
     this.notifyResetInput();
   }
 
@@ -126,6 +128,7 @@ export class ShapeModel extends Observable<any> {
       this.drawingShape = null; // reset drawing shape
     }
     this.notifyShapesUpdated();
+    this.updateSelectedShapes(this.shapes.slice(-1));
   }
 
   getZOrder(): number[] {
@@ -152,6 +155,7 @@ export class ShapeModel extends Observable<any> {
         shape.isEditing = false;
       }
       this.notifyShapesUpdated();
+      this.notifySelectedShapesUpdated();
       return shape;
     } else {
       throw new Error("Shape not found.");
@@ -196,9 +200,12 @@ export class ShapeModel extends Observable<any> {
     this.startX = offsetX;
     this.startY = offsetY;
 
-    return this.selectedShapes.forEach((shape) => {
+    this.selectedShapes.forEach((shape) => {
       shape.move(dx, dy);
     });
+
+    this.notifyShapesUpdated();
+    this.notifySelectedShapesUpdated();
   }
 
   getSelectedShapesHandles(): { x: number; y: number; pos: string }[][] {
@@ -223,9 +230,13 @@ export class ShapeModel extends Observable<any> {
     const dy = offsetY - this.startY;
     this.startX = offsetX;
     this.startY = offsetY;
-    return this.selectedShapes.forEach((shape) => {
+
+    this.selectedShapes.forEach((shape) => {
       shape.resize(dx, dy, this.resize_pos);
     });
+
+    this.notifyShapesUpdated();
+    this.notifySelectedShapesUpdated();
   }
 
   getTextShapeProperties(): TextShapeProps {

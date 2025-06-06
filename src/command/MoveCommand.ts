@@ -42,8 +42,6 @@ export class ContinueMoveCommand implements Command {
 
   execute(): void {
     this.shapeModel.moveSelectedShapes(this.offsetX, this.offsetY);
-    this.shapeModel.notifyShapesUpdated();
-    this.shapeModel.notifySelectedShapesUpdated();
   }
 
   undo(): void {

@@ -19,7 +19,6 @@ export class StartResizeCommand implements Command {
       this.offsetX,
       this.offsetY
     );
-    this.shapeModel.notifyShapesUpdated();
   }
 
   undo(): void {
@@ -49,8 +48,6 @@ export class ContinueResizeCommand implements Command {
 
   execute(): void {
     this.shapeModel.resizeSelectedShapes(this.offsetX, this.offsetY);
-    this.shapeModel.notifyShapesUpdated();
-    this.shapeModel.notifySelectedShapesUpdated();
   }
   undo(): void {
     // Logic to undo the continuation of resizing a shape

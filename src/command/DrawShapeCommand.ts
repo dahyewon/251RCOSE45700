@@ -58,7 +58,6 @@ export class EndDrawShapeCommand implements Command {
 
   execute(): void {
     this.shapeModel.endCreateShape();
-    this.shapeModel.updateSelectedShapes(this.shapeModel.getShapes().slice(-1));
   }
 
   undo(): void {
