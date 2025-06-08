@@ -1,17 +1,14 @@
 import { CanvasModel } from "../model/CanvasModel";
-import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { ShapeModel } from "../model/ShapeModel";
 import { Command } from "./Command";
 
 export class CanvasResetCommand implements Command {
   private canvasModel: CanvasModel = CanvasModel.getInstance();
   private shapeModel: ShapeModel = ShapeModel.getInstance();
-  private selectedShapeModel: SelectedShapeModel =
-    SelectedShapeModel.getInstance();
 
   execute(): void {
     this.shapeModel.clearShapes();
-    this.selectedShapeModel.clearSelectedShapes();
+    this.shapeModel.clearSelectedShapes();
     this.canvasModel.setShapeType("rectangle"); // default 값으로
     this.canvasModel.setState("DrawState"); // default: 그리기 모드
 

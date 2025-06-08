@@ -5,7 +5,6 @@ import { Shape } from "../entity/shape/Shape";
 import { CanvasEvent } from "./CanvasEvents";
 import { ICanvasState } from "./canvasState/CanvasState";
 import { DrawState } from "./canvasState/DrawState";
-import { SelectedShapeModel } from "../model/SelectedShapeModel";
 import { TextShapeProps } from "../entity/shape/TextShape";
 import { CanvasModel } from "../model/CanvasModel";
 import { CanvasStateCreator } from "./canvasState/CanvasStateFactory";
@@ -13,8 +12,6 @@ import { CanvasStateType } from "../constants";
 
 export class CanvasViewModel extends Observable<any> {
   public shapeModel: ShapeModel = ShapeModel.getInstance();
-  public selectedShapeModel: SelectedShapeModel =
-    SelectedShapeModel.getInstance();
   private canvasModel: CanvasModel = CanvasModel.getInstance();
   private state: ICanvasState;
   private shapeType: string = "rectangle";
@@ -48,7 +45,7 @@ export class CanvasViewModel extends Observable<any> {
     };
 
     this.shapeModel.subscribe("SHAPES_UPDATED", shapesObserver);
-    this.selectedShapeModel.subscribe(
+    this.shapeModel.subscribe(
       "SELECTED_SHAPES_UPDATED",
       selectedShapesObserver
     );
@@ -92,17 +89,6 @@ export class CanvasViewModel extends Observable<any> {
     return this.setState(CanvasStateType.RESIZE);
   }
 
-  // requestSetState(stateType: string, params: any) {
-  //   if (stateType === "DrawState") {
-  //     this.setShapeType(params.shapeType); // shapeType을 DrawState에 전달
-  //   } else this.setShapeType("");
-  //   const command = this.canvasStateCommandFactory.createCommand(
-  //     stateType,
-  //     params
-  //   );
-  //   command.execute();
-  // }
-
   getShapes() {
     return this.shapes;
   }
@@ -113,24 +99,6 @@ export class CanvasViewModel extends Observable<any> {
   getShapeType() {
     return this.shapeType;
   }
-
-  // requestZOrderMove(action: string, shapeId: number) {
-  //   const command = new ZOrderMoveCommand(action, shapeId);
-  //   command.execute();
-  //   this.notifyShapesUpdated();
-  // }
-
-  // requestSetProperty(shapeId: number, propertyName: string, value: any) {
-  //   const command = new SetPropertyCommand(shapeId, propertyName, value);
-  //   command.execute();
-  //   this.notifyShapesUpdated();
-  // }
-
-  // requestAddTemplateShape(type: string, properties: any) {
-  //   const command = new AddTemplateShapeCommand(this, type, properties);
-  //   command.execute();
-  //   this.notifyShapesUpdated();
-  // }
 
   saveText(newText: string) {
     (this.state as any).saveText(newText);

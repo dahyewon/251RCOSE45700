@@ -1,5 +1,4 @@
 import { Command } from "../../command/Command";
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 
@@ -7,7 +6,6 @@ export interface CanvasStateCreator {
   createCommand(
     canvasViewModel: CanvasViewModel,
     shapeModel: ShapeModel,
-    selectedShapeModel: SelectedShapeModel,
     params: any // 상태별로 필요한 추가 인자
   ): Command;
 }
@@ -16,7 +14,7 @@ export interface CanvasStateCreator {
 //   createCommand(
 //     canvasViewModel: CanvasViewModel,
 //     shapeModel: ShapeModel,
-//     selectedShapeModel: SelectedShapeModel,
+//     shapeModel: shapeModel,
 //     params: { shapeType: string }
 //   ): Command {
 //     return new SetStateCommand(
@@ -33,12 +31,12 @@ export interface CanvasStateCreator {
 //   createCommand(
 //     canvasViewModel: CanvasViewModel,
 //     shapeModel: ShapeModel,
-//     selectedShapeModel: SelectedShapeModel,
+//     shapeModel: shapeModel,
 //     params: {}
 //   ): Command {
 //     return new SetStateCommand(
 //       canvasViewModel,
-//       new SelectState(canvasViewModel, shapeModel, selectedShapeModel)
+//       new SelectState(canvasViewModel, shapeModel, shapeModel)
 //     );
 //   }
 // }
@@ -47,7 +45,7 @@ export interface CanvasStateCreator {
 //   createCommand(
 //     canvasViewModel: CanvasViewModel,
 //     shapeModel: ShapeModel,
-//     selectedShapeModel: SelectedShapeModel,
+//     shapeModel: shapeModel,
 //     params: { offsetX: number; offsetY: number }
 //   ): Command {
 //     return new SetStateCommand(
@@ -55,7 +53,7 @@ export interface CanvasStateCreator {
 //       new MoveState(
 //         canvasViewModel,
 //         shapeModel,
-//         selectedShapeModel,
+//         shapeModel,
 //         params.offsetX,
 //         params.offsetY
 //       )

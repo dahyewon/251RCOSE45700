@@ -1,11 +1,10 @@
 import { Observable } from "../core/Observable";
 import { Shape } from "../entity/shape/Shape";
-import { SelectedShapeModel } from "../model/SelectedShapeModel";
+import { ShapeModel } from "../model/ShapeModel";
 import { CanvasEvent } from "./CanvasEvents";
 
 export class PropertyWindowViewModel extends Observable<any> {
-  private selectedShapeModel: SelectedShapeModel =
-    SelectedShapeModel.getInstance();
+  private shapeModel: ShapeModel = ShapeModel.getInstance();
   private selectedShapes: Shape[] = [];
 
   constructor() {
@@ -16,7 +15,7 @@ export class PropertyWindowViewModel extends Observable<any> {
         this.notify(event);
       },
     };
-    this.selectedShapeModel.subscribe("SELECTED_SHAPES_UPDATED", observer);
+    this.shapeModel.subscribe("SELECTED_SHAPES_UPDATED", observer);
   }
 
   getSelectedShapes() {

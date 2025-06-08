@@ -1,14 +1,11 @@
 import { CanvasStateType, PROPERTY_NAMES } from "../../constants";
 import { TextShape } from "../../entity/shape";
-import { SelectedShapeModel } from "../../model/SelectedShapeModel";
 import { ShapeModel } from "../../model/ShapeModel";
 import { CanvasViewModel } from "../CanvasViewModel";
 import { ICanvasState } from "./CanvasState";
 
 export class EditTextState implements ICanvasState {
   private shapeModel: ShapeModel = ShapeModel.getInstance();
-  private selectedShapeModel: SelectedShapeModel =
-    SelectedShapeModel.getInstance();
   private editingShapeId: number | null = null;
 
   constructor(private viewModel: CanvasViewModel) {
@@ -16,7 +13,7 @@ export class EditTextState implements ICanvasState {
     if (shape instanceof TextShape) {
       this.editingShapeId = shape.id;
       shape.isEditing = true;
-      const props = this.selectedShapeModel.getTextShapeProperties();
+      const props = this.shapeModel.getTextShapeProperties();
       this.viewModel.notifyShowTextInput({
         ...props,
       });
