@@ -23,7 +23,7 @@ export class Group implements Shape {
     return (this.startY + this.endY) / 2;
   }
 
-  add(target: Shape) {
+  add(target: Shape): void {
     this.children.push(target);
 
     if (target.startX < this.startX) this.startX = target.startX;
@@ -34,6 +34,10 @@ export class Group implements Shape {
 
   remove(target: Shape) {
     this.children = this.children.filter((child) => child !== target);
+  }
+
+  isComposite(): boolean {
+    return true;
   }
 
   draw(ctx: CanvasRenderingContext2D | null): void {

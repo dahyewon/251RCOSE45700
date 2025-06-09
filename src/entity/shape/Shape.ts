@@ -8,6 +8,11 @@ export interface Shape {
   readonly endX: number;
   readonly endY: number;
 
+  //Composite pattern
+  add(target: Shape): void;
+  remove(target: Shape): void;
+  isComposite(): boolean;
+
   draw(ctx: CanvasRenderingContext2D | null): void;
   move(dx: number, dy: number): void;
   getResizeHandles(): { x: number; y: number; pos: ResizeHandlePosition }[];
@@ -55,6 +60,12 @@ export abstract class AbstractShape implements Shape {
           this.shadowOffsetY * this.shadowOffsetY
       )
     );
+  }
+
+  add(target: Shape): void {}
+  remove(target: Shape): void {}
+  isComposite(): boolean {
+    return false;
   }
 
   move(dx: number, dy: number): void {

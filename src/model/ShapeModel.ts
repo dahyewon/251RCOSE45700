@@ -1,6 +1,7 @@
 import { CANVAS, DEFAULT_SHAPE } from "../constants";
 import { Observable } from "../core/Observable";
 import { TextShape } from "../entity/shape";
+import { Group } from "../entity/shape/Group";
 import { Shape } from "../entity/shape/Shape";
 import { ShapeFactory } from "../entity/shape/ShapeFactory";
 import { TextShapeProps } from "../entity/shape/TextShape";
@@ -266,4 +267,25 @@ export class ShapeModel extends Observable<any> {
       color: shape.color,
     };
   }
+
+  groupSelectedShapes() {
+    if (!this.selectedShapes) throw new Error(`No shapes selected to group`);
+
+    const newGroup = ShapeFactory.createShape("group", {
+      id: this.shapes.length,
+      startX: 0,
+      startY: 0,
+      endX: 0,
+      endY: 0,
+    });
+
+    this.selectedShapes.forEach((shape) => newGroup.add(shape));
+    this.shapes.filter((shape) => !this.selectedShapes.includes(shape)); //remove grouped shapes from shape list
+    this.shapes.push(newGroup);
+
+    this.notifyShapesUpdated();
+    this.updateSelectedShapes([newGroup]);
+  }
+
+  ungroupSelectedShapes() {}
 }
