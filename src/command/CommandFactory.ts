@@ -12,6 +12,7 @@ import {
   EndDrawShapeCommand,
   StartDrawShapeCommand,
 } from "./DrawShapeCommand";
+import { GroupCommand, UngroupCommand } from "./GroupCommand";
 import { ContinueMoveCommand, StartMoveCommand } from "./MoveCommand";
 import { ContinueResizeCommand, StartResizeCommand } from "./ResizeCommand";
 import { UpdateSelectedCommand } from "./UpdateSelectedCommand";
@@ -106,6 +107,18 @@ class UpdateSelectedCommandCreator implements CommandCreator {
   }
 }
 
+class GroupCommandCreator implements CommandCreator {
+  create(): Command {
+    return new GroupCommand();
+  }
+}
+
+class UngroupCommandCreator implements CommandCreator {
+  create(props: { shapeId: number }): Command {
+    return new UngroupCommand(props.shapeId);
+  }
+}
+
 export class CommandFactory {
   private static commandCreators: Record<string, CommandCreator> = {
     [CommandType.ADD_TEMPLATE_SHAPE]: new AddTemplateShapeCommandCreator(),
@@ -121,6 +134,8 @@ export class CommandFactory {
     [CommandType.START_RESIZE]: new StartResizeCommandCreator(),
     [CommandType.CONTINUE_RESIZE]: new ContinueResizeCommandCreator(),
     [CommandType.UPDATE_SELECTED]: new UpdateSelectedCommandCreator(),
+    [CommandType.GROUP]: new GroupCommandCreator(),
+    [CommandType.UNGROUP]: new UngroupCommandCreator(),
   };
 
   static createCommand(commandType: string, props: any): Command {
