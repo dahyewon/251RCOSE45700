@@ -10,7 +10,7 @@ export interface Shape {
 
   //Composite pattern
   add(target: Shape): void;
-  remove(target: Shape): void;
+  remove(): Shape[];
   isComposite(): boolean;
 
   draw(ctx: CanvasRenderingContext2D | null): void;
@@ -63,7 +63,9 @@ export abstract class AbstractShape implements Shape {
   }
 
   add(target: Shape): void {}
-  remove(target: Shape): void {}
+  remove(): Shape[] {
+    return [];
+  }
   isComposite(): boolean {
     return false;
   }

@@ -76,6 +76,16 @@ export class ShapeModel extends Observable<any> {
     this.notifyShapesUpdated(shape);
   }
 
+  deleteShape(target: Shape) {
+    this.shapes.filter((shape) => shape !== target);
+    this.notifyShapesUpdated(this.shapes);
+
+    if (this.selectedShapes.includes(target)) {
+      this.selectedShapes.filter((shape) => shape !== target);
+      this.notifySelectedShapesUpdated();
+    }
+  }
+
   clearShapes() {
     this.shapes = [];
     this.selectedShapes = [];
@@ -287,5 +297,13 @@ export class ShapeModel extends Observable<any> {
     this.updateSelectedShapes([newGroup]);
   }
 
-  ungroupSelectedShapes() {}
+  ungroupSelectedShapes(target: Shape) {
+    if (!target.isComposite())
+      throw new Error("Can't ungroup non-group component");
+    const ungrouped = target.remove();
+    this.shapes.push(...ungrouped);
+    this.deleteShape(target);
+
+    this.updateSelectedShapes(ungrouped);
+  }
 }

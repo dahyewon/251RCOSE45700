@@ -32,8 +32,9 @@ export class Group implements Shape {
     if (target.endY > this.endY) this.endY = target.endY;
   }
 
-  remove(target: Shape) {
-    this.children = this.children.filter((child) => child !== target);
+  remove(): Shape[] {
+    // this.children = this.children.filter((child) => child !== target);
+    return this.children;
   }
 
   isComposite(): boolean {
