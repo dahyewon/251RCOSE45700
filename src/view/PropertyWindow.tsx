@@ -43,6 +43,23 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
   }
 
   if (selectedShapes.length === 1) {
+    if (selectedShapes[0].isComposite()) {
+      return (
+        <div className="property-window-container">
+          <button
+            className="zorder-btn"
+            onClick={() => {
+              commandManager.execute(CommandType.UNGROUP, {
+                shapeId: selectedShapes[0].id,
+              });
+            }}
+          >
+            그룹 해제
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="property-window-container">
         <h3 className="title">도형 속성</h3>
@@ -119,6 +136,19 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
       </div>
     );
   }
+
+  return (
+    <div className="property-window-container">
+      <button
+        className="zorder-btn"
+        onClick={() => {
+          commandManager.execute(CommandType.GROUP);
+        }}
+      >
+        그룹화
+      </button>
+    </div>
+  );
 };
 
 export default PropertyWindow;

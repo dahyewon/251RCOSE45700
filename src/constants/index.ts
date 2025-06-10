@@ -71,6 +71,8 @@ export enum CommandType {
   START_RESIZE = "START_RESIZE",
   CONTINUE_RESIZE = "CONTINUE_RESIZE",
   UPDATE_SELECTED = "UPDATE_SELECTED",
+  GROUP = "GROUP",
+  UNGROUP = "UNGROUP",
 }
 
 export enum CanvasStateType {
