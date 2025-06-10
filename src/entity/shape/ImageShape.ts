@@ -19,6 +19,7 @@ export class ImageShape extends AbstractShape {
   }
   private borderWidth: number = 0;
   private borderColor: string = "#000000";
+  public isTyping: boolean = false;
 
   private imageElement: HTMLImageElement | null = null;
 

@@ -10,6 +10,7 @@ import { AbstractShape } from "./Shape";
 export class Ellipse extends AbstractShape {
   private borderWidth: number = 0;
   private borderColor: string = "#000000";
+  public isTyping: boolean = false;
 
   get radiusX(): number {
     return Math.abs(this.endX - this.startX) / 2;

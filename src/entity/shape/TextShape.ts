@@ -7,7 +7,6 @@ import {
 import { AbstractShape } from "./Shape";
 
 export class TextShape extends AbstractShape {
-  public isEditing: boolean = false;
   constructor(
     id: number,
     startX: number,
@@ -21,11 +20,12 @@ export class TextShape extends AbstractShape {
     super(id, startX, startY, endX, endY);
   }
   public fontColor: string = '#000000';
+  public isTyping: boolean = false;
 
   draw(ctx: CanvasRenderingContext2D | null): void {
     if (!ctx) throw new Error("context is null");
     ctx.save();
-    if (this.isEditing) return;
+    if (this.isTyping) return;
     this.setShadow(ctx);
 
     ctx.font = `${this.fontSize}px ${this.fontFamily}`;
@@ -73,5 +73,6 @@ export interface TextShapeProps {
   endY: number;
   fontSize: number;
   fontFamily: string;
+  fontColor: string;
   color: string;
 }

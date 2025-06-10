@@ -108,7 +108,7 @@ const Canvas: React.FC<{ viewModel: CanvasViewModel }> = ({ viewModel }) => {
             height: Math.abs(textInput.endY - textInput.startY),
             fontSize: textInput.fontSize,
             fontFamily: textInput.fontFamily,
-            color: textInput.color,
+            color: textInput.fontColor,
             lineHeight: `${Math.abs(textInput.endY - textInput.startY)}px`,
             resize: "none",
           }}

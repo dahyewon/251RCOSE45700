@@ -7,8 +7,9 @@ import {
 import { AbstractShape } from "./Shape";
 
 export class Rectangle extends AbstractShape {
-  borderWidth: number = 0;
-  borderColor: string = "#000000";
+  private borderWidth: number = 0;
+  private borderColor: string = "#000000";
+  public isTyping: boolean = false;
 
   draw(ctx: CanvasRenderingContext2D) {
     if (!ctx) throw new Error("context is null");
