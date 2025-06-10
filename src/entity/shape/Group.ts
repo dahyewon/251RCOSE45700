@@ -26,10 +26,17 @@ export class Group implements Shape {
   add(target: Shape): void {
     this.children.push(target);
 
-    if (target.startX < this.startX) this.startX = target.startX;
-    if (target.startY < this.startY) this.startY = target.startY;
-    if (target.endX > this.endX) this.endX = target.endX;
-    if (target.endY > this.endY) this.endY = target.endY;
+    if (this.children.length === 1) {
+      this.startX = target.startX;
+      this.startY = target.startY;
+      this.endX = target.endX;
+      this.endY = target.endY;
+    } else {
+      if (target.startX < this.startX) this.startX = target.startX;
+      if (target.startY < this.startY) this.startY = target.startY;
+      if (target.endX > this.endX) this.endX = target.endX;
+      if (target.endY > this.endY) this.endY = target.endY;
+    }
   }
 
   remove(): Shape[] {
@@ -51,6 +58,11 @@ export class Group implements Shape {
     this.children.forEach((child) => {
       child.move(dx, dy);
     });
+
+    this.startX += dx;
+    this.startY += dy;
+    this.endX += dx;
+    this.endY += dy;
   }
 
   getResizeHandles(): { x: number; y: number; pos: ResizeHandlePosition }[] {
@@ -78,8 +90,28 @@ export class Group implements Shape {
     ];
   }
 
-  resize(dx: number, dy: number, pos: string): void {
+  resize(dx: number, dy: number, pos: ResizeHandlePosition): void {
     this.children.forEach((child) => child.resize(dx, dy, pos));
+
+    const actions: Record<ResizeHandlePosition, () => void> = {
+      [ResizeHandlePosition.TopLeft]: () => {
+        this.startX += dx;
+        this.startY += dy;
+      },
+      [ResizeHandlePosition.TopRight]: () => {
+        this.endX += dx;
+        this.startY += dy;
+      },
+      [ResizeHandlePosition.BottomRight]: () => {
+        this.endX += dx;
+        this.endY += dy;
+      },
+      [ResizeHandlePosition.BottomLeft]: () => {
+        this.startX += dx;
+        this.endY += dy;
+      },
+    };
+    actions[pos]?.();
   }
   isPointInside(x: number, y: number): boolean {
     return (
