@@ -23,7 +23,7 @@ export class EditTextState implements ICanvasState {
     if (this.editingShapeId !== null) {
       const changedShape = this.shapeModel.setProperty(
         this.editingShapeId,
-        PROPERTY_NAMES.TEXT_CONTENT,
+        PROPERTY_NAMES.FONT_CONTENT,
         newText
       );
       if ("isTyping" in changedShape) {

@@ -45,7 +45,9 @@ export class Ellipse extends AbstractShape {
     ctx.restore();
 
     if (this.textContent) {
-      ctx.font = `${this.fontSize}px ${this.fontFamily}`;
+      const fontStyle = this.isItalic ? "italic" : "normal";
+      const fontWeight = this.isBold ? "bold" : "normal";
+      ctx.font = `${fontStyle} ${fontWeight} ${this.fontSize}px ${this.fontFamily}`;
       ctx.fillStyle = this.fontColor;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -88,7 +90,7 @@ export class Ellipse extends AbstractShape {
   // 사용할 속성 골라넣기
   private static WidthHandler = (): PropertyHandler<Ellipse> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.WIDTH,
+    name: PROPERTY_NAMES.SHAPE_WIDTH,
     getValue: (shape) => Math.abs(shape.radiusX * 2),
     setValue: (shape, value) => {
       const centerX = shape.centerX;
@@ -98,7 +100,7 @@ export class Ellipse extends AbstractShape {
   });
   private static HeightHandler = (): PropertyHandler<Ellipse> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.HEIGHT,
+    name: PROPERTY_NAMES.SHAPE_HEIGHT,
     getValue: (shape) => Math.abs(shape.radiusY * 2),
     setValue: (shape, value) => {
       const centerY = shape.centerY;
@@ -110,13 +112,15 @@ export class Ellipse extends AbstractShape {
     return [
       CommonPropertyHandlers.HorizontalPos(),
       CommonPropertyHandlers.VerticalPos(),
+      Ellipse.WidthHandler(),
+      Ellipse.HeightHandler(),
+      CommonPropertyHandlers.Color(),
       TextShapePropertyHandlers.TextContent(),
       this.textContent && TextShapePropertyHandlers.FontSize(),
       this.textContent && TextShapePropertyHandlers.FontFamily(),
       this.textContent && TextShapePropertyHandlers.FontColor(),
-      Ellipse.WidthHandler(),
-      Ellipse.HeightHandler(),
-      CommonPropertyHandlers.Color(),
+      this.textContent && TextShapePropertyHandlers.Bold(),
+      this.textContent && TextShapePropertyHandlers.Italic(),
       CommonPropertyHandlers.ShadowAngle(),
       CommonPropertyHandlers.ShadowRadius(),
       CommonPropertyHandlers.ShadowBlur(),

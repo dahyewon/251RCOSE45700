@@ -13,6 +13,8 @@ export interface Shape {
   fontSize: number;
   fontFamily: string;
   fontColor: string;
+  isBold: boolean;
+  isItalic: boolean;
   isTyping?: boolean;
 
   draw(ctx: CanvasRenderingContext2D | null): void;
@@ -36,6 +38,8 @@ export abstract class AbstractShape implements Shape {
   fontSize: number = DEFAULT_SHAPE.FONT_SIZE;
   fontFamily: string = DEFAULT_SHAPE.FONT_FAMILY;
   fontColor: string = "#fff";
+  isBold: boolean = false;
+  isItalic: boolean = false;
   color: string = "#000000";
 
   shadowColor: string = "#000000";

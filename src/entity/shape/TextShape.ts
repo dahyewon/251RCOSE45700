@@ -28,7 +28,9 @@ export class TextShape extends AbstractShape {
     if (this.isTyping) return;
     this.setShadow(ctx);
 
-    ctx.font = `${this.fontSize}px ${this.fontFamily}`;
+    const fontStyle = this.isItalic ? "italic" : "normal";
+    const fontWeight = this.isBold ? "bold" : "normal";
+    ctx.font = `${fontStyle} ${fontWeight} ${this.fontSize}px ${this.fontFamily}`;
     ctx.fillStyle = this.fontColor;
 
     ctx.textAlign = "center";
@@ -50,12 +52,14 @@ export class TextShape extends AbstractShape {
     return [
       CommonPropertyHandlers.HorizontalPos(),
       CommonPropertyHandlers.VerticalPos(),
-      TextShapePropertyHandlers.TextContent(),
-      TextShapePropertyHandlers.FontSize(),
-      TextShapePropertyHandlers.FontFamily(),
       CommonPropertyHandlers.Width(),
       CommonPropertyHandlers.Height(),
       CommonPropertyHandlers.Color(),
+      TextShapePropertyHandlers.TextContent(),
+      TextShapePropertyHandlers.FontSize(),
+      TextShapePropertyHandlers.FontFamily(),
+      TextShapePropertyHandlers.Bold(),
+      TextShapePropertyHandlers.Italic(),
       CommonPropertyHandlers.ShadowAngle(),
       CommonPropertyHandlers.ShadowRadius(),
       CommonPropertyHandlers.ShadowBlur(),

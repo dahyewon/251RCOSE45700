@@ -54,24 +54,23 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
           <strong>{selectedShapes[0].constructor.name}</strong>
         </div>
         <div className="property">
-          {selectedShapes[0].getProperties().map((property) => {
-            return PropertyRendererFactory.createRenderer(
-              property.type,
-              property.name,
-              propertyValues[property.name] ?? property.value,
-              (newValue) => {
-                setPropertyValues((prevValues) => ({
-                  ...prevValues,
-                  [property.name]: newValue,
-                }));
-                commandManager.execute(CommandType.SET_PROPERTY, {
-                  shapeId: selectedShapes[0].id,
-                  propertyName: property.name,
-                  value: newValue,
-                });
-              }
-            );
-          })}
+          {PropertyRendererFactory.renderGroupedProperties(
+            selectedShapes[0].getProperties().map((property) => ({
+              ...property,
+              value: propertyValues[property.name] ?? property.value,
+            })),
+            (name, newValue) => {
+              setPropertyValues((prevValues) => ({
+                ...prevValues,
+                [name]: newValue,
+              }));
+              commandManager.execute(CommandType.SET_PROPERTY, {
+                shapeId: selectedShapes[0].id,
+                propertyName: name,
+                value: newValue,
+              });
+            }
+          )}
         </div>
         <div className="zorder-controls">
           <button

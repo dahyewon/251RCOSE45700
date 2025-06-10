@@ -3,44 +3,44 @@ import { PROPERTY_NAMES, PROPERTY_TYPES } from "../../constants";
 export interface Property {
   type: string;
   name: string;
-  value: string | number;
+  value: string | number | boolean;
 }
 
 export interface PropertyHandler<T> {
   type: string;
   name: string;
-  getValue(shape: T): string | number;
+  getValue(shape: T): string | number | boolean;
   setValue(shape: T, value: any): void;
 }
 
 export const CommonPropertyHandlers = {
   HorizontalPos: <T extends { centerX: number; setCenterX(newX: number): void }>(): PropertyHandler<T> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.HORIZONTAL_POS,
+    name: PROPERTY_NAMES.POS_HORIZONTAL,
     getValue: (shape) => Math.round(shape.centerX),
     setValue: (shape, value) => shape.setCenterX(Number(value)),
   }),
   VerticalPos: <T extends { centerY: number; setCenterY(newY: number): void }>(): PropertyHandler<T> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.VERTICAL_POS,
+    name: PROPERTY_NAMES.POS_VERTICAL,
     getValue: (shape) => Math.round(shape.centerY),
     setValue: (shape, value) => shape.setCenterY(Number(value)),
   }),
   Width: <T extends { width: number; setWidth(newWidth: number): void }>(): PropertyHandler<T> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.WIDTH,
+    name: PROPERTY_NAMES.SHAPE_WIDTH,
     getValue: (shape) => Math.round(shape.width),
     setValue: (shape, value) => shape.setWidth(Number(value)),
   }),
   Height: <T extends { height: number; setHeight(newHeight: number): void }>(): PropertyHandler<T> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.HEIGHT,
+    name: PROPERTY_NAMES.SHAPE_HEIGHT,
     getValue: (shape) => Math.round(shape.height),
     setValue: (shape, value) => shape.setHeight(Number(value)),
   }),
   Color: <T extends { color: string }>(): PropertyHandler<T> => ({
     type: PROPERTY_TYPES.COLOR,
-    name: PROPERTY_NAMES.COLOR,
+    name: PROPERTY_NAMES.SHAPE_COLOR,
     getValue: (shape) => shape.color,
     setValue: (shape, value) => { shape.color = value.toString(); },
   }),
@@ -98,7 +98,7 @@ export const BorderedShapePropertyHandlers = {
 export const TextShapePropertyHandlers = {
   TextContent: <T extends { textContent: string }> (): PropertyHandler<T> => ({
     type: PROPERTY_TYPES.TEXT,
-    name: PROPERTY_NAMES.TEXT_CONTENT,
+    name: PROPERTY_NAMES.FONT_CONTENT,
     getValue: (shape) => shape.textContent,
     setValue: (shape, value) => { shape.textContent = value.toString(); },
   }),
@@ -119,5 +119,17 @@ export const TextShapePropertyHandlers = {
     name: PROPERTY_NAMES.FONT_COLOR,
     getValue: (shape: T) => shape.fontColor,
     setValue: (shape: T, value: any) => { shape.fontColor = value.toString(); },
-  })
+  }),
+  Bold: <T extends { isBold: boolean }> (): PropertyHandler<T> => ({
+    type: PROPERTY_TYPES.BOOLEAN,
+    name: PROPERTY_NAMES.FONT_BOLD,
+    getValue: (shape: T) => shape.isBold,
+    setValue: (shape: T, value: any) => { shape.isBold = Boolean(value) },
+  }),
+  Italic: <T extends { isItalic: boolean }> (): PropertyHandler<T> => ({
+    type: PROPERTY_TYPES.BOOLEAN,
+    name: PROPERTY_NAMES.FONT_ITALIC,
+    getValue: (shape: T) => shape.isItalic,
+    setValue: (shape: T, value: any) => { shape.isItalic = Boolean(value) },
+  }),
 }

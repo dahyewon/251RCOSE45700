@@ -57,7 +57,9 @@ export class ImageShape extends AbstractShape {
     ctx.restore();
 
     if (this.textContent) {
-      ctx.font = `${this.fontSize}px ${this.fontFamily}`;
+      const fontStyle = this.isItalic ? "italic" : "normal";
+      const fontWeight = this.isBold ? "bold" : "normal";
+      ctx.font = `${fontStyle} ${fontWeight} ${this.fontSize}px ${this.fontFamily}`;
       ctx.fillStyle = this.fontColor;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -86,13 +88,15 @@ export class ImageShape extends AbstractShape {
     return [
       CommonPropertyHandlers.HorizontalPos(),
       CommonPropertyHandlers.VerticalPos(),
+      CommonPropertyHandlers.Width(),
+      CommonPropertyHandlers.Height(),
+      CommonPropertyHandlers.Color(),
       TextShapePropertyHandlers.TextContent(),
       this.textContent && TextShapePropertyHandlers.FontSize(),
       this.textContent && TextShapePropertyHandlers.FontFamily(),
       this.textContent && TextShapePropertyHandlers.FontColor(),
-      CommonPropertyHandlers.Width(),
-      CommonPropertyHandlers.Height(),
-      CommonPropertyHandlers.Color(),
+      this.textContent && TextShapePropertyHandlers.Bold(),
+      this.textContent && TextShapePropertyHandlers.Italic(),
       CommonPropertyHandlers.ShadowAngle(),
       CommonPropertyHandlers.ShadowRadius(),
       CommonPropertyHandlers.ShadowBlur(),

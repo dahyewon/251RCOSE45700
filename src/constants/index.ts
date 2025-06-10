@@ -13,17 +13,19 @@ export const DEFAULT_SHAPE = {
 };
 
 export const PROPERTY_NAMES = {
-  COLOR: "색",
-  TEXT_CONTENT: "텍스트",
+  POS_HORIZONTAL: "가로 위치",
+  POS_VERTICAL: "세로 위치",
+  SHAPE_WIDTH: "너비",
+  SHAPE_HEIGHT: "높이",
+  SHAPE_COLOR: "색",
+  SHAPE_LINELENGTH: "길이",
+  SHAPE_LINEWIDTH: "선 굵기",
+  FONT_CONTENT: "텍스트",
   FONT_FAMILY: "폰트",
   FONT_SIZE: "글자 크기",
   FONT_COLOR: '글자 색',
-  WIDTH: "너비",
-  HEIGHT: "높이",
-  HORIZONTAL_POS: "가로 위치",
-  VERTICAL_POS: "세로 위치",
-  LENGTH: "길이",
-  LINEWIDTH: "선 굵기",
+  FONT_BOLD: "B",
+  FONT_ITALIC: "I",
   SHADOW_ANGLE: "그림자 각도",
   SHADOW_RADIUS: "그림자 간격",
   SHADOW_BLUR: "그림자 흐리게",
@@ -38,6 +40,7 @@ export const PROPERTY_TYPES = {
   NUMBER: "number",
   DROPDOWN: "dropdown",
   READ: "read",
+  BOOLEAN: "boolean",
 };
 
 export const DROPDOWN_OPTIONS: { [key: string]: string[] } = {
