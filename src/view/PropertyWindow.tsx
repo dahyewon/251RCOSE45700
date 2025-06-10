@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./PropertyWindow.css";
 import { PropertyRendererFactory } from "../components/propertyRenderFactory";
 import { CommandManager } from "../command/CommandManager";
@@ -23,16 +23,19 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
     (data: { selectedShapes: Shape[] }) => {
       setSelectedShapes(data.selectedShapes);
       setVersion((prevVersion) => prevVersion + 1);
-      if (selectedShapes.length === 1) {
-        const properties = selectedShapes[0].getProperties();
-        const newPropertyValues: Record<string, any> = {};
-        properties.forEach((property) => {
-          newPropertyValues[property.name] = property.value;
-        });
-        setPropertyValues(newPropertyValues);
-      }
     }
   );
+
+  useEffect(() => {
+    if (selectedShapes.length === 1) {
+      const properties = selectedShapes[0].getProperties();
+      const newPropertyValues: Record<string, any> = {};
+      properties.forEach((property) => {
+        newPropertyValues[property.name] = property.value;
+      });
+      setPropertyValues(newPropertyValues);
+    }
+  }, [selectedShapes, version]);
 
   if (selectedShapes.length === 0) {
     return (
