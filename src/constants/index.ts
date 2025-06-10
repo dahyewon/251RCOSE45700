@@ -17,6 +17,7 @@ export const PROPERTY_NAMES = {
   TEXT_CONTENT: "텍스트",
   FONT_FAMILY: "폰트",
   FONT_SIZE: "글자 크기",
+  FONT_COLOR: '글자 색',
   WIDTH: "너비",
   HEIGHT: "높이",
   HORIZONTAL_POS: "가로 위치",

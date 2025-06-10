@@ -78,12 +78,6 @@ export const CommonPropertyHandlers = {
     getValue: (shape) => shape.shadowColor,
     setValue: (shape, value) => { shape.shadowColor = value.toString(); },
   }),
-  textContentHandler: <T extends { textContent: string }> (): PropertyHandler<T> => ({
-    type: PROPERTY_TYPES.TEXT,
-    name: PROPERTY_NAMES.TEXT_CONTENT,
-    getValue: (shape) => shape.textContent,
-    setValue: (shape, value) => { shape.textContent = value.toString(); },
-  }),
 };
 
 export const BorderedShapePropertyHandlers = {
@@ -100,3 +94,30 @@ export const BorderedShapePropertyHandlers = {
     setValue: (shape, value) => { shape.borderColor = value.toString(); },
   }),
 };
+
+export const TextShapePropertyHandlers = {
+  TextContent: <T extends { textContent: string }> (): PropertyHandler<T> => ({
+    type: PROPERTY_TYPES.TEXT,
+    name: PROPERTY_NAMES.TEXT_CONTENT,
+    getValue: (shape) => shape.textContent,
+    setValue: (shape, value) => { shape.textContent = value.toString(); },
+  }),
+  FontSize: <T extends { fontSize: number }>(): PropertyHandler<T> => ({
+    type: PROPERTY_TYPES.NUMBER,
+    name: PROPERTY_NAMES.FONT_SIZE,
+    getValue: (shape: T) => shape.fontSize,
+    setValue: (shape: T, value: any) => { shape.fontSize = Number(value); }
+  }),
+  FontFamily: <T extends { fontFamily: string }>(): PropertyHandler<T> =>({
+    type: PROPERTY_TYPES.DROPDOWN,
+    name: PROPERTY_NAMES.FONT_FAMILY,
+    getValue: (shape: T) => shape.fontFamily,
+    setValue: (shape: T, value: any) => { shape.fontFamily = value.toString(); }
+  }),
+  FontColor: <T extends { fontColor: string }> (): PropertyHandler<T> => ({
+    type: PROPERTY_TYPES.COLOR,
+    name: PROPERTY_NAMES.FONT_COLOR,
+    getValue: (shape: T) => shape.fontColor,
+    setValue: (shape: T, value: any) => { shape.fontColor = value.toString(); },
+  })
+}

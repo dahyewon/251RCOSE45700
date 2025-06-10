@@ -3,6 +3,7 @@ import {
   BorderedShapePropertyHandlers,
   CommonPropertyHandlers,
   PropertyHandler,
+  TextShapePropertyHandlers,
 } from "../property/PropertyHandlers";
 import { AbstractShape } from "./Shape";
 
@@ -41,6 +42,14 @@ export class Ellipse extends AbstractShape {
     ctx.restore();
     this.drawFrame(ctx);
     ctx.restore();
+
+    if (this.textContent) {
+      ctx.font = `${this.fontSize}px ${this.fontFamily}`;
+      ctx.fillStyle = this.fontColor;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(this.textContent, this.centerX, this.centerY);
+    }
   }
 
   drawFrame(ctx: CanvasRenderingContext2D) {
@@ -100,6 +109,10 @@ export class Ellipse extends AbstractShape {
     return [
       CommonPropertyHandlers.HorizontalPos(),
       CommonPropertyHandlers.VerticalPos(),
+      TextShapePropertyHandlers.TextContent(),
+      this.textContent && TextShapePropertyHandlers.FontSize(),
+      this.textContent && TextShapePropertyHandlers.FontFamily(),
+      this.textContent && TextShapePropertyHandlers.FontColor(),
       Ellipse.WidthHandler(),
       Ellipse.HeightHandler(),
       CommonPropertyHandlers.Color(),
@@ -113,6 +126,6 @@ export class Ellipse extends AbstractShape {
       BorderedShapePropertyHandlers.BorderColor<
         this & { borderColor: string }
       >(),
-    ];
+    ].filter(Boolean) as PropertyHandler<this>[];
   }
 }

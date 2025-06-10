@@ -25,7 +25,10 @@ export abstract class AbstractShape implements Shape {
     public endX: number,
     public endY: number
   ) {}
-  textContent: string = DEFAULT_SHAPE.TEXT_CONTENT;
+  textContent: string = "";
+  fontSize: number = DEFAULT_SHAPE.FONT_SIZE;
+  fontFamily: string = DEFAULT_SHAPE.FONT_FAMILY;
+  fontColor: string = "#fff";
   color: string = "#000000";
 
   shadowColor: string = "#000000";
