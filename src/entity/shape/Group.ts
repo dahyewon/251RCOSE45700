@@ -15,6 +15,14 @@ export class Group implements Shape {
     public endX: number,
     public endY: number
   ) {}
+  public color: string = "";
+  public textContent: string = "";
+  public fontSize: number = 0;
+  public fontFamily: string = "";
+  public fontColor: string = "";
+  public isBold: boolean = false;
+  public isItalic: boolean = false;
+  public isTyping?: boolean | undefined;
 
   get centerX(): number {
     return (this.startX + this.endX) / 2;
