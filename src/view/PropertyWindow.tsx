@@ -118,9 +118,36 @@ const PropertyWindow: React.FC<{ viewModel: PropertyWindowViewModel }> = ({
             맨 뒤로
           </button>
         </div>
+        {selectedShapes[0].isComposite() && (
+          <div className="zorder-controls">
+            <button
+              className="zorder-btn"
+              onClick={() => {
+                commandManager.execute(CommandType.UNGROUP, {
+                  shapeId: selectedShapes[0].id,
+                });
+              }}
+            >
+              그룹 해제
+            </button>
+          </div>
+        )}
       </div>
     );
   }
+
+  return (
+    <div className="property-window-container">
+      <button
+        className="zorder-btn"
+        onClick={() => {
+          commandManager.execute(CommandType.GROUP);
+        }}
+      >
+        그룹화
+      </button>
+    </div>
+  );
 };
 
 export default PropertyWindow;

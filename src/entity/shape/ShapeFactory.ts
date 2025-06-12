@@ -1,4 +1,5 @@
 import { ImageShape, Ellipse, Line, Rectangle, TextShape } from "./";
+import { Group } from "./Group";
 import { Shape } from "./Shape";
 
 interface ShapeProps {
@@ -70,7 +71,19 @@ class TextCreator implements ShapeCreator {
       props.startX,
       props.startY,
       props.endX,
-      props.endY,
+      props.endY
+    );
+  }
+}
+
+class GroupCreator implements GroupCreator {
+  create(props: ShapeProps): Shape {
+    return new Group(
+      props.id,
+      props.startX,
+      props.startY,
+      props.endX,
+      props.endY
     );
   }
 }
@@ -82,6 +95,7 @@ export class ShapeFactory {
     line: new LineCreator(),
     image: new ImageCreator(),
     text: new TextCreator(),
+    group: new GroupCreator(),
   };
 
   static createShape(type: string, props: ShapeProps): Shape {

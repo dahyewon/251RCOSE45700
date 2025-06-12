@@ -10,6 +10,7 @@ export class ShapeModel extends Observable<any> {
   private static instance: ShapeModel;
   private shapes: Shape[] = [];
   private selectedShapes: Shape[] = [];
+  private shapeUid = 0;
 
   private zOrder: number[] = []; // z-order - shapeId map
   private startX: number = 0;
@@ -75,6 +76,17 @@ export class ShapeModel extends Observable<any> {
     this.notifyShapesUpdated(shape);
   }
 
+  deleteShape(target: Shape) {
+    this.shapes = this.shapes.filter((shape) => shape !== target);
+    this.zOrder = this.zOrder.filter((z) => z !== target.id);
+    this.notifyShapesUpdated(this.shapes);
+
+    if (this.selectedShapes.includes(target)) {
+      this.selectedShapes.filter((shape) => shape !== target);
+      this.notifySelectedShapesUpdated();
+    }
+  }
+
   clearShapes() {
     this.shapes = [];
     this.selectedShapes = [];
@@ -122,7 +134,7 @@ export class ShapeModel extends Observable<any> {
     this.endY = offsetY;
 
     this.drawingShape = ShapeFactory.createShape(this.shapeType, {
-      id: this.shapes.length,
+      id: this.shapeUid,
       startX: this.startX,
       startY: this.startY,
       endX: this.endX,
@@ -135,6 +147,7 @@ export class ShapeModel extends Observable<any> {
     if (this.drawingShape) {
       this.addShape(this.drawingShape);
       this.drawingShape = null; // reset drawing shape
+      this.shapeUid++;
     }
     this.notifyShapesUpdated();
     this.updateSelectedShapes(this.shapes.slice(-1));
@@ -264,5 +277,47 @@ export class ShapeModel extends Observable<any> {
       fontColor: shape.fontColor,
       color: shape.color,
     };
+  }
+
+  groupSelectedShapes() {
+    if (!this.selectedShapes) throw new Error(`No shapes selected to group`);
+
+    const newGroup = ShapeFactory.createShape("group", {
+      id: this.shapeUid,
+      startX: 0,
+      startY: 0,
+      endX: 0,
+      endY: 0,
+    });
+    this.shapeUid++;
+
+    this.selectedShapes.forEach((shape) => newGroup.add(shape));
+    this.shapes = this.shapes.filter(
+      (shape) => !this.selectedShapes.includes(shape)
+    ); //remove grouped shapes from shape list
+
+    const idlist = this.selectedShapes.map((shape) => shape.id);
+    this.zOrder = this.zOrder.filter((z) => !idlist.includes(z));
+    this.zOrder.push(newGroup.id);
+
+    this.shapes.push(newGroup);
+    console.log(this.shapes);
+
+    this.notifyShapesUpdated();
+    this.updateSelectedShapes([newGroup]);
+  }
+
+  ungroupSelectedShapes(target: Shape) {
+    if (!target.isComposite())
+      throw new Error("Can't ungroup non-group component");
+    const ungrouped = target.remove();
+    this.shapes.push(...ungrouped);
+    this.zOrder.push(...ungrouped.map((shape) => shape.id));
+
+    this.deleteShape(target);
+    console.log(ungrouped.map((shape) => shape.id));
+
+    this.updateSelectedShapes(ungrouped);
+    console.log(this.shapes, this.zOrder);
   }
 }

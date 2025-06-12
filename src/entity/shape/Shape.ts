@@ -8,6 +8,12 @@ export interface Shape {
   readonly endX: number;
   readonly endY: number;
 
+
+  //Composite pattern
+  add(target: Shape): void;
+  remove(): Shape[];
+  isComposite(): boolean;
+
   color: string;
   textContent: string;
   fontSize: number;
@@ -16,6 +22,7 @@ export interface Shape {
   isBold: boolean;
   isItalic: boolean;
   isTyping?: boolean;
+
 
   draw(ctx: CanvasRenderingContext2D | null): void;
   move(dx: number, dy: number): void;
@@ -69,6 +76,14 @@ export abstract class AbstractShape implements Shape {
           this.shadowOffsetY * this.shadowOffsetY
       )
     );
+  }
+
+  add(target: Shape): void {}
+  remove(): Shape[] {
+    return [];
+  }
+  isComposite(): boolean {
+    return false;
   }
 
   move(dx: number, dy: number): void {
