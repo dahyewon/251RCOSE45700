@@ -8,6 +8,15 @@ export interface Shape {
   readonly endX: number;
   readonly endY: number;
 
+  color: string;
+  textContent: string;
+  fontSize: number;
+  fontFamily: string;
+  fontColor: string;
+  isBold: boolean;
+  isItalic: boolean;
+  isTyping?: boolean;
+
   draw(ctx: CanvasRenderingContext2D | null): void;
   move(dx: number, dy: number): void;
   getResizeHandles(): { x: number; y: number; pos: ResizeHandlePosition }[];
@@ -25,7 +34,12 @@ export abstract class AbstractShape implements Shape {
     public endX: number,
     public endY: number
   ) {}
-  textContent: string = DEFAULT_SHAPE.TEXT_CONTENT;
+  textContent: string = "";
+  fontSize: number = DEFAULT_SHAPE.FONT_SIZE;
+  fontFamily: string = DEFAULT_SHAPE.FONT_FAMILY;
+  fontColor: string = "#fff";
+  isBold: boolean = false;
+  isItalic: boolean = false;
   color: string = "#000000";
 
   shadowColor: string = "#000000";

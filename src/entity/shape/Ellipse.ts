@@ -3,12 +3,14 @@ import {
   BorderedShapePropertyHandlers,
   CommonPropertyHandlers,
   PropertyHandler,
+  TextShapePropertyHandlers,
 } from "../property/PropertyHandlers";
 import { AbstractShape } from "./Shape";
 
 export class Ellipse extends AbstractShape {
   private borderWidth: number = 0;
   private borderColor: string = "#000000";
+  public isTyping: boolean = false;
 
   get radiusX(): number {
     return Math.abs(this.endX - this.startX) / 2;
@@ -41,6 +43,16 @@ export class Ellipse extends AbstractShape {
     ctx.restore();
     this.drawFrame(ctx);
     ctx.restore();
+
+    if (this.textContent) {
+      const fontStyle = this.isItalic ? "italic" : "normal";
+      const fontWeight = this.isBold ? "bold" : "normal";
+      ctx.font = `${fontStyle} ${fontWeight} ${this.fontSize}px ${this.fontFamily}`;
+      ctx.fillStyle = this.fontColor;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(this.textContent, this.centerX, this.centerY);
+    }
   }
 
   drawFrame(ctx: CanvasRenderingContext2D) {
@@ -78,7 +90,7 @@ export class Ellipse extends AbstractShape {
   // 사용할 속성 골라넣기
   private static WidthHandler = (): PropertyHandler<Ellipse> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.WIDTH,
+    name: PROPERTY_NAMES.SHAPE_WIDTH,
     getValue: (shape) => Math.abs(shape.radiusX * 2),
     setValue: (shape, value) => {
       const centerX = shape.centerX;
@@ -88,7 +100,7 @@ export class Ellipse extends AbstractShape {
   });
   private static HeightHandler = (): PropertyHandler<Ellipse> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.HEIGHT,
+    name: PROPERTY_NAMES.SHAPE_HEIGHT,
     getValue: (shape) => Math.abs(shape.radiusY * 2),
     setValue: (shape, value) => {
       const centerY = shape.centerY;
@@ -103,6 +115,12 @@ export class Ellipse extends AbstractShape {
       Ellipse.WidthHandler(),
       Ellipse.HeightHandler(),
       CommonPropertyHandlers.Color(),
+      TextShapePropertyHandlers.TextContent(),
+      this.textContent && TextShapePropertyHandlers.FontSize(),
+      this.textContent && TextShapePropertyHandlers.FontFamily(),
+      this.textContent && TextShapePropertyHandlers.FontColor(),
+      this.textContent && TextShapePropertyHandlers.Bold(),
+      this.textContent && TextShapePropertyHandlers.Italic(),
       CommonPropertyHandlers.ShadowAngle(),
       CommonPropertyHandlers.ShadowRadius(),
       CommonPropertyHandlers.ShadowBlur(),
@@ -113,6 +131,6 @@ export class Ellipse extends AbstractShape {
       BorderedShapePropertyHandlers.BorderColor<
         this & { borderColor: string }
       >(),
-    ];
+    ].filter(Boolean) as PropertyHandler<this>[];
   }
 }

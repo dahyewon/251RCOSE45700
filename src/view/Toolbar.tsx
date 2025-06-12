@@ -127,8 +127,7 @@ const Toolbar: React.FC<{ viewModel: ToolbarViewModel }> = ({ viewModel }) => {
             },
           });
           commandManager.execute(CommandType.SET_STATE, {
-            stateType: "DrawState",
-            shapeType: "text",
+            stateType: "SelectState",
           });
         }}
       >

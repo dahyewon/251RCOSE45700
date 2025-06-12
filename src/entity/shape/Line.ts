@@ -66,7 +66,7 @@ export class Line extends AbstractShape {
   // 길이
   private static LengthHandler = (): PropertyHandler<Line> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.LENGTH,
+    name: PROPERTY_NAMES.SHAPE_LINELENGTH,
     getValue: (shape) => Math.round(shape.length),
     setValue: (shape, value) => {
       const centerX = shape.centerX;
@@ -82,7 +82,7 @@ export class Line extends AbstractShape {
   // 선 굵기
   private static LineWidthHandler = (): PropertyHandler<Line> => ({
     type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.LINEWIDTH,
+    name: PROPERTY_NAMES.SHAPE_LINEWIDTH,
     getValue: (shape) => shape.lineWidth,
     setValue: (shape, value) => {
       shape.lineWidth = Number(value);

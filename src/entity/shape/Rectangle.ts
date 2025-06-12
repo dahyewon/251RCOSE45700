@@ -1,13 +1,15 @@
-import {
+import { 
   BorderedShapePropertyHandlers,
   CommonPropertyHandlers,
   PropertyHandler,
+  TextShapePropertyHandlers,
 } from "../property/PropertyHandlers";
 import { AbstractShape } from "./Shape";
 
 export class Rectangle extends AbstractShape {
-  borderWidth: number = 0;
-  borderColor: string = "#000000";
+  private borderWidth: number = 0;
+  private borderColor: string = "#000000";
+  public isTyping: boolean = false;
 
   draw(ctx: CanvasRenderingContext2D) {
     if (!ctx) throw new Error("context is null");
@@ -21,6 +23,16 @@ export class Rectangle extends AbstractShape {
     ctx.restore();
     this.drawFrame(ctx);
     ctx.restore();
+
+    if (this.textContent) {
+      const fontStyle = this.isItalic ? "italic" : "normal";
+      const fontWeight = this.isBold ? "bold" : "normal";
+      ctx.font = `${fontStyle} ${fontWeight} ${this.fontSize}px ${this.fontFamily}`;
+      ctx.fillStyle = this.fontColor;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(this.textContent, this.centerX, this.centerY);
+    }
   }
 
   drawFrame(ctx: CanvasRenderingContext2D) {
@@ -47,16 +59,18 @@ export class Rectangle extends AbstractShape {
       CommonPropertyHandlers.Width(),
       CommonPropertyHandlers.Height(),
       CommonPropertyHandlers.Color(),
+      TextShapePropertyHandlers.TextContent(),
+      this.textContent && TextShapePropertyHandlers.FontSize(),
+      this.textContent && TextShapePropertyHandlers.FontFamily(),
+      this.textContent && TextShapePropertyHandlers.FontColor(),
+      this.textContent && TextShapePropertyHandlers.Bold(),
+      this.textContent && TextShapePropertyHandlers.Italic(),
       CommonPropertyHandlers.ShadowAngle(),
       CommonPropertyHandlers.ShadowRadius(),
       CommonPropertyHandlers.ShadowBlur(),
       CommonPropertyHandlers.ShadowColor(),
-      BorderedShapePropertyHandlers.BorderWidth<
-        this & { borderWidth: number }
-      >(),
-      BorderedShapePropertyHandlers.BorderColor<
-        this & { borderColor: string }
-      >(),
-    ];
+      BorderedShapePropertyHandlers.BorderWidth<this & { borderWidth: number }>(),
+      BorderedShapePropertyHandlers.BorderColor<this & { borderColor: string }>(),
+    ].filter(Boolean) as PropertyHandler<this>[];
   }
 }
