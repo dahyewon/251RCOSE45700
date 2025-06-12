@@ -173,8 +173,8 @@ export class ShapeModel extends Observable<any> {
     const shape = this.shapes.find((shape) => shape.id === shapeId);
     if (shape) {
       shape.setProperties(propertyName, value);
-      if (shape instanceof TextShape) {
-        shape.isEditing = false;
+      if ("isTyping" in shape) {
+        shape.isTyping = false;
       }
       this.notifyShapesUpdated(shape);
       return shape;
@@ -263,10 +263,8 @@ export class ShapeModel extends Observable<any> {
     if (this.selectedShapes.length !== 1) {
       throw new Error("Only one shape can be selected.");
     }
-    // 일단은 TextShape에 대한 기능부터 구현하자 싶어서 if문 만들었습니다! 추후 제거 예정
-    if (!(shape instanceof TextShape))
-      throw new Error("Requested shape is not a TextShape.");
-    shape.isEditing = true;
+    if (!("isTyping" in shape)) throw new Error("Requested shape does not support text editing");
+    shape.isTyping = true;
     return {
       id: shape.id,
       textContent: shape.textContent,
@@ -276,6 +274,7 @@ export class ShapeModel extends Observable<any> {
       endY: shape.endY,
       fontSize: shape.fontSize,
       fontFamily: shape.fontFamily,
+      fontColor: shape.fontColor,
       color: shape.color,
     };
   }

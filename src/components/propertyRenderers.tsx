@@ -3,8 +3,8 @@ import { DROPDOWN_OPTIONS } from "../constants";
 
 interface RendererProps {
   name: string;
-  value: string | number;
-  onChange: (newValue: string | number) => void;
+  value: string | number | boolean;
+  onChange: (newValue: string | number | boolean) => void;
 }
 
 export const ColorRenderer: React.FC<RendererProps> = ({ name, value, onChange }) => (
@@ -62,5 +62,27 @@ export const ReadOnlyRenderer: React.FC<RendererProps> = ({ name, value }) => (
   <div className="propertyItem" key={name}>
     <span>{name}:</span>
     <strong>{value}</strong>
+  </div>
+);
+
+export const BooleanRenderer: React.FC<RendererProps> = ({ name, value, onChange }) => (
+  <div className="propertyItem" key={name}>
+    <button
+      className={value ? "active" : ""}
+      onClick={() => onChange(!value)}
+      type="button"
+      style={{
+        fontWeight: name === "B" ? "bold" : undefined,
+        fontStyle: name === "I" ? "italic" : undefined,
+        background: value ? "#ddd" : "#fff",
+        border: "1px solid #ccc",
+        width: 32,
+        height: 32,
+        margin: 2,
+        cursor: "pointer",
+      }}
+    >
+      {name}
+    </button>
   </div>
 );

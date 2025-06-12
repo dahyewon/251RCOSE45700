@@ -1,12 +1,12 @@
-import { DEFAULT_SHAPE, PROPERTY_NAMES, PROPERTY_TYPES } from "../../constants";
-import {
-  CommonPropertyHandlers,
-  PropertyHandler,
+import { DEFAULT_SHAPE } from "../../constants";
+import { 
+    CommonPropertyHandlers,
+    PropertyHandler,
+    TextShapePropertyHandlers,
 } from "../property/PropertyHandlers";
 import { AbstractShape } from "./Shape";
 
 export class TextShape extends AbstractShape {
-  public isEditing: boolean = false;
   constructor(
     id: number,
     startX: number,
@@ -15,19 +15,23 @@ export class TextShape extends AbstractShape {
     endY: number,
     public textContent: string = DEFAULT_SHAPE.TEXT_CONTENT,
     public fontSize: number = DEFAULT_SHAPE.FONT_SIZE,
-    public fontFamily: string = DEFAULT_SHAPE.FONT_FAMILY
+    public fontFamily: string = DEFAULT_SHAPE.FONT_FAMILY,
   ) {
     super(id, startX, startY, endX, endY);
   }
+  public fontColor: string = '#000000';
+  public isTyping: boolean = false;
 
   draw(ctx: CanvasRenderingContext2D | null): void {
     if (!ctx) throw new Error("context is null");
     ctx.save();
-    if (this.isEditing) return;
+    if (this.isTyping) return;
     this.setShadow(ctx);
 
-    ctx.font = `${this.fontSize}px ${this.fontFamily}`;
-    ctx.fillStyle = this.color;
+    const fontStyle = this.isItalic ? "italic" : "normal";
+    const fontWeight = this.isBold ? "bold" : "normal";
+    ctx.font = `${fontStyle} ${fontWeight} ${this.fontSize}px ${this.fontFamily}`;
+    ctx.fillStyle = this.fontColor;
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -44,38 +48,22 @@ export class TextShape extends AbstractShape {
     );
   }
 
-  private static fontSizeHandler = (): PropertyHandler<TextShape> => ({
-    type: PROPERTY_TYPES.NUMBER,
-    name: PROPERTY_NAMES.FONT_SIZE,
-    getValue: (shape) => shape.fontSize,
-    setValue: (shape, value) => {
-      shape.fontSize = Number(value);
-    },
-  });
-
-  private static fontFamilyHandler = (): PropertyHandler<TextShape> => ({
-    type: PROPERTY_TYPES.DROPDOWN,
-    name: PROPERTY_NAMES.FONT_FAMILY,
-    getValue: (shape) => shape.fontFamily,
-    setValue: (shape, value) => {
-      shape.fontFamily = value.toString();
-    },
-  });
-
   protected getPropertyHandlers(): PropertyHandler<this>[] {
     return [
       CommonPropertyHandlers.HorizontalPos(),
       CommonPropertyHandlers.VerticalPos(),
-      CommonPropertyHandlers.textContentHandler(),
-      TextShape.fontSizeHandler(),
-      TextShape.fontFamilyHandler(),
       CommonPropertyHandlers.Width(),
       CommonPropertyHandlers.Height(),
       CommonPropertyHandlers.Color(),
+      TextShapePropertyHandlers.TextContent(),
+      TextShapePropertyHandlers.FontSize(),
+      TextShapePropertyHandlers.FontFamily(),
+      TextShapePropertyHandlers.Bold(),
+      TextShapePropertyHandlers.Italic(),
       CommonPropertyHandlers.ShadowAngle(),
       CommonPropertyHandlers.ShadowRadius(),
       CommonPropertyHandlers.ShadowBlur(),
-      CommonPropertyHandlers.ShadowColor(),
+      CommonPropertyHandlers.ShadowColor(),    
     ];
   }
 }
@@ -89,5 +77,6 @@ export interface TextShapeProps {
   endY: number;
   fontSize: number;
   fontFamily: string;
+  fontColor: string;
   color: string;
 }
